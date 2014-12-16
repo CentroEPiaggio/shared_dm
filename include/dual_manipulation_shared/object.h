@@ -1,0 +1,8 @@
+#ifndef DUAL_MANIPULATION_SHARED_OBJECT
+#define DUAL_MANIPULATION_SHARED_OBJECT
+
+class Object
+{
+};
+
+#endif
