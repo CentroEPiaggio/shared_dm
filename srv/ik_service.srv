@@ -1,0 +1,4 @@
+string ee_name
+geometry_msgs/Pose ee_pose
+---
+bool ack
