@@ -18,9 +18,15 @@ endif()
 
 find_package(catkin REQUIRED COMPONENTS roscpp rospy std_msgs geometry_msgs message_generation)
 
+add_message_files(
+  FILES
+  planner_item.msg
+)
+
 add_service_files(
   FILES
   ik_service.srv
+  planner_service.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
