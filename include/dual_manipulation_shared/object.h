@@ -5,7 +5,7 @@
 class Object
 {
 public:
-    std::string id;
+    uint64_t id;
 };
 
 #endif
