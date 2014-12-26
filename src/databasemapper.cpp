@@ -116,6 +116,36 @@ bool databaseMapper::fill(std::map<uint64_t,std::set<uint64_t>>& data, std::stri
     return true;
 }
 
+bool databaseMapper::fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name)
+{
+    std::map<endeffector_id,std::tuple<std::string,bool>> result;
+    sqlite3_stmt* stmt;
+    prepare_query(table_name,&stmt);
+    bool exit=false;
+    int rc;
+    while(!exit)
+    {
+        if (!step_query(stmt,rc))
+            return false;
+        else if (rc == SQLITE_DONE) {
+            exit=true;
+        }
+        else if (rc == SQLITE_ROW)
+        {
+            uint64_t index;
+            std::string name;
+            uint64_t property;
+            check_type_and_copy(index,0,stmt);
+            check_type_and_copy(name,1,stmt);
+            check_type_and_copy(property,2,stmt);
+            result[index]=std::make_tuple(name,property);
+        }
+    }
+    data.swap(result);
+    sqlite3_finalize(stmt);
+    return true;
+}
+
 bool databaseMapper::fill(std::map<object_id,std::string>& data, std::string table_name)
 {
     std::map<object_id,std::string> result;

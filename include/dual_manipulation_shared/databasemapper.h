@@ -31,7 +31,7 @@ public:
      * @brief List of endeffectors and their names
      * 
      */
-    std::map<endeffector_id,std::string> EndEffectors;
+    std::map<endeffector_id,std::tuple<std::string,bool>> EndEffectors;
     /**
      * @brief List of workspaces and their names
      * 
@@ -66,8 +66,9 @@ private:
     bool check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt);
     bool fillTableList();
     bool fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>>& data, std::string table_name);
-    bool fill(std::map<object_id,std::string>& data, std::string table_name);
+    bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
+    bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     std::vector<std::string> tables;    
     sqlite3 *db;
     
