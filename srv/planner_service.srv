@@ -1,5 +1,8 @@
+string command
 planner_item source
 planner_item destination
+uint64 object_id
+string object_name
 float64 time
 ---
 bool ack
