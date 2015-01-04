@@ -27,6 +27,7 @@ add_service_files(
   FILES
   ik_service.srv
   planner_service.srv
+  state_manager_service.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
