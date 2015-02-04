@@ -1,3 +1,4 @@
+string command
 string ee_name
 float64 time
 geometry_msgs/Pose ee_pose
