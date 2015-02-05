@@ -1,6 +1,9 @@
 string command
+# ee_name is one of "left_hand", "right_hand", "both_hands"
 string ee_name
 float64 time
-geometry_msgs/Pose ee_pose
+# use Pose[0] if the ee_name is either "left_hand" or "right_hand"
+# if ee_name is "both_hands", Pose[0] is for the left hand, Pose[1] for the right one
+geometry_msgs/Pose[] ee_pose
 ---
 bool ack
