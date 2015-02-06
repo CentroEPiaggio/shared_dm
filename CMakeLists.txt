@@ -16,7 +16,7 @@ else()
 endif()
 
 
-find_package(catkin REQUIRED COMPONENTS roslib roscpp rospy std_msgs geometry_msgs message_generation)
+find_package(catkin REQUIRED COMPONENTS roslib roscpp rospy std_msgs geometry_msgs message_generation moveit_msgs)
 
 add_message_files(
   FILES
@@ -27,10 +27,11 @@ add_service_files(
   FILES
   ik_service.srv
   planner_service.srv
+  scene_object_service.srv
   state_manager_service.srv
 )
 
-generate_messages(DEPENDENCIES std_msgs geometry_msgs)
+generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs)
 
 catkin_package(
   INCLUDE_DIRS include/

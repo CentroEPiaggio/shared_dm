@@ -1,0 +1,7 @@
+# "add" and "remove" work on the scene
+# "attach" and "detach" work on a hand
+string command
+string object_id
+moveit_msgs/AttachedCollisionObject attObject
+---
+bool ack
