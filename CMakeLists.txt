@@ -41,15 +41,13 @@ catkin_package(
    )
 include_directories(include ${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
+include_directories(src/)
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
-#add_executable(dummy src/main.cpp)
+add_subdirectory(src/lemon)
+
 add_library(${PROJECT_NAME} SHARED src/databasemapper.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} sqlite3)
-# install(TARGETS dummy
-#    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
@@ -60,6 +58,5 @@ install(TARGETS ${PROJECT_NAME}
 #         ARCHIVE DESTINATION "${CATKIN_PACKAGE_BIN_DESTINATION}" COMPONENT lib
 #         RUNTIME DESTINATION "${CATKIN_PACKAGE_BIN_DESTINATION}" COMPONENT bin
          LIBRARY DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}" COMPONENT shlib
-#         PUBLIC_HEADER DESTINATION "${CATKIN_PACKAGE_BIN_DESTINATION}/drc_shared" COMPONENT dev
 )
 
