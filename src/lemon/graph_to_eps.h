@@ -107,9 +107,10 @@ struct DefaultGraphToEpsTraits
   bool _enableParallel;
   double _parArcDist;
 
-  bool _showNodeText;
+  bool _showNodeText, _showArcText;
   ConstMap<typename Graph::Node,bool > _nodeTexts;
-  double _nodeTextSize;
+  ConstMap<typename Graph::Arc,bool > _arcTexts;
+  double _nodeTextSize, _arcTextSize;
 
   bool _showNodePsText;
   ConstMap<typename Graph::Node,bool > _nodePsTexts;
@@ -156,6 +157,7 @@ struct DefaultGraphToEpsTraits
     _drawArrows(false), _arrowLength(1), _arrowWidth(0.3),
     _showNodes(true), _showArcs(true),
     _enableParallel(false), _parArcDist(1),
+    _showArcText(false),  _arcTexts(false), _arcTextSize(1),
     _showNodeText(false), _nodeTexts(false), _nodeTextSize(1),
     _showNodePsText(false), _nodePsTexts(false), _nodePsTextsPreamble(0),
     _undirected(lemon::UndirectedTagIndicator<GR>::value),
@@ -205,6 +207,10 @@ template<class T> class GraphToEps : public T
   using T::_enableParallel;
   using T::_parArcDist;
 
+  using T::_showArcText;
+  using T::_arcTexts;
+  using T::_arcTextSize;
+  
   using T::_showNodeText;
   using T::_nodeTexts;
   using T::_nodeTextSize;
@@ -382,6 +388,25 @@ public:
     _showNodeText=true;
     return GraphToEps<NodeTextsTraits<X> >(NodeTextsTraits<X>(*this,x));
   }
+  
+  
+  template<class X> struct ArcTextsTraits : public T {
+      const X &_arcTexts;
+      ArcTextsTraits(const T &t,const X &x) : T(t), _arcTexts(x) {}
+  };
+  ///Sets the text printed on the arcs
+  
+  ///Sets the text printed on the arcs.
+  ///\param x must be an arc map with type that can be pushed to a standard
+  ///\c ostream.
+  template<class X> GraphToEps<ArcTextsTraits<X> > arcTexts(const X &x)
+  {
+      dontPrint=true;
+      _showArcText=true;
+      return GraphToEps<ArcTextsTraits<X> >(ArcTextsTraits<X>(*this,x));
+  }
+  
+  
   template<class X> struct NodePsTextsTraits : public T {
     const X &_nodePsTexts;
     NodePsTextsTraits(const T &t,const X &x) : T(t), _nodePsTexts(x) {}
@@ -582,6 +607,9 @@ public:
   ///Sets the size of the node texts
   GraphToEps<T> &nodeTextSize(double d) {_nodeTextSize=d;return *this;}
 
+  ///Sets the size of the node texts
+  GraphToEps<T> &arcTextSize(double d) {_arcTextSize=d;return *this;}
+  
   ///Sets the color of the node texts to be different from the node color
 
   ///Sets the color of the node texts to be as different from the node color
@@ -944,6 +972,19 @@ public:
               os << "newpath " << psOut(apoint) << " moveto "
                  << psOut(linend+dd) << " lineto "
                  << psOut(linend-dd) << " lineto closepath fill\n";
+                 
+                 if(_showArcText) {
+                     os << "%Arc text:\ngsave\n";
+                     os << "/fosi " << _arcTextSize << " def\n";
+                     os << "(Helvetica) findfont fosi scalefont setfont\n";
+//TODO set color
+                     os << (bez.p1.x+bez.p2.x+bez.p3.x+bez.p4.x)/4.0 << ' ' 
+                     << (bez.p1.y+bez.p2.y+bez.p3.y+bez.p4.y)/4.0
+                         << " (" << _arcTexts[*e] << ") cshow\n";
+                     os << "grestore\n";
+                 }
+                 
+                 
             }
             else {
               os << mycoords[g.source(*e)].x << ' '
