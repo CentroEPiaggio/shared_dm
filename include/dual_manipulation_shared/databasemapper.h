@@ -21,7 +21,6 @@ class databaseMapper
 {
 public:
     databaseMapper(std::string database_name="test.db");
-    void createFakeDatabase();
     /**
      * @brief List of objects and their names
      * 
@@ -48,11 +47,12 @@ public:
      */
     std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>> Grasps;
     std::map<endeffector_id,std::set<workspace_id>> Reachability;
+
     /**
-     * @brief Currently not used!
-     * 
+     * @brief This table associates a 2Dpolygon (vector of 2D points) to each workspace
+     * It is currently used to convert semantic into cartesian and viceversa
      */
-    std::map<workspace_id,std::vector<std::pair<int,int>>> WorkspaceGeometry;
+    std::map<workspace_id,std::vector<std::pair<double,double>>> WorkspaceGeometry;
     /**
      * @brief From a grasp to another
      * 
@@ -64,14 +64,15 @@ private:
     bool step_query(sqlite3_stmt *stmt, int& rc);
     bool check_type_and_copy(uint64_t& data, int column_index, sqlite3_stmt* stmt);
     bool check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt);
+    bool check_type_and_copy(char* &pzBlob, int column_index, sqlite3_stmt *stmt, int& pnBlob);
     bool fillTableList();
     bool fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>>& data, std::string table_name);
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
-    std::vector<std::string> tables;    
+    bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
+    std::vector<std::string> tables;
     sqlite3 *db;
-    
 };
 
 #endif // DATABASEMAPPER_H

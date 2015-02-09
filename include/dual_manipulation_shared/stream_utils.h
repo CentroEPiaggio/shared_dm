@@ -14,8 +14,8 @@ template< typename K,typename T>//,typename C, typename Alloc >
 std::ostream& operator<<( std::ostream& os, const std::map<K,T>& m )
 {
     for (typename std::map<K,T>::const_iterator it=m.begin();it!=m.end();++it)
-        os<<it->first <<" "<<it->second <<" ";
-    os<<std::endl;
+        os<<it->first <<" "<<it->second <<std::endl;
+    os<<"-------"<<std::endl;
     return os;
 }
 
@@ -30,8 +30,10 @@ std::ostream& operator<<( std::ostream& os, const std::tuple<K,T,C>& m )
 template< typename T>//,typename C, typename Alloc >
 std::ostream& operator<<( std::ostream& os, const std::vector<T>& m )
 {
+    os<<std::endl;
     for (typename std::vector<T>::const_iterator it=m.begin();it!=m.end();++it)
         os<<(*it)<<" ";
+    os<<std::endl<<"-------"<<std::endl;
     return os;
 }
 
@@ -39,8 +41,10 @@ std::ostream& operator<<( std::ostream& os, const std::vector<T>& m )
 template< typename T>//,typename C, typename Alloc >
 std::ostream& operator<<( std::ostream& os, const std::list<T>& m )
 {
+    os<<std::endl;
     for (typename std::list<T>::const_iterator it=m.begin();it!=m.end();++it)
         os<<(*it)<<" ";
+    os<<std::endl<<"-------"<<std::endl;
     return os;
 }
 
@@ -55,7 +59,7 @@ std::ostream& operator<<( std::ostream& os, const std::set<T>& m )
 template<typename T, typename K>
 std::ostream& operator<<(std::ostream& os, const std::pair<T,K>& m)
 {
-    os<<m.first<<" "<<m.second<<" "<<std::endl;
+    os<<m.first<<" "<<m.second<<" ";
     return os;
 }
 #endif

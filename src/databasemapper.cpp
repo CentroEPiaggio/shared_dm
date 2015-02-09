@@ -2,7 +2,10 @@
 #include <string>
 #include <sqlite3.h>
 #include <iostream>
+#include <sstream>      // std::istringstream
+#include <string>       // std::string
 #include <unistd.h>
+#include <string.h>
 #include <ros/package.h>
 #include "dual_manipulation_shared/stream_utils.h"
 /*
@@ -13,10 +16,6 @@
  * char**    // An array of strings representing column names 
  * );
  */
-void databaseMapper::createFakeDatabase()
-{
-    
-}
 
 bool databaseMapper::prepare_query(std::string table_name, sqlite3_stmt **stmt)
 {
@@ -68,7 +67,7 @@ bool databaseMapper::check_type_and_copy(std::string& data, int column_index, sq
         data=std::string((const char *)sqlite3_column_text(stmt,column_index));
     else
     {
-        std::cout<<"expected an integer into column"<< column_index<<" but it was not"<<std::endl;
+        std::cout<<"expected a string into column"<< column_index<<" but it was not"<<std::endl;
         return false;
     }
     return true;
@@ -86,6 +85,43 @@ bool databaseMapper::check_type_and_copy(uint64_t& data, int column_index, sqlit
     return true;
 }
 
+bool databaseMapper::fill(std::map< workspace_id, std::vector< std::pair< double, double >>>& data, std::string table_name)
+{
+    std::map< workspace_id, std::vector< std::pair< double, double >>> result;
+    sqlite3_stmt *stmt;
+    prepare_query(table_name,&stmt);
+    bool exit=false;
+    int rc;
+    while(!exit)
+    {
+        if (!step_query(stmt,rc))
+            return false;
+        else if (rc == SQLITE_DONE)
+        {
+            exit = true;
+        }
+        else if (rc==SQLITE_ROW)
+        {
+            uint64_t id;
+            std::string data;
+            std::vector<std::pair<double,double>> blob;
+            check_type_and_copy(id,0,stmt);
+            check_type_and_copy(data,1,stmt);
+            double x=0,y=0;
+            std::istringstream iss (data);
+            while (!iss.eof())
+            {
+                iss >> x >> y;
+                blob.push_back(std::make_pair(x,y));
+            }
+            result[id]=blob;
+        }
+    }
+    data.swap(result);
+    sqlite3_finalize(stmt);
+    return true;
+    
+}
 
 bool databaseMapper::fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name)
 {
@@ -245,13 +281,13 @@ bool databaseMapper::fillTableList()
 
 void databaseMapper::initialize_database(std::string database_name)
 {
-    std::string path = ros::package::getPath("dual_manipulation_grasp_DB");
+    std::string path = ros::package::getPath("dual_manipulation_grasp_db");
     
     int rc;
     /* Open database */
     rc = sqlite3_open(path.append("/test.db").c_str(), &db);
     if( rc ){
-        std::cout<< "Can't open database" << sqlite3_errmsg(db)<<std::endl;
+        std::cout<< "Can't open database: " << sqlite3_errmsg(db)<<std::endl;
         return;
     }else{
         std::cout<< "Opened database successfully" <<std::endl;
@@ -283,6 +319,10 @@ void databaseMapper::initialize_database(std::string database_name)
         {
             fill(WorkspacesAdjacency, "WorkspacesAdjacency");
         }
+        else if (table=="WorkspaceGeometry")
+        {
+            fill(WorkspaceGeometry, "WorkspaceGeometry");
+        }
         else if (table=="EndEffectors")
         {
             fill(EndEffectors, "EndEffectors");
@@ -294,11 +334,11 @@ void databaseMapper::initialize_database(std::string database_name)
 databaseMapper::databaseMapper(std::string database_name)
 {
      initialize_database(database_name);
-//    createFakeDatabase();
-    std::cout<<tables<<std::endl;        
+    std::cout<<tables<<std::endl;
     std::cout<<Grasp_transitions<<std::endl;
     std::cout<<Objects<<std::endl;
     std::cout<<Workspaces<<std::endl;
     std::cout<<Reachability<<std::endl;
-    std::cout<<Grasps<<std::endl;        
+    std::cout<<Grasps<<std::endl;
+    std::cout<<WorkspaceGeometry<<std::endl;
 }
