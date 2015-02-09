@@ -27,7 +27,7 @@ public:
      */
     std::map<object_id,std::string> Objects;
     /**
-     * @brief List of endeffectors and their names
+     * @brief List of endeffectors and their names, and a bool if the e.e. is movable
      * 
      */
     std::map<endeffector_id,std::tuple<std::string,bool>> EndEffectors;
