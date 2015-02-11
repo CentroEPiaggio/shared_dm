@@ -1,9 +1,9 @@
 #include "../include/dual_manipulation_shared/geometry_tools.h"
+#include <iostream> 
 
-
-bool Point::operator <(const Point &p) const {
-    return x < p.x || (x == p.x && y < p.y);
-}
+// bool Point::operator <(const Point &p) const {
+//     return x < p.x || (x == p.x && y < p.y);
+// }
 
 bool geometry_tools::point_in_ordered_polygon(double x, double y, const std::vector< Point >& polygon)
 {
