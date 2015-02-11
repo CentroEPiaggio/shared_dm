@@ -29,6 +29,7 @@ add_service_files(
   planner_service.srv
   scene_object_service.srv
   state_manager_service.srv
+  gui_target_service.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs)
