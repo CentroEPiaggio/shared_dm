@@ -1,9 +1,18 @@
+# possible commands:
+# "ik_check", "plan", "execute", "grasp", "ungrasp", "home"
+# - ik_check, grasp, and ungrasp are only for left_hand or right_hand, not both_hands
 string command
 # ee_name is one of "left_hand", "right_hand", "both_hands"
 string ee_name
 float64 time
-# use Pose[0] if the ee_name is either "left_hand" or "right_hand"
-# if ee_name is "both_hands", Pose[0] is for the left hand, Pose[1] for the right one
+# ee_pose is used if the command is ik_check or plan as following:
+# - use Pose[0] if the ee_name is either "left_hand" or "right_hand"
+# - if ee_name is "both_hands", Pose[0] is for the left hand, Pose[1] for the right one
+# it is also used if the command is grasp as waypoints for the end-effector
 geometry_msgs/Pose[] ee_pose
+# if the command is grasp, hand joint trajectory points
+trajectory_msgs/JointTrajectoryPoint[] points
+# if the command is grasp, object to attach to the grasping end-effector
+moveit_msgs/AttachedCollisionObject attObject
 ---
 bool ack
