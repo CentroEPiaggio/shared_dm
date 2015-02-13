@@ -11,7 +11,7 @@ float64 time
 # it is also used if the command is grasp as waypoints for the end-effector
 geometry_msgs/Pose[] ee_pose
 # if the command is grasp, hand joint trajectory points
-trajectory_msgs/JointTrajectoryPoint[] points
+trajectory_msgs/JointTrajectory grasp_trajectory
 # if the command is grasp, object to attach to the grasping end-effector
 moveit_msgs/AttachedCollisionObject attObject
 ---
