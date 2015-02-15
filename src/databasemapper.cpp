@@ -285,7 +285,7 @@ void databaseMapper::initialize_database(std::string database_name)
     
     int rc;
     /* Open database */
-    rc = sqlite3_open(path.append("/test.db").c_str(), &db);
+    rc = sqlite3_open(path.append("/").append(database_name).c_str(), &db);
     if( rc ){
         std::cout<< "Can't open database: " << sqlite3_errmsg(db)<<std::endl;
         return;
