@@ -25,7 +25,7 @@ public:
      * @brief List of objects and their names
      * 
      */
-    std::map<object_id,std::string> Objects;
+    std::map<object_id,std::tuple<std::string,std::string>> Objects;
     /**
      * @brief List of endeffectors and their names, and a bool if the e.e. is movable
      * 
@@ -68,6 +68,7 @@ private:
     bool fillTableList();
     bool fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>>& data, std::string table_name);
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
+    bool fill(std::map<uint64_t,std::tuple<std::string,std::string>>& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);

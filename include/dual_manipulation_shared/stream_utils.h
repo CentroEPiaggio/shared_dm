@@ -27,6 +27,14 @@ std::ostream& operator<<( std::ostream& os, const std::tuple<K,T,C>& m )
     return os;
 }
 
+template< typename K,typename T >
+std::ostream& operator<<( std::ostream& os, const std::tuple<K,T>& m )
+{
+    os<<std::get<0>(m)<<" "<<std::get<1>(m);
+    os<<std::endl;
+    return os;
+}
+
 template< typename T>//,typename C, typename Alloc >
 std::ostream& operator<<( std::ostream& os, const std::vector<T>& m )
 {
