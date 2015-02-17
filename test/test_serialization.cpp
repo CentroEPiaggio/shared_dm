@@ -76,7 +76,10 @@ int main(int argc, char **argv)
       attached_object.object.header.frame_id = attached_object.link_name; //"world";
       
       //side grasps
-      common_frame.p.data[0] = R + grasp_distance;
+      if(ee == "left_hand" || ee == "right_hand")
+	common_frame.p.data[0] = R + grasp_distance;
+      else
+	common_frame.p.data[0] = R;
 
       for (auto x_rot_i:x_rot)
       {
@@ -90,7 +93,7 @@ int main(int argc, char **argv)
 	  {
 	    obj_frame = common_frame;
 	    obj_frame.M.DoRotX(x_rot_i);
-	    obj_frame.p.data[2] += z_transl_i;
+	    obj_frame.p += obj_frame.M*KDL::Vector(0,0,z_transl_i);
 	    obj_frame.M.DoRotZ(z_rot_i);
 	    
 	    // convert from KDL to geometry_msgs
@@ -112,7 +115,10 @@ int main(int argc, char **argv)
       }
       
       //top/bottom grasps
-      common_frame.p.data[0] = H/2.0 + grasp_distance;
+      if(ee == "left_hand" || ee == "right_hand")
+	common_frame.p.data[0] = H/2.0 + grasp_distance;
+      else
+	common_frame.p.data[0] = 0.0;
 
       for (auto y_rot_i:y_rot)
       {
