@@ -16,7 +16,16 @@ else()
 endif()
 
 
-find_package(catkin REQUIRED COMPONENTS roslib roscpp rospy std_msgs geometry_msgs message_generation moveit_msgs kdl_conversions)
+find_package(catkin REQUIRED COMPONENTS
+  roslib
+  roscpp
+  rospy
+  std_msgs
+  geometry_msgs
+  message_generation
+  moveit_msgs
+  kdl_conversions
+)
 
 add_message_files(
   FILES
@@ -68,3 +77,7 @@ add_dependencies(test_serialization dual_manipulation_shared_gencpp)
 add_executable(test_deserialization test/test_deserialization.cpp)
 target_link_libraries(test_deserialization ${catkin_LIBRARIES})
 add_dependencies(test_deserialization dual_manipulation_shared_gencpp)
+
+add_executable(test_create_grasp_transitions test/test_create_grasp_transitions.cpp)
+target_link_libraries(test_create_grasp_transitions ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(test_create_grasp_transitions dual_manipulation_shared_gencpp)
