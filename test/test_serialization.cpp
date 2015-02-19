@@ -29,6 +29,8 @@ int main(int argc, char **argv)
 
     dual_manipulation_shared::ik_service srv;
     
+    srv.request.command = "grasp";
+    
     // create an object for grasping
     moveit_msgs::AttachedCollisionObject& attached_object = srv.request.attObject;
     trajectory_msgs::JointTrajectory& grasp_trajectory = srv.request.grasp_trajectory;
