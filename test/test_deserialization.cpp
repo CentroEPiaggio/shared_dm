@@ -103,7 +103,7 @@ int main(int argc, char **argv)
       KDL::Frame fi;
       tf::poseMsgToKDL(grasp_poses.at(i),fi);
       
-      tf::poseKDLToMsg(cyl_kdl*(fi.Inverse()),marker_pose);
+      tf::poseKDLToMsg(cyl_kdl*(fi),marker_pose);
       
       publish_marker_utility(vis_pub,marker_pose);
       

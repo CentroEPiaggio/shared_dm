@@ -112,7 +112,7 @@ int main(int argc, char **argv)
       tf::poseMsgToKDL(grasp_poses.at(i),fi);
       
       // // if I want to show a marker related to the grasp pose
-      // tf::poseKDLToMsg(cyl_kdl*(fi.Inverse()),marker_pose);
+      // tf::poseKDLToMsg(cyl_kdl*(fi),marker_pose);
       // 
       // publish_marker_utility(vis_pub,marker_pose);
       // 
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 	KDL::Frame fj;
 	tf::poseMsgToKDL(grasp_poses.at(j),fj);
 	
-	double dist = (fi.Inverse().p - fj.Inverse().p).Norm();
+	double dist = (fi.p - fj.p).Norm();
 	
 	KDL::Vector sel_x(1,0,0);
 	KDL::Vector sel_z(0,0,1);
@@ -147,13 +147,13 @@ int main(int argc, char **argv)
 	if (!(std::get<1>(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(i))))))
 	{
 	  // dot product of z-axis of fi and x-axis of fj + small distance
- 	  condition_dot_prod = ( dot( fi.Inverse().M*sel_z, fj.Inverse().M*sel_x ) < -1*DOTPROD_THRESHOLD) && (dist > DIST_THRESHOLD_FIXED);
+ 	  condition_dot_prod = ( dot( fi.M*sel_z, fj.M*sel_x ) < -1*DOTPROD_THRESHOLD) && (dist > DIST_THRESHOLD_FIXED);
 	}
 	// else, if the j-th end-effector is not movable
 	else if (!(std::get<1>(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(j))))))
 	{
 	  // dot product of z-axis of fj and x-axis of fi + small distance
-	  condition_dot_prod = ( dot( fj.Inverse().M*sel_z, fi.Inverse().M*sel_x ) < -1*DOTPROD_THRESHOLD) && (dist > DIST_THRESHOLD_FIXED);
+	  condition_dot_prod = ( dot( fj.M*sel_z, fi.M*sel_x ) < -1*DOTPROD_THRESHOLD) && (dist > DIST_THRESHOLD_FIXED);
 	}
 	// both movable, distance is enough
 	else
@@ -170,7 +170,7 @@ int main(int argc, char **argv)
 
 // 	std::cout << i << " " << j;
 // 	std::cout << " distance is: " << dist;
-// 	std::cout << " |cos(theta)| is: " << std::abs( dot( fi.Inverse().M*sel_z, fj.Inverse().M*sel_x ) );
+// 	std::cout << " |cos(theta)| is: " << std::abs( dot( fi.M*sel_z, fj.M*sel_x ) );
 // 	std::cout << std::endl;
       }
     }

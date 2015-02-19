@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     traj_point.positions.push_back(1.0);
     grasp_trajectory.points.push_back(traj_point);
     
-    geometry_msgs::Pose obj_pose;
+    geometry_msgs::Pose obj_pose, ee_pose;
     KDL::Frame common_frame, obj_frame;
     
     common_frame.M.RotX(0.0);
@@ -112,12 +112,13 @@ int main(int argc, char **argv)
 	    
 	    // convert from KDL to geometry_msgs
 	    tf::poseKDLToMsg(obj_frame,obj_pose);
+	    tf::poseKDLToMsg(obj_frame.Inverse(),ee_pose);
 	    
 	    attached_object.object.mesh_poses.clear();
 	    attached_object.object.mesh_poses.push_back(obj_pose);
 	    
 	    srv.request.ee_pose.clear();
-	    srv.request.ee_pose.push_back(obj_pose);
+	    srv.request.ee_pose.push_back(ee_pose);
 	    
 	    // save the obtained grasp
 	  if(serialize_ik(srv.request,"object" + std::to_string((int)attached_object.weight) + "/grasp" + std::to_string(counter++)))
@@ -162,12 +163,13 @@ int main(int argc, char **argv)
 	  
 	  // convert from KDL to geometry_msgs
 	  tf::poseKDLToMsg(obj_frame,obj_pose);
+	  tf::poseKDLToMsg(obj_frame.Inverse(),ee_pose);
 	  
 	  attached_object.object.mesh_poses.clear();
 	  attached_object.object.mesh_poses.push_back(obj_pose);
 	  
 	  srv.request.ee_pose.clear();
-	  srv.request.ee_pose.push_back(obj_pose);
+	  srv.request.ee_pose.push_back(ee_pose);
 	  
 	  // save the obtained grasp
 	  if(serialize_ik(srv.request,"object" + std::to_string((int)attached_object.weight) + "/grasp" + std::to_string(counter++)))
