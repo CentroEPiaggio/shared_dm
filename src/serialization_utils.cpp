@@ -7,7 +7,7 @@
 #include <ros/serialization.h>
 #include <fstream>
 
-bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, std::string filename="unnamed_grasp.txt"){
+bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, std::string filename){
     
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");
     path.append("/grasp_trajectories/").append(filename);
@@ -41,7 +41,7 @@ bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, s
     
 }
 
-bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::string filename="unnamed_grasp.txt")
+bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::string filename)
 {
     
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");

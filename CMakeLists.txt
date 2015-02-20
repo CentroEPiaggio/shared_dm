@@ -70,11 +70,11 @@ install(TARGETS ${PROJECT_NAME}
          LIBRARY DESTINATION "${CATKIN_PACKAGE_LIB_DESTINATION}" COMPONENT shlib
 )
 
-add_executable(test_serialization test/test_serialization.cpp)
+add_executable(test_serialization test/test_serialization.cpp src/serialization_utils.cpp)
 target_link_libraries(test_serialization ${catkin_LIBRARIES})
 add_dependencies(test_serialization dual_manipulation_shared_gencpp)
 
-add_executable(test_deserialization test/test_deserialization.cpp)
+add_executable(test_deserialization src/serialization_utils.cpp test/test_deserialization.cpp )
 target_link_libraries(test_deserialization ${catkin_LIBRARIES})
 add_dependencies(test_deserialization dual_manipulation_shared_gencpp)
 
