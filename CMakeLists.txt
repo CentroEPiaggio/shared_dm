@@ -56,7 +56,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_subdirectory(src/lemon)
 
-add_library(${PROJECT_NAME} SHARED src/databasemapper.cpp src/geometry_tools.cpp)
+add_library(${PROJECT_NAME} SHARED src/databasemapper.cpp src/geometry_tools.cpp src/serialization_utils.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} sqlite3)
 
 install(DIRECTORY include/${PROJECT_NAME}/
