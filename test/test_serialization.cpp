@@ -10,7 +10,7 @@
 // definitions used to generate grasps for a cylinder
 #define H 0.2
 #define R 0.05
-#define mid_palm_height 0.0 //0.05
+#define mid_palm_height 0.05 //0.05
 #define grasp_distance 0.05
 
 std::vector<std::string> ee_vector{"left_hand","right_hand","table"};
