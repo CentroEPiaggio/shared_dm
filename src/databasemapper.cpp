@@ -363,11 +363,11 @@ void databaseMapper::initialize_database(std::string database_name)
 databaseMapper::databaseMapper(std::string database_name)
 {
      initialize_database(database_name);
-    std::cout<<tables<<std::endl;
-    std::cout<<Grasp_transitions<<std::endl;
-    std::cout<<Objects<<std::endl;
-    std::cout<<Workspaces<<std::endl;
-    std::cout<<Reachability<<std::endl;
-    std::cout<<Grasps<<std::endl;
-    std::cout<<WorkspaceGeometry<<std::endl;
+//     std::cout<<tables<<std::endl;
+//     std::cout<<Grasp_transitions<<std::endl;
+//     std::cout<<Objects<<std::endl;
+//     std::cout<<Workspaces<<std::endl;
+//     std::cout<<Reachability<<std::endl;
+//     std::cout<<Grasps<<std::endl;
+//     std::cout<<WorkspaceGeometry<<std::endl;
 }
