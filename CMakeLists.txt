@@ -58,6 +58,7 @@ add_subdirectory(src/lemon)
 
 add_library(${PROJECT_NAME} SHARED src/databasemapper.cpp src/geometry_tools.cpp src/serialization_utils.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} sqlite3)
+add_dependencies(${PROJECT_NAME} dual_manipulation_shared_gencpp)
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
