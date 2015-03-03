@@ -30,6 +30,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   planner_item.msg
+  graph.msg
 )
 
 add_service_files(
