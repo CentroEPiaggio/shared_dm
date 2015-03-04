@@ -39,9 +39,9 @@ private:
     databaseMapper db_mapper;
     std::map<int,std::string> object_name_map;
     std::map<int,std::string> ee_name_map;
-    geometry_msgs::Pose obj0_hand;
     std::vector<geometry_msgs::Pose> obj0_trajectory;
     geometry_msgs::Pose hand_objF;
+    tf::StampedTransform world_T_obj0;
     
     std::string world_tf, hand_tf, object_tf;
     tf::StampedTransform get_transform(std::string target, std::string source);

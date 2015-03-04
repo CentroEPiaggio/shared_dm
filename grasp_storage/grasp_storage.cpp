@@ -85,11 +85,9 @@ void grasp_storage::insert_db_entry()
 
 void grasp_storage::save_start_pose()
 {
-    ROS_INFO_STREAM("saving start position...");
-
-    tf::StampedTransform obj0_T_hand = get_transform(object_tf,hand_tf);
-
-    tf::poseTFToMsg(obj0_T_hand,obj0_hand);
+    ROS_INFO_STREAM("saving start object position...");
+    
+    world_T_obj0 = get_transform(world_tf,object_tf);
 
     ROS_INFO_STREAM("saved!");
 }
@@ -97,13 +95,13 @@ void grasp_storage::save_start_pose()
 void grasp_storage::thread_body()
 {
     geometry_msgs::Pose obj0_traj;
-    tf::StampedTransform obj0_T_traj;
+    tf::StampedTransform world_T_traj;
 
     while(!stop_thread)
     {
-	obj0_T_traj = get_transform(object_tf,hand_tf);
+	world_T_traj = get_transform(world_tf,hand_tf);
 
-	tf::poseTFToMsg(obj0_T_traj,obj0_traj);
+	tf::poseTFToMsg(world_T_obj0.inverse()*world_T_traj,obj0_traj);
 
 	obj0_trajectory.push_back(obj0_traj);
 
@@ -130,7 +128,7 @@ void grasp_storage::save_end_pose()
 
     tf::StampedTransform hand_T_objF = get_transform(hand_tf,object_tf);
 
-    tf::poseTFToMsg(hand_T_objF,hand_objF);    
+    tf::poseTFToMsg(hand_T_objF,hand_objF);
 
     ROS_INFO_STREAM("saved!");
 }
@@ -188,7 +186,6 @@ void grasp_storage::serialize_data()
     attached_object.object.mesh_poses.push_back(hand_objF);
 
     srv.request.ee_pose.clear();
-    srv.request.ee_pose.push_back(obj0_hand);
     
     for (auto item:obj0_trajectory) srv.request.ee_pose.push_back(item);
     

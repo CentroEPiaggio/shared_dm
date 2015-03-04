@@ -67,13 +67,13 @@ int main(int argc, char** argv)
     if(a=='q') return 0;
     grasp_stor.save_end_pose();
     
-    ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to insert row in the database (\"n\" to abort) : ");
+    ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to insert row in the database ('n' to abort) : ");
     std::cin>>a;
     if(a=='q') return 0;
     if(a!='n') grasp_stor.save_in_db();
     else ROS_WARN("ABORT writing in database");
     
-    ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to serialize data (\"n\" to abort) : ");
+    ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to serialize data ('n' to abort) : ");
     std::cin>>a;
     if(a=='q') return 0;
     if(a!='n') grasp_stor.serialize_data();
