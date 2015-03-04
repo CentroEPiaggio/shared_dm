@@ -25,6 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   moveit_msgs
   kdl_conversions
+  tf
 )
 
 add_message_files(
@@ -83,3 +84,7 @@ add_dependencies(test_deserialization dual_manipulation_shared_gencpp)
 add_executable(test_create_grasp_transitions test/test_create_grasp_transitions.cpp)
 target_link_libraries(test_create_grasp_transitions ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(test_create_grasp_transitions dual_manipulation_shared_gencpp)
+
+add_executable(grasp_storage grasp_storage/grasp_storage.cpp grasp_storage/main.cpp)
+target_link_libraries(grasp_storage ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(grasp_storage dual_manipulation_shared_gencpp)
