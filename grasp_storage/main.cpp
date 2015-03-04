@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     {
 	std::cout<<std::endl;
 	std::cout<<" - Usage:   ./grasp_storage    object_id    end_effector_id    grasp_name"<<std::endl<<std::endl;
-	std::cout<<"\t - object_id: identifies the object type (1=Cylinder, 2=Pot, 3=StarCylinder) "<<std::endl;
+	std::cout<<"\t - object_id: identifies the object type (1=FakeCylinder, 2=Pot, 3=Cylinder) "<<std::endl;
 	std::cout<<"\t - end_effector_id: identifies the e-e (1=LH, 2=RH, 3=Table)"<<std::endl;
 	std::cout<<"\t - grasp_name: custom name for grasp (e.g. \"RH_top\")"<<std::endl<<std::endl;
       
