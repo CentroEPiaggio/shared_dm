@@ -35,7 +35,6 @@ private:
 
     void insert_db_entry();
     int scoreID=-1;
-    std::string error;
 
     databaseMapper db_mapper;
     std::map<int,std::string> object_name_map;
@@ -43,6 +42,12 @@ private:
     geometry_msgs::Pose obj0_hand;
     std::vector<geometry_msgs::Pose> obj0_trajectory;
     geometry_msgs::Pose hand_objF;
+    
+    std::string world_tf, hand_tf, object_tf;
+    tf::StampedTransform get_transform(std::string target, std::string source);
+    void thread_body();
+    std::thread* tf_periodic_listener;
+    bool stop_thread=false;
 };
 
 #endif //GRASP_STORAGE_H

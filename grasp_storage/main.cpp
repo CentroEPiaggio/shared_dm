@@ -1,4 +1,5 @@
 #include "grasp_storage.h"
+#include "ros/ros.h"
 
 void thread_body()
 {
@@ -34,7 +35,7 @@ int main(int argc, char** argv)
     std::cout<<"\t - object_id = "<<object_id<<std::endl;
     std::cout<<"\t - end_effector_id = "<<end_effector_id<<std::endl;
     std::cout<<"\t - grasp_name = "<<grasp_name<<std::endl<<std::endl;
-    std::cout<<"No data will be saved on disk until the \"!! CONFIRM !!\" messages"<<grasp_name<<std::endl<<std::endl;
+    std::cout<<"No data will be saved on disk until the \"!! ATTENTION !!\" messages"<<std::endl<<std::endl;
   
     ros::init(argc, argv, "grasp_storage");
     
@@ -44,31 +45,39 @@ int main(int argc, char** argv)
     
     char a;
 
-    std::cout<<"Press any key to save the START POSITION: "<<std::endl;
+    ROS_INFO("Press any key ('q' to exit) to save the START POSITION: ");
     std::cin>>a;
+    if(a=='q') return 0;
     grasp_stor.save_start_pose();
     
-    std::cout<<"Press any key to START recording TRAJECTORY: "<<std::endl;
+    ROS_INFO("Press any key ('q' to exit) to START recording TRAJECTORY: ");
     std::cin>>a;
+    if(a=='q') return 0;
     grasp_stor.record_trajectory_pose();
     
-    std::cout<<"Press any key to STOP recording TRAJECTORY: "<<std::endl;
+    ROS_INFO("Press any key ('q' to exit) to STOP recording TRAJECTORY: ");
     std::cin>>a;
+    if(a=='q') return 0;
     grasp_stor.stop_record_trajectory_pose();
     
-    std::cout<<"Press any key to save the END POSITION: "<<std::endl;
+    usleep(200000);
+    
+    ROS_INFO("Press any key ('q' to exit) to save the END POSITION: ");
     std::cin>>a;
+    if(a=='q') return 0;
     grasp_stor.save_end_pose();
     
-    std::cout<<"!! CONFIRM !! Press any key to insert row in the database (\"n\" to abort) : "<<std::endl;
+    ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to insert row in the database (\"n\" to abort) : ");
     std::cin>>a;
+    if(a=='q') return 0;
     if(a!='n') grasp_stor.save_in_db();
-    else std::cout<<"- ABORT writing in database"<<std::endl;
+    else ROS_WARN("ABORT writing in database");
     
-    std::cout<<"!! CONFIRM !! Press any key to serialize data (\"n\" to abort) : "<<std::endl;
+    ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to serialize data (\"n\" to abort) : ");
     std::cin>>a;
+    if(a=='q') return 0;
     if(a!='n') grasp_stor.serialize_data();
-    else std::cout<<"- ABORT serialization"<<std::endl;
+    else ROS_WARN("ABORT serialization");
     
     std::cout<<std::endl<<">>>>> Press any key to close <<<<<<"<<std::endl<<std::endl;
     std::cin>>a;
