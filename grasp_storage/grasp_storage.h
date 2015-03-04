@@ -8,6 +8,7 @@
 #include <string>
 #include <thread>
 #include "ros/package.h"
+#include "dual_manipulation_shared/databasemapper.h"
 
 class grasp_storage
 {
@@ -35,6 +36,13 @@ private:
     void insert_db_entry();
     int scoreID=-1;
     std::string error;
+
+    databaseMapper db_mapper;
+    std::map<int,std::string> object_name_map;
+    std::map<int,std::string> ee_name_map;
+    geometry_msgs::Pose obj0_hand;
+    std::vector<geometry_msgs::Pose> obj0_trajectory;
+    geometry_msgs::Pose hand_objF;
 };
 
 #endif //GRASP_STORAGE_H
