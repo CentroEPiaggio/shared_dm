@@ -41,7 +41,7 @@ grasp_storage::grasp_storage(int object_id_, int end_effector_id_, std::string g
     
     world_tf = "/phase_space_world";
     hand_tf ="/hand";
-    object_tf = "/star";
+    object_tf = "/cylinder";
 }
 
 void grasp_storage::insert_db_entry()
