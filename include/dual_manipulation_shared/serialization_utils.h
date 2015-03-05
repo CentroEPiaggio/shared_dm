@@ -16,4 +16,8 @@ bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, s
 
 bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::string filename="unnamed_grasp.txt");
 
+void monotonic_decreasing_distance_filter(std::vector<geometry_msgs::Pose> poses);
+
+void down_sampling(std::vector<geometry_msgs::Pose>& poses, int period);
+
 #endif //SERIALIZATION_UTILS_H

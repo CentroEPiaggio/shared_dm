@@ -5,6 +5,7 @@
 #include <ros/package.h>
 
 #include <ros/serialization.h>
+#include <geometry_msgs/Pose.h>
 #include <fstream>
 
 bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, std::string filename){
@@ -74,4 +75,56 @@ bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::
     delete tmp;
     
     return true;
+}
+
+geometry_msgs::Point difference(geometry_msgs::Point p1, geometry_msgs::Point p2)
+{
+    geometry_msgs::Point result;
+    result.x=p1.x-p2.x;
+    result.y=p1.y-p2.y;
+    result.z=p1.z-p2.z;
+    return result;
+}
+
+double norm2(geometry_msgs::Point p)
+{
+    return std::sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
+}
+
+void monotonic_decreasing_distance_filter(std::vector<geometry_msgs::Pose>& poses, geometry_msgs::Pose ref_pose=geometry_msgs::Pose())
+{
+    std::vector<geometry_msgs::Pose> new_poses;
+    double min_norm = 9999;
+    double norm;
+
+    for(int i=0;i<poses.size();i++)
+    {
+	norm = norm2(difference(poses.at(i).position,ref_pose.position));
+	if(norm<min_norm)
+	{
+	    new_poses.push_back(poses.at(i));
+	    min_norm = norm;
+	}
+    }
+    
+    poses.swap(new_poses);
+}
+
+void down_sampling(std::vector<geometry_msgs::Pose>& poses, int period)
+{
+    std::vector<geometry_msgs::Pose> new_poses;
+    
+    new_poses.push_back(poses.front());
+
+    for(int i=1;i<poses.size()-1;i++)
+    {
+        if(i % period == 0)
+	{
+	    new_poses.push_back(poses.at(i));
+	}
+    }
+    
+    new_poses.push_back(poses.back());
+    
+    poses.swap(new_poses);
 }
