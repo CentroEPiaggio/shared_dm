@@ -40,7 +40,7 @@ grasp_storage::grasp_storage(int object_id_, int end_effector_id_, std::string g
     ee_name_map[3]="table";
     
     world_tf = "/phase_space_world";
-    hand_tf ="/hand";
+    hand_tf ="/soft_hand_right_palm_link";
     object_tf = "/cylinder";
 }
 
