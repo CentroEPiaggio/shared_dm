@@ -88,3 +88,7 @@ add_dependencies(test_create_grasp_transitions dual_manipulation_shared_gencpp)
 add_executable(grasp_storage grasp_storage/grasp_storage.cpp grasp_storage/main.cpp)
 target_link_libraries(grasp_storage ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(grasp_storage dual_manipulation_shared_gencpp)
+
+add_executable(convert_rh_to_lh grasp_storage/convert_RH_to_LH_grasps.cpp)
+target_link_libraries(convert_rh_to_lh ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(convert_rh_to_lh dual_manipulation_shared_gencpp)

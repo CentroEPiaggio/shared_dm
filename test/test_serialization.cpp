@@ -8,12 +8,15 @@
 #include <kdl_conversions/kdl_msg.h>
 
 // definitions used to generate grasps for a cylinder
-#define H 0.2
-#define R 0.05
+#define H 0.25
+#define R 0.063
 #define mid_palm_height 0.05 //0.05
 #define grasp_distance 0.05
 
-std::vector<std::string> ee_vector{"left_hand","right_hand","table"};
+#define OBJ_ID 3.0
+#define NEXT_GRASP 26
+
+std::vector<std::string> ee_vector{/*"left_hand","right_hand",*/"table"};
 std::vector<double> x_rot{/*-M_PI/2.0,*/M_PI/2.0};
 std::vector<double> z_transl{-H/4.0,0.0,H/4.0};
 std::vector<double> z_rot{-M_PI/2.0,/*0.0,*/M_PI/2.0/*,M_PI*/};
@@ -53,10 +56,10 @@ int main(int argc, char **argv)
     
     attached_object.object.id = "Cylinder";
     // this will be interpreted as the object ID (to read in the DB)
-    attached_object.weight = 1.0;
+    attached_object.weight = OBJ_ID;
 
     // grasp counter!
-    int counter = 0;
+    int counter = NEXT_GRASP;
     
     for(auto ee:ee_vector)
     {
