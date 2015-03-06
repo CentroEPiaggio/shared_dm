@@ -11,20 +11,21 @@ std::string int_quotesql( const int& s ) {
     return std::string("'") + std::to_string(s) + std::string("'");
 }
 
-tf::StampedTransform grasp_storage::get_transform(std::string target, std::string source)
+bool grasp_storage::get_transform(tf::StampedTransform& result,std::string target, std::string source)
 {
     std::string err_msg;
 
     tf::StampedTransform target_T_source;
 
-    if(!tf.waitForTransform(target,source,ros::Time::now(), ros::Duration(1.0), ros::Duration(0.01), &err_msg))
+    if(!tf.waitForTransform(target,source,ros::Time(0), ros::Duration(1.0), ros::Duration(0.01), &err_msg))
     {
 	ROS_ERROR("Error in tf: %s",err_msg.c_str());
 	target_T_source.setIdentity();
+	return false;
     }
     else tf.lookupTransform(target,source, ros::Time(0), target_T_source);
-
-    return target_T_source;
+    result=target_T_source;
+    return true;
 }
 
 grasp_storage::grasp_storage(int object_id_, int end_effector_id_, std::string grasp_name_):object_id(object_id_),end_effector_id(end_effector_id_), grasp_name(grasp_name_)
@@ -39,9 +40,33 @@ grasp_storage::grasp_storage(int object_id_, int end_effector_id_, std::string g
     ee_name_map[2]="right_hand";
     ee_name_map[3]="table";
     
-    world_tf = "/phase_space_world";
-    hand_tf ="/soft_hand_right_palm_link";
+    world_tf = "/world";
+    hand_tf ="/right_hand_palm_link";
     object_tf = "/cylinder";
+
+// //   SIDE 180  
+//     snapshots.push_back(ros::Time( 1425502044.020805 ));
+//     snapshots.push_back(ros::Time( 1425502048.240805 ));
+//     snapshots.push_back(ros::Time( 1425502054.100805 ));
+    
+    //   SIDE 180 new
+    snapshots.push_back(ros::Time( 1425502042.224888 ));
+    snapshots.push_back(ros::Time( 1425502048.240805 ));
+    snapshots.push_back(ros::Time( 1425502054.100805 ));
+//   SIDE 0  
+//     snapshots.push_back(ros::Time( 1425502255.675265 ));
+//     snapshots.push_back(ros::Time( 1425502256.155265 ));
+//     snapshots.push_back(ros::Time( 1425502258.665265 ));    
+    
+//   TOP 0  
+//     snapshots.push_back(ros::Time( 1425501243.205473 ));
+//     snapshots.push_back(ros::Time( 1425501245.147348 ));
+//     snapshots.push_back(ros::Time( 1425501249.697563 ));
+
+//   TOP 90  
+//     snapshots.push_back(ros::Time( 1425501625.778888 ));
+//     snapshots.push_back(ros::Time( 1425501627.254295 ));
+//     snapshots.push_back(ros::Time( 1425501631.434716 ));
 }
 
 void grasp_storage::insert_db_entry()
@@ -83,29 +108,62 @@ void grasp_storage::insert_db_entry()
     sqlite3_close(db);
 }
 
-void grasp_storage::save_start_pose()
+bool grasp_storage::save_start_pose()
 {
     ROS_INFO_STREAM("saving start object position...");
-    
-    world_T_obj0 = get_transform(world_tf,object_tf);
+    bool exit=false;
+    while(!exit)
+    {
+      if (get_transform(world_T_obj0,world_tf,object_tf))
+      {
+	ROS_INFO_STREAM("saved!");
+	return true;
+      }
+      else
+      {
+	ROS_ERROR("could not start saving poses");
+	return false;
+      }
+    }
+}
 
-    ROS_INFO_STREAM("saved!");
+void grasp_storage::single_step(bool force_snapshot)
+{
+    geometry_msgs::Pose obj0_traj;
+    tf::StampedTransform world_T_traj;
+    if(obj0_trajectory.size()==0) save_start_pose();
+
+    if (get_transform(world_T_traj,world_tf,hand_tf))
+    {
+      std::cout<<world_T_traj.stamp_<<std::endl;
+      tf::poseTFToMsg(world_T_obj0.inverse()*world_T_traj,obj0_traj);
+      if (force_snapshot)
+      {
+	  obj0_trajectory.push_back(obj0_traj);
+	  save_end_pose();
+	  return;
+      }
+      for(auto& snapshot_time:snapshots)
+      {
+	if (fabs((world_T_traj.stamp_-snapshot_time).toSec())<0.03)
+	{
+	  obj0_trajectory.push_back(obj0_traj);
+	  snapshot_time=ros::Time(100);
+	  std::cout<<"SAVED snapshot"<<std::endl;
+	  save_end_pose();
+	}
+      }
+  }
 }
 
 void grasp_storage::thread_body()
 {
-    geometry_msgs::Pose obj0_traj;
-    tf::StampedTransform world_T_traj;
-
+    int counter=0;
     while(!stop_thread)
     {
-	world_T_traj = get_transform(world_tf,hand_tf);
-
-	tf::poseTFToMsg(world_T_obj0.inverse()*world_T_traj,obj0_traj);
-
-	obj0_trajectory.push_back(obj0_traj);
-
-        usleep(100000);
+	single_step(false);
+	usleep(10000);
+	counter++;
     }
     ROS_INFO_STREAM("stop recording trajectory");
 }
@@ -126,7 +184,8 @@ void grasp_storage::save_end_pose()
 {
     ROS_INFO_STREAM("saving end position...");
 
-    tf::StampedTransform hand_T_objF = get_transform(hand_tf,object_tf);
+    tf::StampedTransform hand_T_objF;
+    get_transform(hand_T_objF,hand_tf,object_tf);
 
     tf::poseTFToMsg(hand_T_objF,hand_objF);
 
@@ -187,6 +246,7 @@ void grasp_storage::serialize_data()
 
     srv.request.ee_pose.clear();
     
+    obj0_trajectory.pop_back();
     for (auto item:obj0_trajectory) srv.request.ee_pose.push_back(item);
     
     // save the obtained grasp

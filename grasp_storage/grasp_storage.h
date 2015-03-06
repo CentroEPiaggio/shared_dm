@@ -15,20 +15,21 @@ class grasp_storage
 public:
     grasp_storage(int object_id_, int end_effector_id_, std::string grasp_name_);
 
-    void save_start_pose();
+    bool save_start_pose();
     void record_trajectory_pose();
     void stop_record_trajectory_pose();
     void save_end_pose();
 
     void serialize_data();
     void save_in_db();
+    void single_step(bool force_snapshot);
 
     ~grasp_storage();
 private:
     int object_id;
     int end_effector_id;
     std::string grasp_name;
-
+    std::vector<ros::Time> snapshots;
     std::string path_to_db;
     ros::NodeHandle node;
     tf::TransformListener tf;
@@ -44,7 +45,7 @@ private:
     tf::StampedTransform world_T_obj0;
     
     std::string world_tf, hand_tf, object_tf;
-    tf::StampedTransform get_transform(std::string target, std::string source);
+    bool get_transform(tf::StampedTransform& result, std::string target, std::string source);
     void thread_body();
     std::thread* tf_periodic_listener;
     bool stop_thread=false;

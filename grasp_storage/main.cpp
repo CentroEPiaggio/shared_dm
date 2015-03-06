@@ -45,10 +45,23 @@ int main(int argc, char** argv)
     
     char a;
 
-    ROS_INFO("Press any key ('q' to exit) to START recording TRAJECTORY: ");
+    ROS_INFO("Press any key ('q' to exit, 's' to snapshot) to START recording TRAJECTORY: ");
 //     ROS_INFO("Press any key ('q' to exit) to save the START POSITION: ");
     std::cin>>a;
     if(a=='q') return 0;
+    if (a=='s')
+    {
+      bool end=false;
+      while (!end)
+      {
+	ROS_INFO("Press 's' key ('q' to exit) to snapshot: ");
+	std::cin>>a;
+	if(a=='q') end=true;
+	if(a=='s') grasp_stor.single_step(true);
+      }
+    }
+    else
+    {
     grasp_stor.save_start_pose();
     
 //     ROS_INFO("Press any key ('q' to exit) to START recording TRAJECTORY: ");
@@ -60,13 +73,13 @@ int main(int argc, char** argv)
     std::cin>>a;
     if(a=='q') return 0;
     grasp_stor.stop_record_trajectory_pose();
-    
+    }
 //     usleep(200000);
     
 //     ROS_INFO("Press any key ('q' to exit) to save the END POSITION: ");
 //     std::cin>>a;
 //     if(a=='q') return 0;
-    grasp_stor.save_end_pose();
+//     grasp_stor.save_end_pose();
     
     ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to insert row in the database ('n' to abort) : ");
     std::cin>>a;
