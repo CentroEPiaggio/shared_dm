@@ -15,11 +15,11 @@ void thread_body()
     }
 }
 
-int main2()
+int main()
 {
   dual_manipulation_shared::ik_serviceRequest req;
   
-  deserialize_ik(req,"object3/grasp37_old");
+  deserialize_ik(req,"object3/grasp37");
   
   geometry_msgs::Pose obj_pose;
   KDL::Frame obj_frame;
@@ -35,29 +35,42 @@ int main2()
 //   req.attObject.object.mesh_poses.push_back(obj_pose);
   
   // add a pre-grasp pose
-  obj_pose = req.ee_pose.front();
+//   obj_pose = req.ee_pose.front();
 //   obj_pose.position.x = obj_pose.position.x * 1.5;
 //   obj_pose.position.y = obj_pose.position.y * 1.5;
-  obj_pose.position.z = obj_pose.position.z * 1.5;
-  req.ee_pose.insert(req.ee_pose.begin(),obj_pose);
+//   obj_pose.position.z = obj_pose.position.z * 1.5;
+//   req.ee_pose.insert(req.ee_pose.begin(),obj_pose);
   
-  serialize_ik(req,"object3/grasp37");
+//   serialize_ik(req,"object3/grasp37");
   
-  deserialize_ik(req,"object3/grasp38_old");
-  // add a pre-grasp pose
-  obj_pose = req.ee_pose.front();
+//   deserialize_ik(req,"object3/grasp38_old");
+//   // add a pre-grasp pose
+//   obj_pose = req.ee_pose.front();
 //   obj_pose.position.x = obj_pose.position.x * 1.5;
 //   obj_pose.position.y = obj_pose.position.y * 1.5;
-  obj_pose.position.z = obj_pose.position.z * 1.5;
-  req.ee_pose.insert(req.ee_pose.begin(),obj_pose);
+//   obj_pose.position.z = obj_pose.position.z * 1.5;
+//   req.ee_pose.insert(req.ee_pose.begin(),obj_pose);
+
+  KDL::Frame rotx(KDL::Rotation::RotX(M_PI));
+  KDL::Frame obj_hand;
+  
+  for(auto& pose:req.ee_pose)
+  {
+    tf::poseMsgToKDL(pose,obj_hand);
+    tf::poseKDLToMsg(rotx*obj_hand,pose);
+  }
+  
+  tf::poseMsgToKDL(req.attObject.object.mesh_poses.at(0),obj_frame);
+  obj_hand = obj_frame.Inverse();
+  obj_frame = (rotx*obj_hand).Inverse();
+  tf::poseKDLToMsg(obj_frame,req.attObject.object.mesh_poses.at(0));
   
   serialize_ik(req,"object3/grasp38");
-
   
   return 0;
 }
 
-int main(int argc, char** argv)
+int main2(int argc, char** argv)
 {
     if(argc!=4)
     {
