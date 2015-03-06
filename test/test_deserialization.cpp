@@ -9,24 +9,65 @@
 
 #include <visualization_msgs/Marker.h>
 
-void publish_marker_utility(ros::Publisher& vis_pub, geometry_msgs::Pose& pose, double scale=0.05)
+#define OBJ_ID 3.0
+
+void publish_marker_utility(ros::Publisher& vis_pub, geometry_msgs::Pose& pose, int id, std::string name, double scale=0.05)
 {
-  visualization_msgs::Marker marker;
-  marker.header.frame_id = "world";
-  marker.header.stamp = ros::Time();
-  marker.ns = "my_namespace";
-  marker.id = 0;
-  marker.type = visualization_msgs::Marker::CUBE;
-  marker.action = visualization_msgs::Marker::ADD;
-  marker.pose = pose;
-  marker.scale.x = scale/2.0;
-  marker.scale.y = scale;
-  marker.scale.z = scale*2;
-  marker.color.a = 1.0;
-  marker.color.r = 1.0;
-  marker.color.g = 0.0;
-  marker.color.b = 0.0;
-  vis_pub.publish( marker );
+    visualization_msgs::Marker marker;
+    marker.header.frame_id = "world";
+    marker.header.stamp = ros::Time(0);
+    marker.ns = "my_namespace";
+    marker.id = id;
+    if(name=="ee")
+    {
+// 	marker.type = visualization_msgs::Marker::CUBE;
+// 	marker.scale.x = scale/2.0;
+// 	marker.scale.y = scale;
+// 	marker.scale.z = scale*2;
+	marker.type = visualization_msgs::Marker::MESH_RESOURCE;
+	marker.mesh_resource = "package://soft_hand_description/meshes/palm_right.stl";
+	marker.scale.x = 0.001;
+	marker.scale.y = 0.001;
+	marker.scale.z = 0.001;
+	marker.action = visualization_msgs::Marker::ADD;
+	marker.pose = pose;
+	marker.color.a = 0.5;
+	marker.color.r = 0.0;
+	marker.color.g = 0.0;
+	marker.color.b = 0.0;
+	if(id==0)
+	{
+	  marker.color.g = 1.0;
+	}
+	else if (id==100)
+	{
+	  marker.color.r = 0.5;
+	  marker.color.b = 0.5;
+	}
+	else
+	{
+	  marker.color.r = 1.0;
+	}
+    }
+    if(name=="obj")
+    {
+	marker.type = visualization_msgs::Marker::CYLINDER;
+	marker.action = visualization_msgs::Marker::ADD;
+	marker.pose = pose;
+	marker.scale.x = 0.053;
+	marker.scale.y = 0.053;
+	marker.scale.z = 0.245;
+	marker.color.a = 1.0;
+	marker.color.r = 0.0;
+	marker.color.g = 0.0;
+	marker.color.b = 1.0;
+    }
+    if(name=="remove")
+    {
+	marker.action = visualization_msgs::Marker::DELETE;
+    }
+    
+    vis_pub.publish( marker );
 }
 
 int main(int argc, char **argv)
@@ -38,7 +79,6 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "test_deserialization");
 
     ros::NodeHandle n;
-    ros::ServiceClient client_obj = n.serviceClient<dual_manipulation_shared::scene_object_service>("scene_object_ros_service");
     ros::Publisher vis_pub = n.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );
     
     dual_manipulation_shared::ik_service srv;
@@ -46,72 +86,67 @@ int main(int argc, char **argv)
     
     std::vector<std::string> grasp_links;
     std::vector<geometry_msgs::Pose> grasp_poses;
-    
-    srv_obj.request.command = "add";
+    geometry_msgs::Pose obj_pose;
+    obj_pose.orientation.w = 1.0;
     
     bool ok = true;
-    int i = 0;
+    std::vector<int> grasp_ids = {33,33,34,35}; //{16,16,19,24,25}; //,26,27,28,29};
     
-    int object_id = 1;
+    int object_id = (int)OBJ_ID;
+    int id;
     
-    while (ok)
+    char a;
+    for (auto i:grasp_ids)
     {
       
-      ok = deserialize_ik(srv.request,"object" + std::to_string(object_id) + "/grasp" + std::to_string(i++));
+      ok = deserialize_ik(srv.request,"object" + std::to_string(object_id) + "/grasp" + std::to_string(i));
       
       if (ok)
       {
-	std::cout << "Deserialization object" + std::to_string(object_id) << "/grasp" << i-1 << " OK!" << std::endl;
+	std::cout << "Deserialization object" + std::to_string(object_id) << "/grasp" << i << " OK!" << std::endl;
 	
-	srv_obj.request.attObject = srv.request.attObject;
+	publish_marker_utility(vis_pub,obj_pose,-1,"obj");
 	
-	if (client_obj.call(srv_obj))
+	id = 0;
+	for(auto item:srv.request.ee_pose)
 	{
-	    ROS_INFO("IK_control:test_grasping : %s object %s request accepted: %d", srv_obj.request.command.c_str(),srv_obj.request.attObject.object.id.c_str(), (int)srv_obj.response.ack);
+	    publish_marker_utility(vis_pub,item,id++,"ee");
+	    // std::cout << "id:" << id << " | distance=" << std::sqrt(item.position.x*item.position.x+item.position.y*item.position.y+item.position.z*item.position.z) << std::endl;;
 	}
-	else
-	{
-	    ROS_ERROR("IK_control:test_grasping : Failed to call service dual_manipulation_shared::scene_object_service: %s %s",srv_obj.request.command.c_str(),srv_obj.request.attObject.object.id.c_str());
-	}
+	// std::cout << std::endl;
 	
-	grasp_links.push_back(srv.request.attObject.object.header.frame_id);
-	grasp_poses.push_back(srv.request.ee_pose.back());
+	KDL::Frame post_grasp_frame;
+	geometry_msgs::Pose post_grasp_pose;
+	tf::poseMsgToKDL(srv.request.attObject.object.mesh_poses.front(),post_grasp_frame);
+	tf::poseKDLToMsg(post_grasp_frame.Inverse(),post_grasp_pose);
+	publish_marker_utility(vis_pub,post_grasp_pose,100,"ee");
+
+	ros::spinOnce();
 	
-	// usleep(200000);
+	std::cout << "Waiting for input..." << std::endl;
+	std::cin >> a;
+	
       }
       else
       {
-	std::cout << "Stopped at deserialization object" + std::to_string(object_id) << "/grasp" << i-1 << std::endl;
+	std::cout << "[Deserialization error] Unable to deserialize : object" + std::to_string(object_id) << "/grasp" << i << std::endl;
+	break;
       }
+
+      for(auto item:srv.request.ee_pose)
+      {
+	  publish_marker_utility(vis_pub,item,--id,"remove");
+      }
+      geometry_msgs::Pose tmp;
+      publish_marker_utility(vis_pub,tmp,100,"remove");
+      ros::spinOnce();
+      
     }
     
-    srv_obj.request.attObject.object.mesh_poses.clear();
-    geometry_msgs::Pose neutral,marker_pose;
-    neutral.position.x = -0.5;
-    neutral.position.y = 0.0;
-    neutral.position.z = 0.5;
-    neutral.orientation.w = 1.0;
-    srv_obj.request.attObject.object.mesh_poses.push_back(neutral);
-    
-    client_obj.call(srv_obj);
-    
-    KDL::Frame cyl_kdl;
-    tf::poseMsgToKDL(neutral,cyl_kdl);
-    
-    for (int i=0; i<grasp_poses.size(); ++i)
+    id = srv.request.ee_pose.size();
+    for(auto item:srv.request.ee_pose)
     {
-      KDL::Frame fi;
-      tf::poseMsgToKDL(grasp_poses.at(i),fi);
-      
-      tf::poseKDLToMsg(cyl_kdl*(fi),marker_pose);
-      
-      publish_marker_utility(vis_pub,marker_pose);
-      
-      if (grasp_links.at(i) != "world")
-	usleep(200000);
-      else
-	usleep(200000);
-	// sleep(2);
+	publish_marker_utility(vis_pub,item,--id,"remove");
     }
     
     ros::spinOnce();

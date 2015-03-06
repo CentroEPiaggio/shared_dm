@@ -13,10 +13,8 @@
 
 void transform_specular_y(geometry_msgs::Pose& pose)
 {
-    KDL::Frame rotx = KDL::Frame(KDL::Rotation::RotX(M_PI));
     KDL::Frame pose_tmp;
     tf::poseMsgToKDL(pose,pose_tmp);
-    pose_tmp = rotx*pose_tmp;
     pose_tmp.p.data[1] = -pose_tmp.p.data[1];
     pose_tmp.M.data[1] = -pose_tmp.M.data[1];
     pose_tmp.M.data[3] = -pose_tmp.M.data[3];
@@ -57,6 +55,9 @@ bool reserialize_grasp(dual_manipulation_shared::ik_serviceRequest& req, int lef
     obj_frame = obj_frame.Inverse();
     tf::poseKDLToMsg(obj_frame,obj_pose);
     transform_specular_y(obj_pose);
+    std::vector<geometry_msgs::Pose> vec_gianma = {obj_pose};
+    transform_premultiply(vec_gianma,KDL::Frame(KDL::Rotation::RotX(M_PI)));
+    obj_pose = vec_gianma.front();
     tf::poseMsgToKDL(obj_pose,obj_frame);
     obj_frame = obj_frame.Inverse();
     tf::poseKDLToMsg(obj_frame,obj_pose);
@@ -96,9 +97,9 @@ int main(int argc, char **argv)
     std::vector<geometry_msgs::Pose> grasp_poses;
         
     bool ok = true;
-    std::vector<int> right_grasp_ids = {16,19};
-    std::vector<int> left_grasp_ids = {24,25};
-    std::vector<std::string> g_names = {"top_0","side_thumb_0"};
+    std::vector<int> right_grasp_ids = {33};
+    std::vector<int> left_grasp_ids = {34};
+    std::vector<std::string> g_names = {"side_thumb_180_simple"};
     
     for(int i=0; i<right_grasp_ids.size(); i++)
     {

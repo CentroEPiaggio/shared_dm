@@ -14,13 +14,13 @@
 #define grasp_distance 0.05
 
 #define OBJ_ID 3.0
-#define NEXT_GRASP 26
+#define NEXT_GRASP 35
 
 std::vector<std::string> ee_vector{/*"left_hand","right_hand",*/"table"};
 std::vector<double> x_rot{/*-M_PI/2.0,*/M_PI/2.0};
 std::vector<double> z_transl{-H/4.0,0.0,H/4.0};
-std::vector<double> z_rot{-M_PI/2.0,/*0.0,*/M_PI/2.0/*,M_PI*/};
-std::vector<double> y_rot{-M_PI/2.0,M_PI/2.0};
+std::vector<double> z_rot{1.2};//-M_PI/2.0,/*0.0,*/M_PI/2.0/*,M_PI*/};
+std::vector<double> y_rot{/*-M_PI/2.0,M_PI/2.0*/};
 
 int main(int argc, char **argv)
 {
