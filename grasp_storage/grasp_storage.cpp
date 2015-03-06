@@ -137,7 +137,6 @@ void grasp_storage::single_step(bool force_snapshot)
       save_start = false;
       return;
     }
-
     if (get_transform(world_T_traj,world_tf,hand_tf))
     {
       std::cout<<world_T_traj.stamp_<<std::endl;
@@ -152,6 +151,14 @@ void grasp_storage::single_step(bool force_snapshot)
       {
 	if (fabs((world_T_traj.stamp_-snapshot_time).toSec())<0.03)
 	{
+	  obj0_trajectory.push_back(obj0_traj);
+	  snapshot_time=ros::Time(100);
+	  std::cout<<"SAVED snapshot"<<std::endl;
+	  save_end_pose();
+	}
+      }
+  }
+}
 	  obj0_trajectory.push_back(obj0_traj);
 	  snapshot_time=ros::Time(100);
 	  std::cout<<"SAVED snapshot"<<std::endl;
