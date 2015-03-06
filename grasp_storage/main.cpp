@@ -1,6 +1,11 @@
 #include "grasp_storage.h"
 #include "ros/ros.h"
 
+#include "dual_manipulation_shared/ik_service.h"
+#include "dual_manipulation_shared/serialization_utils.h"
+#include <kdl/frames.hpp>
+#include <tf_conversions/tf_kdl.h>
+
 void thread_body()
 {
     while(1)
@@ -8,6 +13,48 @@ void thread_body()
 	ros::spinOnce(); 
 	usleep(20000);
     }
+}
+
+int main2()
+{
+  dual_manipulation_shared::ik_serviceRequest req;
+  
+  deserialize_ik(req,"object3/grasp37_old");
+  
+  geometry_msgs::Pose obj_pose;
+  KDL::Frame obj_frame;
+  
+//   // invert attached object frame
+//   obj_pose = req.ee_pose.back();
+//   req.ee_pose.pop_back();
+//   
+//   tf::poseMsgToKDL(obj_pose,obj_frame);
+//   tf::poseKDLToMsg(obj_frame.Inverse(),obj_pose);
+//   
+//   req.attObject.object.mesh_poses.clear();
+//   req.attObject.object.mesh_poses.push_back(obj_pose);
+  
+  // add a pre-grasp pose
+  obj_pose = req.ee_pose.front();
+//   obj_pose.position.x = obj_pose.position.x * 1.5;
+//   obj_pose.position.y = obj_pose.position.y * 1.5;
+  obj_pose.position.z = obj_pose.position.z * 1.5;
+  req.ee_pose.insert(req.ee_pose.begin(),obj_pose);
+  
+  serialize_ik(req,"object3/grasp37");
+  
+  deserialize_ik(req,"object3/grasp38_old");
+  // add a pre-grasp pose
+  obj_pose = req.ee_pose.front();
+//   obj_pose.position.x = obj_pose.position.x * 1.5;
+//   obj_pose.position.y = obj_pose.position.y * 1.5;
+  obj_pose.position.z = obj_pose.position.z * 1.5;
+  req.ee_pose.insert(req.ee_pose.begin(),obj_pose);
+  
+  serialize_ik(req,"object3/grasp38");
+
+  
+  return 0;
 }
 
 int main(int argc, char** argv)
@@ -45,10 +92,24 @@ int main(int argc, char** argv)
     
     char a;
 
-    ROS_INFO("Press any key ('q' to exit) to START recording TRAJECTORY: ");
+    ROS_INFO("Press any key ('q' to exit, 's' to snapshot) to START recording TRAJECTORY: ");
 //     ROS_INFO("Press any key ('q' to exit) to save the START POSITION: ");
     std::cin>>a;
     if(a=='q') return 0;
+    if (a=='s')
+    {
+      bool end=false;
+      while (!end)
+      {
+	ROS_INFO("Press 's' key ('f' for final pose, 'q' to exit) to snapshot: ");
+	std::cin>>a;
+	if(a=='q') end=true;
+	if(a=='s') grasp_stor.single_step(true);
+	if(a=='f') grasp_stor.save_end_pose();
+      }
+    }
+    else
+    {
     grasp_stor.save_start_pose();
     
 //     ROS_INFO("Press any key ('q' to exit) to START recording TRAJECTORY: ");
@@ -60,13 +121,13 @@ int main(int argc, char** argv)
     std::cin>>a;
     if(a=='q') return 0;
     grasp_stor.stop_record_trajectory_pose();
-    
+    }
 //     usleep(200000);
     
 //     ROS_INFO("Press any key ('q' to exit) to save the END POSITION: ");
 //     std::cin>>a;
 //     if(a=='q') return 0;
-    grasp_stor.save_end_pose();
+//     grasp_stor.save_end_pose();
     
     ROS_INFO("!! ATTENTION !! Press any key ('q' to exit) to insert row in the database ('n' to abort) : ");
     std::cin>>a;
