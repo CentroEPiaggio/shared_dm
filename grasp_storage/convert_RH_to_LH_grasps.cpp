@@ -97,9 +97,9 @@ int main(int argc, char **argv)
     std::vector<geometry_msgs::Pose> grasp_poses;
         
     bool ok = true;
-    std::vector<int> right_grasp_ids = {33};
-    std::vector<int> left_grasp_ids = {34};
-    std::vector<std::string> g_names = {"side_thumb_180_simple"};
+    std::vector<int> right_grasp_ids = {37};
+    std::vector<int> left_grasp_ids = {38};
+    std::vector<std::string> g_names = {"LH_bottom"};
     
     for(int i=0; i<right_grasp_ids.size(); i++)
     {

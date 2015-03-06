@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     obj_pose.orientation.w = 1.0;
     
     bool ok = true;
-    std::vector<int> grasp_ids = {33,33,34,35}; //{16,16,19,24,25}; //,26,27,28,29};
+    std::vector<int> grasp_ids = {37,37,38}; //{16,16,19,24,25}; //,26,27,28,29};
     
     int object_id = (int)OBJ_ID;
     int id;
