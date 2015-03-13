@@ -159,14 +159,6 @@ void grasp_storage::single_step(bool force_snapshot)
       }
   }
 }
-	  obj0_trajectory.push_back(obj0_traj);
-	  snapshot_time=ros::Time(100);
-	  std::cout<<"SAVED snapshot"<<std::endl;
-	  save_end_pose();
-	}
-      }
-  }
-}
 
 void grasp_storage::thread_body()
 {
