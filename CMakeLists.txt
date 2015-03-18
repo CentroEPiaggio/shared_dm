@@ -37,6 +37,7 @@ add_message_files(
 add_service_files(
   FILES
   ik_service.srv
+  ik_service_legacy.srv
   planner_service.srv
   scene_object_service.srv
   state_manager_service.srv
