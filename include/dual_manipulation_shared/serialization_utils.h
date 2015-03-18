@@ -12,9 +12,9 @@
 // this does not affect older files: can be changed if needed: it's just
 #define max_grasp_size 100000
 
-bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, std::string filename="unnamed_grasp.txt");
+template< typename T> bool serialize_ik(const T & my_ik, std::string filename="unnamed_grasp.txt");
 
-bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::string filename="unnamed_grasp.txt");
+template< typename T> bool deserialize_ik(T & my_ik, std::string filename="unnamed_grasp.txt");
 
 void monotonic_decreasing_distance_filter(std::vector<geometry_msgs::Pose> poses);
 

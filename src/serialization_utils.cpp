@@ -2,14 +2,15 @@
 
 #include "ros/ros.h"
 #include "dual_manipulation_shared/ik_service.h"
+#include "dual_manipulation_shared/ik_service_legacy.h"
 #include <ros/package.h>
 
 #include <ros/serialization.h>
 #include <geometry_msgs/Pose.h>
 #include <fstream>
 
-bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, std::string filename){
-    
+template< typename T> bool serialize_ik(const T & my_ik, std::string filename)
+{
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");
     path.append("/grasp_trajectories/").append(filename);
     
@@ -42,7 +43,10 @@ bool serialize_ik(const dual_manipulation_shared::ik_service::Request & my_ik, s
     
 }
 
-bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::string filename)
+template bool serialize_ik<dual_manipulation_shared::ik_service::Request>(const dual_manipulation_shared::ik_service::Request &, std::string);
+template bool serialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(const dual_manipulation_shared::ik_service_legacy::Request &, std::string);
+
+template< typename T> bool deserialize_ik(T & my_ik, std::string filename)
 {
     
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");
@@ -76,6 +80,9 @@ bool deserialize_ik(dual_manipulation_shared::ik_service::Request & my_ik, std::
     
     return true;
 }
+
+template bool deserialize_ik<dual_manipulation_shared::ik_service::Request>(dual_manipulation_shared::ik_service::Request &, std::string);
+template bool deserialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(dual_manipulation_shared::ik_service_legacy::Request &, std::string);
 
 geometry_msgs::Point difference(geometry_msgs::Point p1, geometry_msgs::Point p2)
 {
