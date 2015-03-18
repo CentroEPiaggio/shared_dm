@@ -6,6 +6,8 @@ string object_id
 # object identifier - identifies the appropriate entry in the database
 uint64 object_db_id
 # only attObject.object is needed when using "add" command
+# it is not needed for "remove" and "detach" operations
+# the implementation uses it for "attach" operations and overwrites any previously "add"-ed object with the same "object_id"
 moveit_msgs/AttachedCollisionObject attObject
 ---
 bool ack
