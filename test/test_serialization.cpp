@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     
     attached_object.object.id = "Cylinder";
     // this will be interpreted as the object ID (to read in the DB)
-    attached_object.weight = OBJ_ID;
+    srv.request.object_db_id = OBJ_ID;
 
     // grasp counter!
     int counter = NEXT_GRASP;
@@ -126,13 +126,13 @@ int main(int argc, char **argv)
 	    srv.request.ee_pose.push_back(ee_pose);
 	    
 	    // save the obtained grasp
-	  if(serialize_ik(srv.request,"object" + std::to_string((int)attached_object.weight) + "/grasp" + std::to_string(counter++)))
-	    std::cout << "Serialization object" + std::to_string((int)attached_object.weight) << "/grasp" << counter-1 << " OK!" << std::endl;
+	  if(serialize_ik(srv.request,"object" + std::to_string(srv.request.object_db_id) + "/grasp" + std::to_string(counter++)))
+	    std::cout << "Serialization object" + std::to_string(srv.request.object_db_id) << "/grasp" << counter-1 << " OK!" << std::endl;
 // 	  if(serialize_ik(srv.request,"grasp" + std::to_string(counter++)))
 // 	      std::cout << "Serialization " << counter-1 << " OK!" << std::endl;
 	    else
 	    {
-	      std::cout << "Error in serialization object" + std::to_string((int)attached_object.weight) << "/grasp" << counter-1 << "!" << std::endl;
+	      std::cout << "Error in serialization object" + std::to_string(srv.request.object_db_id) << "/grasp" << counter-1 << "!" << std::endl;
 	      return -1;
 	    }
 	  }
@@ -177,11 +177,11 @@ int main(int argc, char **argv)
 	  srv.request.ee_pose.push_back(ee_pose);
 	  
 	  // save the obtained grasp
-	  if(serialize_ik(srv.request,"object" + std::to_string((int)attached_object.weight) + "/grasp" + std::to_string(counter++)))
-	    std::cout << "Serialization object" + std::to_string((int)attached_object.weight) << "/grasp" << counter-1 << " OK!" << std::endl;
+	  if(serialize_ik(srv.request,"object" + std::to_string(srv.request.object_db_id) + "/grasp" + std::to_string(counter++)))
+	    std::cout << "Serialization object" + std::to_string(srv.request.object_db_id) << "/grasp" << counter-1 << " OK!" << std::endl;
 	  else
 	  {
-	    std::cout << "Error in serialization object" + std::to_string((int)attached_object.weight) << "/grasp" << counter-1 << "!" << std::endl;
+	    std::cout << "Error in serialization object" + std::to_string(srv.request.object_db_id) << "/grasp" << counter-1 << "!" << std::endl;
 	    return -1;
 	  }
 	}

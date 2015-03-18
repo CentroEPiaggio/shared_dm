@@ -64,16 +64,16 @@ bool reserialize_grasp(dual_manipulation_shared::ik_serviceRequest& req, int lef
     req.attObject.object.mesh_poses.clear();
     req.attObject.object.mesh_poses.push_back(obj_pose);
     req.attObject.link_name = "left_hand_palm_link";
-    req.attObject.weight = OBJ_ID;
     req.attObject.object.header.frame_id = req.attObject.link_name;
+    req.object_db_id = OBJ_ID;
     req.grasp_trajectory.joint_names.clear();
     req.grasp_trajectory.joint_names.push_back("left_hand_synergy_joint");
     
-    if(serialize_ik(req,"object" + std::to_string((int)req.attObject.weight) + "/grasp" + std::to_string(left_grasp_id)))
-      std::cout << "Serialization object" + std::to_string((int)req.attObject.weight) << "/grasp" << left_grasp_id << " OK!" << std::endl;
+    if(serialize_ik(req,"object" + std::to_string(req.object_db_id) + "/grasp" + std::to_string(left_grasp_id)))
+      std::cout << "Serialization object" + std::to_string(req.object_db_id) << "/grasp" << left_grasp_id << " OK!" << std::endl;
     else
     {
-      std::cout << "Error in serialization object" + std::to_string((int)req.attObject.weight) << "/grasp" << left_grasp_id << "!" << std::endl;
+      std::cout << "Error in serialization object" + std::to_string(req.object_db_id) << "/grasp" << left_grasp_id << "!" << std::endl;
       return false;
     }
     return true;

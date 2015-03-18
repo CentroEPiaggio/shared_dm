@@ -227,7 +227,7 @@ void grasp_storage::serialize_data()
     
     attached_object.object.id = object_name_map.at(object_id);
     // this will be interpreted as the object ID (to read in the DB)
-    attached_object.weight = 1.0;
+    srv.request.object_db_id = 1;
 
     // grasp counter!
     int counter = 0;
