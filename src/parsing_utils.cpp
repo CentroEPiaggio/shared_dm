@@ -74,10 +74,10 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< double >& pa
     
     param.clear();
     for(int i=0; i< params[param_name].size(); i++)
+    {
       param.push_back( (double) params[param_name][i]);
-    
-    for(auto item:param)
-      vector_str.append( std::to_string(item) ).append(" | ");
+      vector_str.append( std::to_string(param.back()) ).append(" | ");
+    }
     
     ROS_INFO_STREAM("Read parameter " << param_name << " = | " << vector_str);
 
@@ -110,10 +110,10 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< std::string 
     
     param.clear();
     for(int i=0; i< params[param_name].size(); i++)
+    {
       param.push_back( (std::string) params[param_name][i]);
-    
-    for(auto item:param)
-      vector_str.append( item ).append(" | ");
+      vector_str.append( param.back() ).append(" | ");
+    }
     
     ROS_INFO_STREAM("Read parameter " << param_name << " = | " << vector_str);
 
@@ -143,10 +143,8 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
 	continue;
       }
       param[names_list.at(i)] = (std::string)params[param_name][names_list.at(i)];
+      vector_str.append( names_list.at(i) ).append(" : ").append( param[names_list.at(i)] ).append(" | ");
     }
-    
-    for(auto item:param)
-      vector_str.append( item.first ).append(" : ").append( item.second ).append(" | ");
     
     ROS_INFO_STREAM("Read parameter " << param_name << " = | " << vector_str);
 
