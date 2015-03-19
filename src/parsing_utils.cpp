@@ -135,6 +135,8 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
 
     ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeStruct);
     
+    std::map< std::string, std::string > param_tmp;
+    
     for(int i=0; i< names_list.size(); i++)
     {
       if( !params[param_name].hasMember(names_list.at(i)) )
@@ -142,11 +144,23 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
 	ROS_WARN_STREAM("No value for " << param_name << ":" << names_list.at(i) << ". Check the yaml configuration.");
 	continue;
       }
-      param[names_list.at(i)] = (std::string)params[param_name][names_list.at(i)];
-      vector_str.append( names_list.at(i) ).append(" : ").append( param[names_list.at(i)] ).append(" | ");
+      param_tmp[names_list.at(i)] = (std::string)params[param_name][names_list.at(i)];
+      vector_str.append( names_list.at(i) ).append(" : ").append( param_tmp[names_list.at(i)] ).append(" | ");
     }
     
-    ROS_INFO_STREAM("Read parameter " << param_name << " = | " << vector_str);
+    if(!param_tmp.empty())
+    {
+      ROS_INFO_STREAM("Read parameter " << param_name << " = | " << vector_str);
+      param.swap(param_tmp);
+      param_tmp.clear();
+    }
+    else
+    {
+      for(auto item:param)
+	  vector_str.append( item.first ).append(" : ").append( item.second ).append(" | ");
+      
+      ROS_WARN_STREAM("Read EMPTY parameter " << param_name << ". Check the yaml configuration, we will use | " << vector_str << "as default value.");
+    }
 
     return;
 }
