@@ -48,7 +48,7 @@ generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs)
 
 catkin_package(
   INCLUDE_DIRS include/
-  LIBRARIES ${PROJECT_NAME}
+  LIBRARIES ${PROJECT_NAME} lemon
 #  CATKIN_DEPENDS roscpp
    #DEPENDS
    )
@@ -97,3 +97,10 @@ add_dependencies(convert_rh_to_lh dual_manipulation_shared_gencpp)
 add_executable(convert_ik_from_legacy grasp_storage/convert_ik_from_legacy.cpp)
 target_link_libraries(convert_ik_from_legacy ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(convert_ik_from_legacy dual_manipulation_shared_gencpp)
+
+add_custom_command(TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND echo 'Installing lemon library...'
+    COMMAND make install
+    WORKING_DIRECTORY ${CATKIN_PACKAGE_BIN_DESTINATION}/../../
+)
