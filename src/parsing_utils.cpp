@@ -33,6 +33,21 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, double& param, std::strin
     return;
 }
 
+void parseSingleParameter(XmlRpc::XmlRpcValue& params, int& param, std::string param_name)
+{
+    if( !params.hasMember(param_name) )
+    {
+        ROS_WARN_STREAM("No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
+	return;
+    }
+
+    ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeInt);
+    param = (int) params[param_name];
+    ROS_INFO_STREAM("Read parameter " << param_name << " = " << param);
+
+    return;
+}
+
 void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::string& param, std::string param_name)
 {
     if( !params.hasMember(param_name) )

@@ -7,6 +7,8 @@ void parseSingleParameter(XmlRpc::XmlRpcValue& params, bool& param, std::string 
 
 void parseSingleParameter(XmlRpc::XmlRpcValue& params, double& param, std::string param_name);
 
+void parseSingleParameter(XmlRpc::XmlRpcValue& params, int& param, std::string param_name);
+
 void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::string& param, std::string param_name);
 
 void parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector<double>& param, std::string param_name, int min_size = 0);
