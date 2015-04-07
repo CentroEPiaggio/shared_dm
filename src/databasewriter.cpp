@@ -118,8 +118,6 @@ int databaseWriter::writeNewGrasp(int object_id, int end_effector_id, std::strin
 
 int databaseWriter::writeNewObject(std::string obj_name, std::string mesh_path)
 {
-  std::string empty = "";
-
   //INSERT INTO Objects (Id, Name, MeshPath) VALUES ('Gatto','gatto.dae')
 
   std::string sqlstatement =
@@ -157,7 +155,6 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id)
   
   const std::string& source_grasp = grasp_name_map_.at(source_grasp_id);
   const std::string& target_grasp = grasp_name_map_.at(target_grasp_id);
-  std::string empty = "";
 
   //INSERT INTO Grasp_transitions (Source_id, Target_id) VALUES ('3','1')
 
@@ -227,6 +224,38 @@ bool databaseWriter::deleteObject(int obj_id)
   {
     ROS_INFO_STREAM("Object \"" << obj_name << "\" (id:" << obj_id << ") successfully removed!");
     object_name_map_.erase(obj_id);
+  }
+  
+  return (result == 1);
+}
+
+bool databaseWriter::deleteGraspTransition(int source_grasp_id, int target_grasp_id)
+{
+  if(grasp_name_map_.count(source_grasp_id) == 0)
+  {
+    ROS_ERROR_STREAM("No grasp (source) found in the DB with ID " << source_grasp_id);
+    return -1;
+  }
+  if(grasp_name_map_.count(target_grasp_id) == 0)
+  {
+    ROS_ERROR_STREAM("No grasp (target) found in the DB with ID " << target_grasp_id);
+    return -1;
+  }
+  
+  const std::string& source_grasp = grasp_name_map_.at(source_grasp_id);
+  const std::string& target_grasp = grasp_name_map_.at(target_grasp_id);
+
+  std::string sqlstatement =
+    "DELETE FROM Grasp_transitions WHERE Source_id="
+    + int_quotesql(source_grasp_id) + " AND Target_id="
+    + int_quotesql(target_grasp_id) + ");";
+
+  bool remove = true;
+  int result = insert_db_entry(sqlstatement,remove);
+  
+  if(result == 1)
+  {
+    ROS_INFO_STREAM("Transition between source:\"" << source_grasp << "\" and target:\"" << target_grasp << "\" successfully removed!");
   }
   
   return (result == 1);

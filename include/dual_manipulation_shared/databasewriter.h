@@ -66,6 +66,16 @@ public:
     * @return true on success
     */
   bool deleteObject(int obj_id);
+
+  /**
+    * @brief Delete a grasp transition from the database
+    * 
+    * @param source_grasp_id source grasp id
+    * @param target_grasp_id target grasp id
+    * 
+    * @return true on success
+    */
+  bool deleteGraspTransition(int source_grasp_id, int target_grasp_id);
   
   ~databaseWriter();
   
