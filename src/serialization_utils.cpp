@@ -3,6 +3,7 @@
 #include "ros/ros.h"
 #include "dual_manipulation_shared/ik_service.h"
 #include "dual_manipulation_shared/ik_service_legacy.h"
+#include "dual_manipulation_shared/grasp_trajectory.h"
 #include <ros/package.h>
 
 #include <ros/serialization.h>
@@ -43,8 +44,21 @@ template< typename T> bool serialize_ik(const T & my_ik, std::string filename)
     
 }
 
-template bool serialize_ik<dual_manipulation_shared::ik_service::Request>(const dual_manipulation_shared::ik_service::Request &, std::string);
+template<>
+bool serialize_ik<dual_manipulation_shared::ik_service::Request>(const dual_manipulation_shared::ik_service::Request & srv, std::string filename)
+{
+  dual_manipulation_shared::grasp_trajectory grasp_msg;
+  
+  grasp_msg.attObject = srv.attObject;
+  grasp_msg.ee_pose = srv.ee_pose;
+  grasp_msg.grasp_trajectory = srv.grasp_trajectory;
+  grasp_msg.object_db_id = srv.object_db_id;
+  
+  return serialize_ik(grasp_msg,filename);
+}
+
 template bool serialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(const dual_manipulation_shared::ik_service_legacy::Request &, std::string);
+template bool serialize_ik<dual_manipulation_shared::grasp_trajectory>(const dual_manipulation_shared::grasp_trajectory &, std::string);
 
 template< typename T> bool deserialize_ik(T & my_ik, std::string filename)
 {
@@ -81,8 +95,23 @@ template< typename T> bool deserialize_ik(T & my_ik, std::string filename)
     return true;
 }
 
-template bool deserialize_ik<dual_manipulation_shared::ik_service::Request>(dual_manipulation_shared::ik_service::Request &, std::string);
+template<>
+bool deserialize_ik<dual_manipulation_shared::ik_service::Request>(dual_manipulation_shared::ik_service::Request & srv, std::string filename)
+{
+  dual_manipulation_shared::grasp_trajectory grasp_msg;
+  if(!deserialize_ik(grasp_msg,filename))
+    return false;
+  
+  srv.attObject = grasp_msg.attObject;
+  srv.ee_pose = grasp_msg.ee_pose;
+  srv.grasp_trajectory = grasp_msg.grasp_trajectory;
+  srv.object_db_id = grasp_msg.object_db_id;
+  
+  return true;
+}
+
 template bool deserialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(dual_manipulation_shared::ik_service_legacy::Request &, std::string);
+template bool deserialize_ik<dual_manipulation_shared::grasp_trajectory>(dual_manipulation_shared::grasp_trajectory &, std::string);
 
 geometry_msgs::Point difference(geometry_msgs::Point p1, geometry_msgs::Point p2)
 {
