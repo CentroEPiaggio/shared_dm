@@ -99,6 +99,10 @@ add_executable(convert_ik_from_legacy grasp_storage/convert_ik_from_legacy.cpp)
 target_link_libraries(convert_ik_from_legacy ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(convert_ik_from_legacy dual_manipulation_shared_gencpp)
 
+add_executable(make_table_grasps grasp_storage/make_table_grasps.cpp)
+target_link_libraries(make_table_grasps ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(make_table_grasps dual_manipulation_shared_gencpp)
+
 add_custom_command(TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND echo 'Installing lemon library...'
