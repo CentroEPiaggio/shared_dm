@@ -32,6 +32,7 @@ add_message_files(
   FILES
   planner_item.msg
   graph.msg
+  grasp_trajectory.msg
 )
 
 add_service_files(
