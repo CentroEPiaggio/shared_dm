@@ -1,28 +1,27 @@
 #include "ros/ros.h"
-#include "dual_manipulation_shared/ik_service.h"
+// #include "dual_manipulation_shared/ik_service.h"
 #include "dual_manipulation_shared/ik_service_legacy.h"
 #include "dual_manipulation_shared/serialization_utils.h"
 #include "dual_manipulation_shared/databasemapper.h"
+#include "dual_manipulation_shared/grasp_trajectory.h"
 
-void copy_from_legacy(dual_manipulation_shared::ik_service::Request& req, const dual_manipulation_shared::ik_service_legacy::Request& req_legacy)
+void copy_from_legacy(dual_manipulation_shared::grasp_trajectory& req, const dual_manipulation_shared::ik_service_legacy::Request& req_legacy)
 {
-  req.command = req_legacy.command;
-  req.ee_name = req_legacy.ee_name;
+  req.ee_pose.clear();
   req.ee_pose.insert(req.ee_pose.end(),req_legacy.ee_pose.begin(),req_legacy.ee_pose.end());
   req.grasp_trajectory = req_legacy.grasp_trajectory;
-  req.time = req_legacy.time;
   req.attObject = req_legacy.attObject;
   
   // NOTE: add here any new field which should be managed in future versions (take them from above)
   
-  // 2015-03-18 : using object_db_id instead of attObject.weight
-  req.attObject.weight = 0.0;
-  req.object_db_id = (int)req_legacy.attObject.weight;
+  // 2015-04-07 : using grasp_trajectory.msg instead of ik_service::Request anywhere from now on
+  // this hopefully will avoid the need to change this in future versions
+  req.object_db_id = req_legacy.object_db_id;
 }
 
 bool reserialize_grasp(int obj_id, int grasp_id)
 {
-  dual_manipulation_shared::ik_service::Request req;
+  dual_manipulation_shared::grasp_trajectory req;
   dual_manipulation_shared::ik_service_legacy::Request req_legacy;
 
   if(deserialize_ik(req_legacy,"object" + std::to_string(obj_id) + "/grasp" + std::to_string(grasp_id)))
