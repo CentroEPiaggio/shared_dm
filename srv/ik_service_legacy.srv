@@ -12,6 +12,8 @@ float64 time
 geometry_msgs/Pose[] ee_pose
 # if the command is grasp, hand joint trajectory points
 trajectory_msgs/JointTrajectory grasp_trajectory
+# object identifier - identifies the appropriate entry in the database
+uint64 object_db_id
 # if the command is grasp, object to attach to the grasping end-effector
 moveit_msgs/AttachedCollisionObject attObject
 ---
