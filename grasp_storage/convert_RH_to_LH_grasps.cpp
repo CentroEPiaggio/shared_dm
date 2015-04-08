@@ -9,7 +9,8 @@
 
 #include <visualization_msgs/Marker.h>
 
-#define OBJ_ID 3
+#define OBJ_ID 1
+#define TOP_BOTTOM 0 // if set to 1, does specularity transform in a top-bottom way
 
 void transform_specular_y(geometry_msgs::Pose& pose)
 {
@@ -43,11 +44,13 @@ void transform_premultiply(std::vector<geometry_msgs::Pose>& poses, KDL::Frame f
 
 bool reserialize_grasp(dual_manipulation_shared::ik_serviceRequest& req, int left_grasp_id)
 {
-    
-    // 16 is a RH bottom grasp : generate the corresponding top grasp with symmetry on x|y plane
+    // transform using specularity on x|z plane (y is the orthogonal axis we consider)
     transform_specular_y(req.ee_pose);
-    // transform top-bottom and side_low to side_high
+    
+#if TOP_BOTTOM
+    // transform top to bottom and side_low to side_high
     transform_premultiply(req.ee_pose,KDL::Frame(KDL::Rotation::RotX(M_PI)));
+#endif
     
     KDL::Frame obj_frame;
     geometry_msgs::Pose obj_pose;
@@ -55,9 +58,13 @@ bool reserialize_grasp(dual_manipulation_shared::ik_serviceRequest& req, int lef
     obj_frame = obj_frame.Inverse();
     tf::poseKDLToMsg(obj_frame,obj_pose);
     transform_specular_y(obj_pose);
-    std::vector<geometry_msgs::Pose> vec_gianma = {obj_pose};
-    transform_premultiply(vec_gianma,KDL::Frame(KDL::Rotation::RotX(M_PI)));
-    obj_pose = vec_gianma.front();
+    
+#if TOP_BOTTOM
+    std::vector<geometry_msgs::Pose> poses_vec = {obj_pose};
+    transform_premultiply(poses_vec,KDL::Frame(KDL::Rotation::RotX(M_PI)));
+    obj_pose = poses_vec.front();
+#endif
+    
     tf::poseMsgToKDL(obj_pose,obj_frame);
     obj_frame = obj_frame.Inverse();
     tf::poseKDLToMsg(obj_frame,obj_pose);
@@ -97,8 +104,8 @@ int main(int argc, char **argv)
     std::vector<geometry_msgs::Pose> grasp_poses;
         
     bool ok = true;
-    std::vector<int> right_grasp_ids = {37};
-    std::vector<int> left_grasp_ids = {38};
+    std::vector<int> right_grasp_ids = {1};
+    std::vector<int> left_grasp_ids = {2};
     std::vector<std::string> g_names = {"LH_bottom"};
     
     for(int i=0; i<right_grasp_ids.size(); i++)
