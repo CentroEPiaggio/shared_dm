@@ -87,15 +87,11 @@ add_executable(test_create_grasp_transitions test/test_create_grasp_transitions.
 target_link_libraries(test_create_grasp_transitions ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(test_create_grasp_transitions dual_manipulation_shared_gencpp)
 
-add_executable(grasp_storage grasp_storage/grasp_storage.cpp grasp_storage/main.cpp)
-target_link_libraries(grasp_storage ${catkin_LIBRARIES} ${PROJECT_NAME})
-add_dependencies(grasp_storage dual_manipulation_shared_gencpp)
-
-add_executable(convert_rh_to_lh grasp_storage/convert_RH_to_LH_grasps.cpp)
+add_executable(convert_rh_to_lh test/convert_RH_to_LH_grasps.cpp)
 target_link_libraries(convert_rh_to_lh ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(convert_rh_to_lh dual_manipulation_shared_gencpp)
 
-add_executable(convert_ik_from_legacy grasp_storage/convert_ik_from_legacy.cpp)
+add_executable(convert_ik_from_legacy test/convert_ik_from_legacy.cpp)
 target_link_libraries(convert_ik_from_legacy ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(convert_ik_from_legacy dual_manipulation_shared_gencpp)
 
