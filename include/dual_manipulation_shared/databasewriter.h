@@ -85,6 +85,7 @@ private:
   std::map<int,std::string> object_name_map_;
   std::map<int,std::string> ee_name_map_;
   std::map<int,std::string> grasp_name_map_;
+  std::set<std::pair<int,int>> transitions_set_;
 
   int insert_db_entry(const std::string& sqlstatement, bool remove = false);
 };

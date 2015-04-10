@@ -34,6 +34,10 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   for(auto& ee:db_mapper_->Grasps)
     grasp_name_map_[ee.first] = std::get<2>(ee.second);
   
+  for(auto& trans:db_mapper_->Grasp_transitions)
+    for(auto target:trans.second)
+      transitions_set_.insert(std::make_pair<int,int>(trans.first,target));
+    
   std::cout << "Found " << grasp_name_map_.size() << " grasps already in the DB" << std::endl;
 }
 
@@ -155,6 +159,14 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id)
   
   const std::string& source_grasp = grasp_name_map_.at(source_grasp_id);
   const std::string& target_grasp = grasp_name_map_.at(target_grasp_id);
+  
+  std::pair<int,int> tx(source_grasp_id, target_grasp_id);
+  
+  if (transitions_set_.count(tx) != 0)
+  {
+    ROS_INFO_STREAM("Requested grasp transition between source:\"" << source_grasp << "\" and target:\"" << target_grasp << "\" was already present, returning...");
+    return 0;
+  }
 
   //INSERT INTO Grasp_transitions (Source_id, Target_id) VALUES ('3','1')
 
@@ -172,6 +184,7 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id)
   else
   {
     ROS_INFO_STREAM("New grasp transition successfully added between source:\"" << source_grasp << "\" and target:\"" << target_grasp << "\"!");
+    transitions_set_.insert(tx);
   }
 
   return newID;
