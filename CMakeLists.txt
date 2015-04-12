@@ -33,6 +33,7 @@ add_message_files(
   planner_item.msg
   graph.msg
   grasp_trajectory.msg
+  ik_response.msg
 )
 
 add_service_files(

@@ -16,5 +16,7 @@ trajectory_msgs/JointTrajectory grasp_trajectory
 uint64 object_db_id
 # if the command is grasp, object to attach to the grasping end-effector
 moveit_msgs/AttachedCollisionObject attObject
+#sequence number
+uint32 seq
 ---
 bool ack
