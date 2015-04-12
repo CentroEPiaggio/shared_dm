@@ -9,3 +9,4 @@ planner_item[] filtered_target_nodes
 ---
 bool ack
 planner_item[] path
+string status
