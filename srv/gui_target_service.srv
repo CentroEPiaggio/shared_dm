@@ -2,6 +2,7 @@ string info
 peArray source_poses
 ---
 bool ack
+string name
 geometry_msgs/Pose source_pose
 geometry_msgs/Pose target_pose
 uint64 obj_id
