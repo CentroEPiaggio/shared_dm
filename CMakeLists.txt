@@ -36,6 +36,7 @@ add_message_files(
   ik_response.msg
   pe.msg
   peArray.msg
+  gui_target_response.msg
 )
 
 add_service_files(
