@@ -1,4 +1,5 @@
 string info
+peArray source_poses
 ---
 bool ack
 geometry_msgs/Pose source_pose
