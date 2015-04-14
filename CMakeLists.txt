@@ -48,6 +48,7 @@ add_service_files(
   state_manager_service.srv
   gui_target_service.srv
   estimate.srv
+  start_tracker.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs)
