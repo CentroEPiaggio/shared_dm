@@ -7,7 +7,9 @@
 #include <unistd.h>
 #include <string.h>
 #include <ros/package.h>
+#include <ros/ros.h>
 #include "dual_manipulation_shared/stream_utils.h"
+#include <dual_manipulation_shared/parsing_utils.h>
 /*
  * typedef int (*sqlite3_callback)(
  * void*,    // Data provided in the 4th argument of sqlite3_exec() 
@@ -362,6 +364,12 @@ void databaseMapper::initialize_database(std::string database_name)
 
 databaseMapper::databaseMapper(std::string database_name)
 {
+  XmlRpc::XmlRpcValue params;
+  ros::NodeHandle node;
+  
+  if (node.getParam("dual_manipulation_parameters", params))
+    parseSingleParameter(params,database_name,"database_name");
+  
      initialize_database(database_name);
 //     std::cout<<tables<<std::endl;
 //     std::cout<<Grasp_transitions<<std::endl;
