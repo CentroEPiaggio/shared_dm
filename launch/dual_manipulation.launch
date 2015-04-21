@@ -1,0 +1,15 @@
+<launch>
+        <!-- LAUNCH INTERFACE -->
+
+        
+        <!-- LAUNCH IMPLEMENTATION -->
+        <!-- remember to set the parameters properly -->
+
+        <!-- load .yaml files -->
+        <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/ik_control.yaml" />
+        <rosparam command="load" file="$(find dual_manipulation_shared)/config/dual_manipulation.yaml" />
+
+        <!-- set fixed transform between world and vito_anchor -->
+        <node pkg="tf" type="static_transform_publisher" name="world_vito" args="0 0 0 0 0 0 world vito_anchor 500"/>
+
+</launch>
