@@ -362,15 +362,22 @@ void databaseMapper::initialize_database(std::string database_name)
     sqlite3_close(db);
 }
 
-databaseMapper::databaseMapper(std::string database_name)
+databaseMapper::databaseMapper()
 {
+  std::string database_name("test.db");
+  
   XmlRpc::XmlRpcValue params;
   ros::NodeHandle node;
   
   if (node.getParam("dual_manipulation_parameters", params))
     parseSingleParameter(params,database_name,"database_name");
   
-     initialize_database(database_name);
+  initialize_database(database_name);
+}
+
+databaseMapper::databaseMapper(std::string database_name)
+{
+  initialize_database(database_name);
 //     std::cout<<tables<<std::endl;
 //     std::cout<<Grasp_transitions<<std::endl;
 //     std::cout<<Objects<<std::endl;

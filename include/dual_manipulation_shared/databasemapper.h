@@ -20,7 +20,8 @@ typedef uint64_t endeffector_id;
 class databaseMapper
 {
 public:
-    databaseMapper(std::string database_name="test.db");
+    databaseMapper();
+    databaseMapper(std::string database_name);
     /**
      * @brief List of objects and their names
      * 
