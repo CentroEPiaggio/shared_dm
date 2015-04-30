@@ -31,6 +31,18 @@ public:
   int writeNewObject(std::string obj_name, std::string mesh_path, KDL::Frame obj_center = KDL::Frame::Identity());
   
   /**
+    * @brief Insert a new object in the database, specifying also the object_id (Attention! This will fail if the value already exists!)
+    * 
+    * @param object_id the object id
+    * @param obj_name the name of the object
+    * @param mesh_path the relative path of the object mesh (only the mesh name stored in the object_meshes subfolder)
+    * @param obj_center transformation between the object reference frame and the object center
+    * 
+    * @return the newly inserted object ID (-1 on failure)
+    */
+  int writeNewObject(int object_id, std::string obj_name, std::string mesh_path, KDL::Frame obj_center = KDL::Frame::Identity());
+  
+  /**
     * @brief Insert a new grasp in the database
     * 
     * @param object_id the object id
@@ -40,6 +52,18 @@ public:
     * @return the newly inserted grasp ID (-1 on failure)
     */
   int writeNewGrasp(int object_id, int end_effector_id, std::string grasp_name);
+  
+  /**
+    * @brief Insert a new grasp in the database, specifying also the grasp_id (Attention! This will fail if the value already exists!)
+    * 
+    * @param grasp_id the grasp id
+    * @param object_id the object id
+    * @param end_effector_id the end-effector id
+    * @param grasp_name the name to associate to the grasp
+    * 
+    * @return the newly inserted grasp ID (-1 on failure)
+    */
+  int writeNewGrasp(int grasp_id, int object_id, int end_effector_id, std::string grasp_name);
 
   /**
     * @brief Insert a new grasp transition in the database
