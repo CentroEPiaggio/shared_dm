@@ -212,9 +212,9 @@ bool databaseMapper::fill(std::map<object_id,std::string>& data, std::string tab
     return true;
 }
 
-bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::string > >& data, std::string table_name)
+bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name)
 {
-    std::map< uint64_t, std::tuple< std::string, std::string > > result;
+    std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > > result;
     sqlite3_stmt* stmt;
     prepare_query(table_name,&stmt);
     bool exit=false;
@@ -230,10 +230,36 @@ bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::stri
         {
             uint64_t index;
             std::string name, path;
+            std::string data;
             check_type_and_copy(index,0,stmt);
             check_type_and_copy(name,1,stmt);
             check_type_and_copy(path,2,stmt);
-            result[index]=std::tuple< std::string, std::string >(name,path);
+            check_type_and_copy(data,3,stmt);
+            std::istringstream iss (data);
+            std::vector<double> object_center;
+            KDL::Frame obj_f;
+            while (!iss.eof())
+            {
+              double x;
+              iss >> x;
+              object_center.push_back(x);
+            }
+            if (object_center.size() < 6)
+            {
+              std::cout << "databaseMapper::fill : Error getting object center pose from DB" << std::endl;
+            }
+            else
+            {
+              obj_f.p.x(object_center[0]);
+              obj_f.p.y(object_center[1]);
+              obj_f.p.z(object_center[2]);
+            
+              if(object_center.size() == 6)
+                obj_f.M = KDL::Rotation::RPY(object_center[3],object_center[4],object_center[5]);
+              else
+                obj_f.M = KDL::Rotation::Quaternion(object_center[3],object_center[4],object_center[5],object_center[6]);
+            }
+            result[index]=std::tuple< std::string, std::string, KDL::Frame >(name,path,obj_f);
         }
     }
     data.swap(result);

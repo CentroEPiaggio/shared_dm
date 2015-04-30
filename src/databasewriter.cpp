@@ -120,14 +120,20 @@ int databaseWriter::writeNewGrasp(int object_id, int end_effector_id, std::strin
   return newID;
 }
 
-int databaseWriter::writeNewObject(std::string obj_name, std::string mesh_path)
+int databaseWriter::writeNewObject(std::string obj_name, std::string mesh_path, KDL::Frame obj_center)
 {
   //INSERT INTO Objects (Id, Name, MeshPath) VALUES ('Gatto','gatto.dae')
 
+  std::string obj_center_string;
+  double x,y,z,w;
+  obj_center.M.GetQuaternion(x,y,z,w);
+  obj_center_string = std::to_string(obj_center.p.data[0]) + " " + std::to_string(obj_center.p.data[1]) + " " + std::to_string(obj_center.p.data[2]) + " " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " " + std::to_string(w);
+  
   std::string sqlstatement =
-    "INSERT INTO Objects (Name, MeshPath) VALUES ("
+    "INSERT INTO Objects (Name, MeshPath, ObjectCenter) VALUES ("
     + str_quotesql(obj_name) + ","
-    + str_quotesql(mesh_path) + ");";
+    + str_quotesql(mesh_path) + ","
+    + str_quotesql(obj_center_string) + ");";
 
   int newID = insert_db_entry(sqlstatement);
   

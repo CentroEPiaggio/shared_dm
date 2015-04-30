@@ -6,6 +6,7 @@
 #include <string>
 #include "ros/package.h"
 #include "dual_manipulation_shared/databasemapper.h"
+#include <kdl/frames.hpp>
 
 class databaseWriter
 {
@@ -23,10 +24,11 @@ public:
     * 
     * @param obj_name the name of the object
     * @param mesh_path the relative path of the object mesh (only the mesh name stored in the object_meshes subfolder)
+    * @param obj_center transformation between the object reference frame and the object center
     * 
     * @return the newly inserted object ID (-1 on failure)
     */
-  int writeNewObject(std::string obj_name, std::string mesh_path);
+  int writeNewObject(std::string obj_name, std::string mesh_path, KDL::Frame obj_center = KDL::Frame::Identity());
   
   /**
     * @brief Insert a new grasp in the database
