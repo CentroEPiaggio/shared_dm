@@ -37,6 +37,7 @@ add_message_files(
   pe.msg
   peArray.msg
   gui_target_response.msg
+  good_grasp_msg.msg
 )
 
 add_service_files(
