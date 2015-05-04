@@ -23,7 +23,7 @@
 #define PLAN_BEST_EFFORT_NO_COLLISION_MSG "planning_done"
 #define MOVE_MSG "action_done"
 #define GRASP_MSG "grasp_done"
-#define UNGRASP_MSG "grasp_done"
+#define UNGRASP_MSG "ungrasp_done"
 #define HOME_MSG "action_done"
 // #define HOME_MSG "set_target_done"
 
