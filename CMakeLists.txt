@@ -26,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
   moveit_msgs
   kdl_conversions
   tf
+  pacman_vision_comm
 )
 
 add_message_files(
@@ -34,8 +35,6 @@ add_message_files(
   graph.msg
   grasp_trajectory.msg
   ik_response.msg
-  pe.msg
-  peArray.msg
   gui_target_response.msg
   good_grasp_msg.msg
 )
@@ -48,11 +47,9 @@ add_service_files(
   scene_object_service.srv
   state_manager_service.srv
   gui_target_service.srv
-  estimate.srv
-  start_tracker.srv
 )
 
-generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs)
+generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs pacman_vision_comm)
 
 catkin_package(
   INCLUDE_DIRS include/

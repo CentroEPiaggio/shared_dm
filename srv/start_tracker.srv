@@ -1,4 +1,0 @@
-pe initial_pose
-int8 tracker_version
----
-bool started

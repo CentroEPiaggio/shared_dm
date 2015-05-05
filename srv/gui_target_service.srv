@@ -1,4 +1,4 @@
 string info
-peArray source_poses
+pacman_vision_comm/peArray source_poses
 ---
 bool ack
