@@ -13,7 +13,7 @@
 template< typename T> bool serialize_ik(const T & my_ik, std::string filename)
 {
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");
-    path.append("/grasp_trajectories/").append(filename);
+    path.append("/serialized_grasps/").append(filename);
     
     uint32_t serial_size = ros::serialization::serializationLength(my_ik);
     
