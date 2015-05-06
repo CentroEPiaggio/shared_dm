@@ -86,7 +86,7 @@ int databaseWriter::writeNewGrasp(int object_id, int end_effector_id, std::strin
     ROS_ERROR_STREAM("No object found in the DB with ID " << object_id);
     return -1;
   }
-  if(ee_name_map_.count(object_id) == 0)
+  if(ee_name_map_.count(end_effector_id) == 0)
   {
     ROS_ERROR_STREAM("No end-effector found in the DB with ID " << end_effector_id);
     return -1;
@@ -127,7 +127,7 @@ int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_
     ROS_ERROR_STREAM("No object found in the DB with ID " << object_id);
     return -1;
   }
-  if(ee_name_map_.count(object_id) == 0)
+  if(ee_name_map_.count(end_effector_id) == 0)
   {
     ROS_ERROR_STREAM("No end-effector found in the DB with ID " << end_effector_id);
     return -1;
