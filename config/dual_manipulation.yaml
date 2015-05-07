@@ -1,7 +1,7 @@
 dual_manipulation_parameters:
-  database_name: containerB.db
+  database_name: full
   # this is used to say whether or not to use vision
   # for the gui, this means that
   # - true: the vision will find the position and write it in the gui
   # - false: set the source with the gui as the target
-  use_vision: true
+  use_vision: false
