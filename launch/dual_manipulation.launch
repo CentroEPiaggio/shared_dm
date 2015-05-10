@@ -10,6 +10,6 @@
         <rosparam command="load" file="$(find dual_manipulation_shared)/config/dual_manipulation.yaml" />
 
         <!-- set fixed transform between world and vito_anchor -->
-        <node pkg="tf" type="static_transform_publisher" name="vito_world" args="0 0 0 0 0 0 vito_anchor world 500"/>
+        <node pkg="tf" type="static_transform_publisher" name="vito_world" args="0 0 0 0 0 0 vito_anchor world 20"/>
 
 </launch>
