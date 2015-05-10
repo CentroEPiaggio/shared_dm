@@ -4,4 +4,4 @@ dual_manipulation_parameters:
   # for the gui, this means that
   # - true: the vision will find the position and write it in the gui
   # - false: set the source with the gui as the target
-  use_vision: false
+  use_vision: true
