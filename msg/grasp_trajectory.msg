@@ -8,3 +8,8 @@ uint64 object_db_id
 # needed fields are "link_name", "object.header.frame_id", and "object.mesh_poses"
 # object.meshes is filled with a mesh read from the database using "object_db_id"
 moveit_msgs/AttachedCollisionObject attObject
+
+# USEFUL INFO
+# PRE-GRASP = ee_pose.front()
+# GRASP = ee_pose.back()
+# POST-GRASP = attObject.object.mesh_poses.front().inverse()
