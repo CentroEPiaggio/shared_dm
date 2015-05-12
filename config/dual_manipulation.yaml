@@ -5,3 +5,5 @@ dual_manipulation_parameters:
   # - true: the vision will find the position and write it in the gui
   # - false: set the source with the gui as the target
   use_vision: true
+  # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
+  parallelize_plan_execute: true
