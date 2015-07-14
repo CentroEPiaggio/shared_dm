@@ -162,6 +162,111 @@ int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_
   return newID;
 }
 
+int databaseWriter::writeNewWorkspace(int workspace_id, std::string workspace_name)
+{
+    std::string sqlstatement =
+    "INSERT INTO Workspaces VALUES (? , ?)";
+    //TODO check for id already into the workspace_name_map_
+    int newID = writeNewSomething(sqlstatement, workspace_id, workspace_name);
+
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error adding workspace \"" << workspace_name << "\" with ID " << newID);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New workspace \"" << workspace_name << "\" added with ID " << newID);
+        workspace_name_map_[newID] = workspace_name;
+    }
+    return newID;
+}
+
+int databaseWriter::writeNewAdjacency(int workspace_id_s, int workspace_id_t)
+{
+    std::string sqlstatement =
+    "INSERT INTO WorkspacesAdjacency VALUES (? , ?)";
+    if (adjacency_map_.count(workspace_id_s) && adjacency_map_.at(workspace_id_s).count(workspace_id_t))
+    {
+        ROS_ERROR_STREAM("Error already exist Adjacency \"" << workspace_id_s << "\" to " << workspace_id_t);
+        return -1;
+    }
+    int newID = writeNewSomething(sqlstatement, workspace_id_s, workspace_id_t );
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error writing new Adjacency \"" << workspace_id_s << "\" to " << workspace_id_t);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New Adjacency \"" << workspace_id_s << "\" to " << workspace_id_t);
+        adjacency_map_[workspace_id_s].insert(workspace_id_t);
+    }
+    return newID;
+}
+
+int databaseWriter::writeNewReachability(int end_effector_id, int workspace_id)
+{
+    std::string sqlstatement = "INSERT INTO Reachability VALUES (? , ?)";
+    if (reachability_map_.count(end_effector_id) && reachability_map_.at(end_effector_id).count(workspace_id))
+    {
+        ROS_ERROR_STREAM("Error already exist Reachability with id \"" << end_effector_id<< "\" to workspace " << workspace_id);
+        return -1;
+    }
+    int newID = writeNewSomething(sqlstatement, end_effector_id, workspace_id);
+
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error adding Reachability with id \"" << end_effector_id<< "\" to workspace " << workspace_id);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New Reachability with id \"" << end_effector_id<< "\" to workspace " << workspace_id);
+        reachability_map_[end_effector_id].insert(workspace_id);
+    }
+    return newID;
+}
+
+int databaseWriter::writeNewEndEffectors(int end_effector_id, std::string name, bool movable)
+{
+    std::string sqlstatement = "INSERT INTO EndEffectors VALUES (?, ?, ?)";
+
+    int newID = writeNewSomething(sqlstatement, end_effector_id, name, (int)movable);
+    //TODO manage maps
+    if(newID <= 0)
+    {
+        newID = -1;
+    }
+    else
+    {
+        //TODO write more info
+        ROS_INFO_STREAM("New End Effector \"" << end_effector_id << "\" added with name " << name << movable?" movable ":" NOT movable");
+        ee_name_map_[end_effector_id]=name;
+    }
+    return newID;
+}
+
+int databaseWriter::writeNewGeometry(int workspace_id, std::string geometry_string)
+{
+    std::string sqlstatement =
+    "INSERT INTO WorkspaceGeometry VALUES (? , ?)";
+
+    int newID = writeNewSomething(sqlstatement, workspace_id, geometry_string);
+    //TODO manage maps
+    if(newID <= 0)
+    {
+        newID = -1;
+    }
+    else
+    {
+        //TODO write more info
+        ROS_INFO_STREAM("New Geometry of workspace\"" << workspace_id << "\" added with name " << geometry_string);
+    }
+    return newID;
+}
+
+
 int databaseWriter::writeNewObject(std::string obj_name, std::string mesh_path, KDL::Frame obj_center)
 {
   //INSERT INTO Objects (Id, Name, MeshPath) VALUES ('Gatto','gatto.dae')
