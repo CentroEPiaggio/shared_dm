@@ -41,13 +41,31 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   std::cout << "Found " << grasp_name_map_.size() << " grasps already in the DB" << std::endl;
 }
 
-int databaseWriter::insert_db_entry(const std::string& sqlstatement, bool remove)
+bool databaseWriter::open_global()
+{
+    sqlite3_open((path_to_db_+"/"+db_name_).c_str(), &global_db) == SQLITE_OK;
+    sqlite3_exec(global_db, "BEGIN TRANSACTION;", NULL, NULL, NULL);
+    return true;
+}
+
+bool databaseWriter::close_global()
+{
+    sqlite3_exec(global_db, "END TRANSACTION;", NULL, NULL, NULL);
+    sqlite3_close(global_db);
+    return true;
+}
+
+int databaseWriter::insert_db_entry(const std::string& sqlstatement, bool remove,bool just_dont)
 {
   sqlite3 *db;
   sqlite3_stmt * stmt;
   int scoreID = -1;
-
-  if (sqlite3_open((path_to_db_+"/"+db_name_).c_str(), &db) == SQLITE_OK)
+  bool opened=true;
+  if (!just_dont)
+    opened = sqlite3_open((path_to_db_+"/"+db_name_).c_str(), &db) == SQLITE_OK;
+  else
+      db=global_db;
+  if (opened)
   {
     sqlite3_prepare( db, sqlstatement.c_str(), -1, &stmt, NULL );//preparing the statement
 
@@ -69,7 +87,7 @@ int databaseWriter::insert_db_entry(const std::string& sqlstatement, bool remove
   }
 
   sqlite3_finalize(stmt);
-  sqlite3_close(db);
+  if (!just_dont) sqlite3_close(db);
 
   return scoreID;
 }
@@ -328,7 +346,7 @@ int databaseWriter::writeNewObject(int object_id, std::string obj_name, std::str
   return newID;
 }
 
-int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id)
+int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, bool just_dont)
 {
   if(grasp_name_map_.count(source_grasp_id) == 0)
   {
@@ -359,7 +377,7 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id)
     + int_quotesql(source_grasp_id) + ","
     + int_quotesql(target_grasp_id) + ");";
 
-  int newID = insert_db_entry(sqlstatement);
+  int newID = insert_db_entry(sqlstatement,false,just_dont);
   
   if(newID <= 0)
   {

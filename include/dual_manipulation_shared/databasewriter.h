@@ -79,7 +79,7 @@ public:
     * 
     * @return the newly inserted grasp transition ID (-1 on failure)
     */
-  int writeNewTransition(int source_grasp_id, int target_grasp_id);
+  int writeNewTransition(int source_grasp_id, int target_grasp_id, bool just_dont=false);
 
   /**
     * @brief Delete a grasp from the database
@@ -110,6 +110,8 @@ public:
   bool deleteGraspTransition(int source_grasp_id, int target_grasp_id);
   
   ~databaseWriter();
+  bool open_global();
+  bool close_global();
   
 private:
   std::string path_to_db_,db_name_;
@@ -120,9 +122,10 @@ private:
   std::set<std::pair<int,int>> transitions_set_;
   std::map<int,std::string> workspace_name_map_;
   std::map<int,std::set<int>> adjacency_map_, reachability_map_;
+  sqlite3* global_db;
 
 
-  int insert_db_entry(const std::string& sqlstatement, bool remove = false);
+  int insert_db_entry(const std::string& sqlstatement, bool remove=false, bool just_dont=false);
 
   void bind_value_unwrap(sqlite3_stmt *stmt, int index, int value)
   {
