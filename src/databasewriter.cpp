@@ -184,7 +184,11 @@ int databaseWriter::writeNewWorkspace(int workspace_id, std::string workspace_na
 {
     std::string sqlstatement =
     "INSERT INTO Workspaces VALUES (? , ?)";
-    //TODO check for id already into the workspace_name_map_
+    if (workspace_name_map_.count(workspace_id)) 
+    {
+        ROS_ERROR_STREAM("Error adding workspace \"" << workspace_name << "\" with ID " << workspace_id << "already in the database");
+        return -1;
+    }
     int newID = writeNewSomething(sqlstatement, workspace_id, workspace_name);
 
     if(newID <= 0)
@@ -195,7 +199,7 @@ int databaseWriter::writeNewWorkspace(int workspace_id, std::string workspace_na
     else
     {
         ROS_INFO_STREAM("New workspace \"" << workspace_name << "\" added with ID " << newID);
-        workspace_name_map_[newID] = workspace_name;
+        workspace_name_map_[workspace_id] = workspace_name;
     }
     return newID;
 }
@@ -249,16 +253,19 @@ int databaseWriter::writeNewReachability(int end_effector_id, int workspace_id)
 int databaseWriter::writeNewEndEffectors(int end_effector_id, std::string name, bool movable)
 {
     std::string sqlstatement = "INSERT INTO EndEffectors VALUES (?, ?, ?)";
-
+    if (ee_name_map_.count(end_effector_id)) 
+    {
+        ROS_ERROR_STREAM("Error already exists End Effector \"" << end_effector_id << "\" with name " << name << movable?" movable ":" NOT movable");
+        return -1;
+    }
     int newID = writeNewSomething(sqlstatement, end_effector_id, name, (int)movable);
-    //TODO manage maps
     if(newID <= 0)
     {
         newID = -1;
+        ROS_ERROR_STREAM("Error adding New End Effector \"" << end_effector_id << "\" with name " << name << movable?" movable ":" NOT movable");
     }
     else
     {
-        //TODO write more info
         ROS_INFO_STREAM("New End Effector \"" << end_effector_id << "\" added with name " << name << movable?" movable ":" NOT movable");
         ee_name_map_[end_effector_id]=name;
     }
@@ -278,8 +285,7 @@ int databaseWriter::writeNewGeometry(int workspace_id, std::string geometry_stri
     }
     else
     {
-        //TODO write more info
-        ROS_INFO_STREAM("New Geometry of workspace\"" << workspace_id << "\" added with name " << geometry_string);
+        ROS_INFO_STREAM("New Geometry of workspace\"" << workspace_id << "\" added:  " << geometry_string);
     }
     return newID;
 }
