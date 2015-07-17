@@ -1,0 +1,15 @@
+<launch>
+
+    <param name="robot_description" command="$(find xacro)/xacro.py $(find dual_manipulation_shared)/model/factory.urdf.xacro"/>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+            <param name="use_gui" value="true" />
+            <rosparam param="source_list">[/left_arm_0/joint_states,/left_hand_0/joint_states,/right_arm_0/joint_states,/right_hand_0/joint_states]</rosparam>
+    </node>
+
+    <param name="publish_frequency" value="100"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  />
+
+    <node name="my_rviz" pkg="rviz" type="rviz" respawn="false" output="screen"/>
+
+</launch>

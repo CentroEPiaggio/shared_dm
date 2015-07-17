@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+       name="factory">
+       
+  <!-- MODELS -->
+  <xacro:include filename="$(find vito_description)/model/table.urdf.xacro"/>
+  <xacro:include filename="$(find dual_manipulation_shared)/model/shelf.urdf.xacro"/>
+  <xacro:include filename="$(find vito_description)/model/materials.urdf"/>
+  <xacro:include filename="$(find lwr_description)/model/kuka_lwr.urdf.xacro"/>
+  <xacro:include filename="$(find soft_hand_description)/model/soft_hand.urdf.xacro"/>
+    
+  <link name="world" />
+  
+  <!-- MISC -->
+  <xacro:model_shelf name="shelf0" 
+                    parent="world"
+                    length="0.1"
+                    width="1.30"
+                    height="0.3"
+                    plate_thickness="0.3"
+		    color="Grey">
+    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+  </xacro:model_shelf>
+  <xacro:model_shelf name="shelf1" 
+                    parent="world"
+                    length="0.4"
+                    width="1.30"
+                    height="0.4"
+                    plate_thickness="0.1"
+		    color="DarkGrey">
+    <origin xyz="0.8 0 0" rpy="0 0 0"/>
+  </xacro:model_shelf>
+    
+  <!-- TABLES -->
+  <xacro:model_table name="table0" 
+                    parent="world"
+                    length="1.0"
+                    width="1.30"
+                    height="0.9"
+                    plate_thickness="0.1">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:model_table>
+    <xacro:model_table name="table1" 
+                    parent="world"
+                    length="1.0"
+                    width="1.30"
+                    height="0.9"
+                    plate_thickness="0.1">
+    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+  </xacro:model_table>
+    <xacro:model_table name="table2" 
+                    parent="world"
+                    length="1.0"
+                    width="1.30"
+                    height="0.9"
+                    plate_thickness="0.1">
+    <origin xyz="2.0 0 0" rpy="0 0 0"/>
+  </xacro:model_table>
+    <xacro:model_table name="table3" 
+                    parent="world"
+                    length="1.0"
+                    width="1.30"
+                    height="0.9"
+                    plate_thickness="0.1">
+    <origin xyz="4.0 0 0" rpy="0 0 0"/>
+  </xacro:model_table>
+    <xacro:model_table name="table4" 
+                    parent="world"
+                    length="1.0"
+                    width="1.30"
+                    height="0.9"
+                    plate_thickness="0.1">
+    <origin xyz="5.0 0 0" rpy="0 0 0"/>
+  </xacro:model_table>
+    <xacro:model_table name="table5" 
+                    parent="world"
+                    length="1.0"
+                    width="1.30"
+                    height="0.9"
+                    plate_thickness="0.1">
+    <origin xyz="6.0 0 0" rpy="0 0 0"/>
+  </xacro:model_table>
+  
+  <!-- LEFT ARM 0 -->
+  <xacro:kuka_lwr name="left_arm_0" parent="world">
+    <origin xyz="0.5 0.2 0.60" 
+      rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
+  </xacro:kuka_lwr>
+
+  <!-- LEFT SOFTHAND 0 -->
+  <xacro:soft_hand parent="left_arm_0_7_link" name="left_hand_0" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+
+  <!-- RIGHT ARM 0 -->
+  <xacro:kuka_lwr name="right_arm_0" parent="world">
+    <origin xyz="1.5 -1.5 0.60" 
+      rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
+  </xacro:kuka_lwr>
+
+  <!-- RIGHT SOFTHAND 0 -->
+  <xacro:soft_hand parent="right_arm_0_7_link" name="right_hand_0" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+
+  <!-- LEFT ARM 1 -->
+  <xacro:kuka_lwr name="left_arm_1" parent="world">
+    <origin xyz="2.5 0.2 0.60" 
+      rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
+  </xacro:kuka_lwr>
+
+  <!-- LEFT SOFTHAND 1 -->
+  <xacro:soft_hand parent="left_arm_1_7_link" name="left_hand_1" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+  
+  <!-- RIGHT ARM 1 -->
+  <xacro:kuka_lwr name="right_arm_1" parent="world">
+    <origin xyz="3.5 -1.5 0.60" 
+      rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
+  </xacro:kuka_lwr>
+
+  <!-- RIGHT SOFTHAND 1 -->
+  <xacro:soft_hand parent="right_arm_1_7_link" name="right_hand_1" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+  
+  <!-- LEFT ARM 2 -->
+  <xacro:kuka_lwr name="left_arm_2" parent="world">
+    <origin xyz="4.5 0.2 0.60" 
+      rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
+  </xacro:kuka_lwr>
+
+  <!-- LEFT SOFTHAND 1 -->
+  <xacro:soft_hand parent="left_arm_2_7_link" name="left_hand_2" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+  
+  <!-- RIGHT ARM 2 -->
+  <xacro:kuka_lwr name="right_arm_2" parent="world">
+    <origin xyz="5.5 -1.5 0.60" 
+      rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
+  </xacro:kuka_lwr>
+
+  <!-- RIGHT SOFTHAND 1 -->
+  <xacro:soft_hand parent="right_arm_2_7_link" name="right_hand_2" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+</robot>
