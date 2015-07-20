@@ -5,6 +5,7 @@
   <!-- MODELS -->
   <xacro:include filename="$(find vito_description)/model/table.urdf.xacro"/>
   <xacro:include filename="$(find dual_manipulation_shared)/model/shelf.urdf.xacro"/>
+  <xacro:include filename="$(find dual_manipulation_shared)/model/conveyor_belt.urdf.xacro"/>
   <xacro:include filename="$(find vito_description)/model/materials.urdf"/>
   <xacro:include filename="$(find lwr_description)/model/kuka_lwr.urdf.xacro"/>
   <xacro:include filename="$(find soft_hand_description)/model/soft_hand.urdf.xacro"/>
@@ -56,7 +57,7 @@
                     plate_thickness="0.1">
     <origin xyz="2.0 0 0" rpy="0 0 0"/>
   </xacro:model_table>
-    <xacro:model_table name="table3" 
+<!--    <xacro:model_table name="table3" 
                     parent="world"
                     length="1.0"
                     width="1.30"
@@ -71,7 +72,16 @@
                     height="0.9"
                     plate_thickness="0.1">
     <origin xyz="5.0 0 0" rpy="0 0 0"/>
-  </xacro:model_table>
+  </xacro:model_table>-->
+    <xacro:model_belt name="belt0" 
+                      parent="world"
+                      length="2"
+                      width="1.0"
+                      height="0.0"
+                      plate_thickness="0.05">
+    <origin xyz="3.5 0 0" rpy="0 0 0"/>
+    </xacro:model_belt>
+  
     <xacro:model_table name="table5" 
                     parent="world"
                     length="1.0"
@@ -126,15 +136,15 @@
   </xacro:soft_hand>
   
   <!-- LEFT ARM 2 -->
-  <xacro:kuka_lwr name="left_arm_2" parent="world">
+<!--  <xacro:kuka_lwr name="left_arm_2" parent="world">
     <origin xyz="4.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
-  </xacro:kuka_lwr>
+  </xacro:kuka_lwr>-->
 
-  <!-- LEFT SOFTHAND 1 -->
-  <xacro:soft_hand parent="left_arm_2_7_link" name="left_hand_2" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+  <!-- LEFT SOFTHAND 2 -->
+<!--  <xacro:soft_hand parent="left_arm_2_7_link" name="left_hand_2" left="true" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-  </xacro:soft_hand>
+  </xacro:soft_hand>-->
   
   <!-- RIGHT ARM 2 -->
   <xacro:kuka_lwr name="right_arm_2" parent="world">
@@ -142,7 +152,7 @@
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
 
-  <!-- RIGHT SOFTHAND 1 -->
+  <!-- RIGHT SOFTHAND 2 -->
   <xacro:soft_hand parent="right_arm_2_7_link" name="right_hand_2" left="false" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>

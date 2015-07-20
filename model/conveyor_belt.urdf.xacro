@@ -1,0 +1,130 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  
+<xacro:property name="border_offset" value="0.055" />
+
+<!-- conversions -->
+<!-- I couldn't make the simulation work with realistic values, so I tweaked the conversion values -->
+<xacro:property name="mm_to_m" value="0.001"/>
+<xacro:property name="mm2_to_m2" value="0.001"/>
+<xacro:property name="gr_to_Kg" value="0.01"/>
+
+<!-- not so negligible, otherwise simulation fails -->
+<xacro:property name="negligible_mass" value="${10*gr_to_Kg}"/>
+<xacro:property name="negligible_inertia">
+    <origin xyz="0 0 0"/>
+    <mass value="${negligible_mass}"/>
+    <inertia ixx="${negligible_mass * 10 * mm2_to_m2}" ixy="0.0" ixz="0.0" iyy="${negligible_mass * 10 * mm2_to_m2}" iyz="0.0" izz="${negligible_mass * 10 * mm2_to_m2}"/>
+</xacro:property>
+
+<xacro:macro name="model_belt" params="parent name *origin length width height plate_thickness">
+    <joint name="${parent}_${name}_base_joint" type="fixed">
+        <insert_block name="origin"/>
+        <parent link="${parent}"/>
+        <child link="${name}_plate_link"/>
+    </joint>
+    <link name="${name}_plate_link">
+        <inertial>
+            <insert_block name="negligible_inertia"/>
+        </inertial>
+        <visual>
+            <origin xyz="${1/2 * length} ${-1/2 * width} ${height}"/>
+            <geometry>
+                <box size="${length} ${width} ${plate_thickness}"/>
+			</geometry>
+			<material name="Vito/Black"/>
+		</visual>
+        <collision>
+            <origin xyz="${1/2 * length} ${-1/2 * width} ${height}"/>
+            <geometry>
+                <box size="${length} ${width} ${plate_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="${parent}_${name}_joint1" type="fixed">
+        <parent link="${name}_plate_link"/>
+        <child link="${name}_link1"/>
+    </joint>
+    <link name="${name}_link1">
+        <inertial>
+            <insert_block name="negligible_inertia"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 ${-1/2 * width} ${height}"
+            rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+            <geometry>
+                <cylinder length="${width}" radius="${plate_thickness}"/>
+			</geometry>
+			<material name="Vito/Blue"/>
+		</visual>
+        <collision>
+            <origin xyz="0 ${-1/2 * width} ${height}"
+            rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+            <geometry>
+                <cylinder length="${width}" radius="${plate_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="${parent}_${name}_joint2" type="fixed">
+        <parent link="${name}_plate_link"/>
+        <child link="${name}_link2"/>
+    </joint>
+    <link name="${name}_link2">
+        <inertial>
+            <insert_block name="negligible_inertia"/>
+        </inertial>
+        <visual>
+            <origin xyz="${length} ${-1/2 * width} ${height}"
+            rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+            <geometry>
+                <cylinder length="${width}" radius="${plate_thickness}"/>
+			</geometry>
+			<material name="Vito/Blue"/>
+		</visual>
+        <collision>
+            <origin xyz="${length} ${-1/2 * width} ${height}"
+            rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+            <geometry>
+                <cylinder length="${width}" radius="${plate_thickness}"/>
+            </geometry>
+        </collision>
+    </link>
+
+     <joint name="${name}_joint" type="prismatic">
+        <origin xyz="0.3 ${-1/2 * width} ${height+plate_thickness/2.0}"
+            rpy="${M_PI*0.0/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="0" upper="${length-0.6}" effort="200" velocity="10" />
+        <dynamics friction="10.0" damping="1.0"/>
+        <parent link="${name}_plate_link"/>
+        <child link="${name}_p"/>
+    </joint>
+    <link name="${name}_p">
+        <inertial>
+            <insert_block name="negligible_inertia"/>
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0"
+            rpy="${M_PI*0.0/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+            <geometry>
+                <box size="0.3 ${width/2} 0.001"/>
+            </geometry>
+            <material name="Vito/Orange"/>
+	</visual>
+        <collision>
+            <origin xyz="0 0 0"
+            rpy="${M_PI*0.0/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
+            <geometry>
+                <box size="0.3 ${width/2} 0.001"/>
+            </geometry>
+        </collision>
+    </link>
+
+    <gazebo reference="${name}_plate_link">
+        <!-- <static>true</static> -->
+    </gazebo>
+    
+</xacro:macro>
+</robot>
