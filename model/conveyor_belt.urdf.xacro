@@ -28,14 +28,14 @@
             <insert_block name="negligible_inertia"/>
         </inertial>
         <visual>
-            <origin xyz="${1/2 * length} ${-1/2 * width} ${height}"/>
+            <origin xyz="${1/2 * length} ${-1/2 * width-0.125} ${height}"/>
             <geometry>
                 <box size="${length} ${width} ${plate_thickness}"/>
 			</geometry>
 			<material name="Vito/Black"/>
 		</visual>
         <collision>
-            <origin xyz="${1/2 * length} ${-1/2 * width} ${height}"/>
+            <origin xyz="${1/2 * length} ${-1/2 * width-0.125} ${height}"/>
             <geometry>
                 <box size="${length} ${width} ${plate_thickness}"/>
             </geometry>
@@ -51,7 +51,7 @@
             <insert_block name="negligible_inertia"/>
         </inertial>
         <visual>
-            <origin xyz="0 ${-1/2 * width} ${height}"
+            <origin xyz="0 ${-1/2 * width-0.125} ${height}"
             rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
             <geometry>
                 <cylinder length="${width}" radius="${plate_thickness}"/>
@@ -59,7 +59,7 @@
 			<material name="Vito/Blue"/>
 		</visual>
         <collision>
-            <origin xyz="0 ${-1/2 * width} ${height}"
+            <origin xyz="0 ${-1/2 * width-0.125} ${height}"
             rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
             <geometry>
                 <cylinder length="${width}" radius="${plate_thickness}"/>
@@ -76,7 +76,7 @@
             <insert_block name="negligible_inertia"/>
         </inertial>
         <visual>
-            <origin xyz="${length} ${-1/2 * width} ${height}"
+            <origin xyz="${length} ${-1/2 * width-0.125} ${height}"
             rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
             <geometry>
                 <cylinder length="${width}" radius="${plate_thickness}"/>
@@ -84,7 +84,7 @@
 			<material name="Vito/Blue"/>
 		</visual>
         <collision>
-            <origin xyz="${length} ${-1/2 * width} ${height}"
+            <origin xyz="${length} ${-1/2 * width-0.125} ${height}"
             rpy="${M_PI*90/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
             <geometry>
                 <cylinder length="${width}" radius="${plate_thickness}"/>
@@ -93,7 +93,7 @@
     </link>
 
      <joint name="${name}_joint" type="prismatic">
-        <origin xyz="0.3 ${-1/2 * width} ${height+plate_thickness/2.0+0.01}"
+        <origin xyz="0.3 ${-1/2 * width-0.125} ${height+plate_thickness/2.0+0.01}"
             rpy="${M_PI*0.0/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
         <axis xyz="1 0 0"/>
         <limit lower="0" upper="${length-0.6}" effort="200" velocity="10" />
