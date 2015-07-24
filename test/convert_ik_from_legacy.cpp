@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     
     ros::init(argc, argv, "convert_ik_from_legacy");
 
-    databaseMapper dbMapper;
+    databaseMapper dbMapper(0);
 
 //     ros::NodeHandle n;
 //     ros::Publisher vis_pub = n.advertise<visualization_msgs::Marker>( "visualization_marker", 0 );

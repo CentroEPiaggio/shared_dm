@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     std::vector<std::string> grasp_links;
     std::vector<geometry_msgs::Pose> grasp_poses;
     
-    databaseMapper db_mapper;
+    databaseMapper db_mapper(0);
     
     std::map<std::string,int> ee_map;
     ee_map["left_hand_palm_link"] = 1;
