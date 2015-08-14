@@ -51,7 +51,7 @@
   </xacro:model_table>
     <xacro:model_table name="table2" 
                     parent="world"
-                    length="1.0"
+                    length="0.8"
                     width="1.30"
                     height="0.9"
                     plate_thickness="0.1">

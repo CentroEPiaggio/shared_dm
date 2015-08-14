@@ -6,6 +6,7 @@
         <!-- remember to set the parameters properly -->
 
         <!-- load .yaml files -->
+        <!-- <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/factory_ik_control.yaml" /> -->
         <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/ik_control.yaml" />
         <rosparam command="load" file="$(find dual_manipulation_shared)/config/dual_manipulation.yaml" />
 

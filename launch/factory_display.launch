@@ -1,5 +1,8 @@
 <launch>
 
+    <arg name="use_robot_sim" default="false"/>
+    <arg name="robot_name" default="factory"/>
+
     <param name="robot_description" command="$(find xacro)/xacro.py $(find dual_manipulation_shared)/model/factory.urdf.xacro"/>
 
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
@@ -23,5 +26,21 @@
     <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  />
 
     <node name="my_rviz" pkg="rviz" type="rviz" respawn="false" output="screen"/>
+
+    <group if="$(arg use_robot_sim)">
+        <!-- Spawn the full robot into Gazebo  -->
+        <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model $(arg robot_name) -x 0 -y 0 -z 1.0 -R 0 -P 0 -Y 0" respawn="false" output="screen"/>
+
+        <!-- load Gazebo simulation environment -->
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+            <arg name="world_name" value="$(find vito_description)/worlds/simple_environment.world"/>
+            <arg name="paused" value="true"/>
+            <!-- when using the real/sim scenario in parallel, set "use_enabled_time" to false -->
+            <arg name="use_sim_time" value="true"/>
+            <arg name="gui" value="true"/>
+            <arg name="headless" value="true"/>
+            <arg name="debug" value="false"/>
+        </include>
+    </group>
 
 </launch>
