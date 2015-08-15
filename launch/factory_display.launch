@@ -8,17 +8,17 @@
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
             <param name="use_gui" value="true" />
             <rosparam param="source_list">
-              [/left_arm_0/joint_states,/left_hand_0/joint_states,
-               /right_arm_0/joint_states,/right_hand_0/joint_states,
-               /left_arm_1/joint_states,/left_hand_1/joint_states,
-               /right_arm_1/joint_states,/right_hand_1/joint_states,
-               /left_arm_2/joint_states,/left_hand_2/joint_states,
-               /right_arm_2/joint_states,/right_hand_2/joint_states,
-               /right_arm_3/joint_states,/right_hand_3/joint_states,
-               /left_arm_4/joint_states,/left_hand_4/joint_states,
-               /right_arm_4/joint_states,/right_hand_4/joint_states,
-               /left_arm_5/joint_states,/left_hand_5/joint_states,
-               /right_arm_5/joint_states,/right_hand_5/joint_states]
+              [/0_left_arm/joint_states,/0_left_hand/joint_states,
+               /0_right_arm/joint_states,/0_right_hand/joint_states,
+               /1_left_arm/joint_states,/1_left_hand/joint_states,
+               /1_right_arm/joint_states,/1_right_hand/joint_states,
+               /2_left_arm/joint_states,/2_left_hand/joint_states,
+               /2_right_arm/joint_states,/2_right_hand/joint_states,
+               /3_right_arm/joint_states,/3_right_hand/joint_states,
+               /4_left_arm/joint_states,/4_left_hand/joint_states,
+               /4_right_arm/joint_states,/4_right_hand/joint_states,
+               /5_left_arm/joint_states,/5_left_hand/joint_states,
+               /5_right_arm/joint_states,/5_right_hand/joint_states]
             </rosparam>
     </node>
 

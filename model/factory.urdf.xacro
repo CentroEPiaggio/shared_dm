@@ -92,68 +92,68 @@
   </xacro:model_table>
   
   <!-- LEFT ARM 0 -->
-  <xacro:kuka_lwr name="left_arm_0" parent="world">
+  <xacro:kuka_lwr name="0_left_arm" parent="world">
     <origin xyz="0.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
 
   <!-- LEFT SOFTHAND 0 -->
-  <xacro:soft_hand parent="left_arm_0_7_link" name="left_hand_0" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+  <xacro:soft_hand parent="0_left_arm_7_link" name="0_left_hand" left="true" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>
 
   <!-- RIGHT ARM 0 -->
-  <xacro:kuka_lwr name="right_arm_0" parent="world">
+  <xacro:kuka_lwr name="0_right_arm" parent="world">
     <origin xyz="1.5 -1.5 0.60" 
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
 
   <!-- RIGHT SOFTHAND 0 -->
-  <xacro:soft_hand parent="right_arm_0_7_link" name="right_hand_0" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+  <xacro:soft_hand parent="0_right_arm_7_link" name="0_right_hand" left="false" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>
 
   <!-- LEFT ARM 1 -->
-  <xacro:kuka_lwr name="left_arm_1" parent="world">
+  <xacro:kuka_lwr name="1_left_arm" parent="world">
     <origin xyz="2.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
 
   <!-- LEFT SOFTHAND 1 -->
-  <xacro:soft_hand parent="left_arm_1_7_link" name="left_hand_1" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+  <xacro:soft_hand parent="1_left_arm_7_link" name="1_left_hand" left="true" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>
   
   <!-- RIGHT ARM 1 -->
-  <xacro:kuka_lwr name="right_arm_1" parent="world">
+  <xacro:kuka_lwr name="1_right_arm" parent="world">
     <origin xyz="3.5 -1.5 0.60" 
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
 
   <!-- RIGHT SOFTHAND 1 -->
-  <xacro:soft_hand parent="right_arm_1_7_link" name="right_hand_1" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+  <xacro:soft_hand parent="1_right_arm_7_link" name="1_right_hand" left="false" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>
   
   <!-- LEFT ARM 2 -->
-<!--  <xacro:kuka_lwr name="left_arm_2" parent="world">
+<!--  <xacro:kuka_lwr name="2_left_arm" parent="world">
     <origin xyz="4.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>-->
 
   <!-- LEFT SOFTHAND 2 -->
-<!--  <xacro:soft_hand parent="left_arm_2_7_link" name="left_hand_2" left="true" withAdaptiveTransmission="true" useMimicTag="true">
+<!--  <xacro:soft_hand parent="2_left_arm_7_link" name="2_left_hand" left="true" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>-->
   
   <!-- RIGHT ARM 2 -->
-  <xacro:kuka_lwr name="right_arm_2" parent="world">
+  <xacro:kuka_lwr name="2_right_arm" parent="world">
     <origin xyz="5.5 -1.5 0.60" 
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
 
   <!-- RIGHT SOFTHAND 2 -->
-  <xacro:soft_hand parent="right_arm_2_7_link" name="right_hand_2" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+  <xacro:soft_hand parent="2_right_arm_7_link" name="2_right_hand" left="false" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>
 </robot>
