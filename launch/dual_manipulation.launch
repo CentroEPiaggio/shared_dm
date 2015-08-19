@@ -1,16 +1,15 @@
 <launch>
         <!-- LAUNCH INTERFACE -->
-
+        <arg name="robot_name" default="vito" />
         
         <!-- LAUNCH IMPLEMENTATION -->
         <!-- remember to set the parameters properly -->
 
         <!-- load .yaml files -->
-        <!-- <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/factory_ik_control.yaml" /> -->
-        <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/ik_control.yaml" />
-        <rosparam command="load" file="$(find dual_manipulation_shared)/config/dual_manipulation.yaml" />
+        <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/$(arg robot_name)_ik_control.yaml" />
+        <rosparam command="load" file="$(find dual_manipulation_shared)/config/$(arg robot_name)_dual_manipulation.yaml" />
 
         <!-- set fixed transform between world and vito_anchor -->
-        <node pkg="tf" type="static_transform_publisher" name="vito_world" args="0 0 0 0 0 0 vito_anchor world 500"/>
+        <node pkg="tf" type="static_transform_publisher" name="$(arg robot_name)_world" args="0 0 0 0 0 0 $(arg robot_name)_anchor world 500"/>
 
 </launch>
