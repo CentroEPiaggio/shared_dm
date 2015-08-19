@@ -10,11 +10,16 @@
   <xacro:include filename="$(find lwr_description)/model/kuka_lwr.urdf.xacro"/>
   <xacro:include filename="$(find soft_hand_description)/model/soft_hand.urdf.xacro"/>
     
-  <link name="world" />
+  <!-- <link name="world" />
+  <joint name="factory_world_joint" type="fixed">
+    <parent link="world" />
+    <child link="factory_anchor" />
+  </joint> -->
+  <link name="factory_anchor" />
   
   <!-- MISC -->
   <xacro:model_shelf name="shelf0" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="0.1"
                     width="1.30"
                     height="0.3"
@@ -23,7 +28,7 @@
     <origin xyz="1.0 0 0" rpy="0 0 0"/>
   </xacro:model_shelf>
   <xacro:model_shelf name="shelf1" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="0.4"
                     width="1.30"
                     height="0.4"
@@ -34,7 +39,7 @@
     
   <!-- TABLES -->
   <xacro:model_table name="table0" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="1.0"
                     width="1.30"
                     height="0.9"
@@ -42,7 +47,7 @@
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:model_table>
     <xacro:model_table name="table1" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="1.0"
                     width="1.30"
                     height="0.9"
@@ -50,7 +55,7 @@
     <origin xyz="1.0 0 0" rpy="0 0 0"/>
   </xacro:model_table>
     <xacro:model_table name="table2" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="0.8"
                     width="1.30"
                     height="0.9"
@@ -58,7 +63,7 @@
     <origin xyz="2.0 0 0" rpy="0 0 0"/>
   </xacro:model_table>
 <!--    <xacro:model_table name="table3" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="1.0"
                     width="1.30"
                     height="0.9"
@@ -66,7 +71,7 @@
     <origin xyz="4.0 0 0" rpy="0 0 0"/>
   </xacro:model_table>
     <xacro:model_table name="table4" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="1.0"
                     width="1.30"
                     height="0.9"
@@ -74,7 +79,7 @@
     <origin xyz="5.0 0 0" rpy="0 0 0"/>
   </xacro:model_table>-->
     <xacro:model_belt name="belt0" 
-                      parent="world"
+                      parent="factory_anchor"
                       length="2"
                       width="1.0"
                       height="0.0"
@@ -83,7 +88,7 @@
     </xacro:model_belt>
   
     <xacro:model_table name="table5" 
-                    parent="world"
+                    parent="factory_anchor"
                     length="1.0"
                     width="1.30"
                     height="0.9"
@@ -92,7 +97,7 @@
   </xacro:model_table>
   
   <!-- LEFT ARM 0 -->
-  <xacro:kuka_lwr name="0_left_arm" parent="world">
+  <xacro:kuka_lwr name="0_left_arm" parent="factory_anchor">
     <origin xyz="0.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
@@ -103,7 +108,7 @@
   </xacro:soft_hand>
 
   <!-- RIGHT ARM 0 -->
-  <xacro:kuka_lwr name="0_right_arm" parent="world">
+  <xacro:kuka_lwr name="0_right_arm" parent="factory_anchor">
     <origin xyz="1.5 -1.5 0.60" 
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
@@ -114,7 +119,7 @@
   </xacro:soft_hand>
 
   <!-- LEFT ARM 1 -->
-  <xacro:kuka_lwr name="1_left_arm" parent="world">
+  <xacro:kuka_lwr name="1_left_arm" parent="factory_anchor">
     <origin xyz="2.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
@@ -125,7 +130,7 @@
   </xacro:soft_hand>
   
   <!-- RIGHT ARM 1 -->
-  <xacro:kuka_lwr name="1_right_arm" parent="world">
+  <xacro:kuka_lwr name="1_right_arm" parent="factory_anchor">
     <origin xyz="3.5 -1.5 0.60" 
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
@@ -136,7 +141,7 @@
   </xacro:soft_hand>
   
   <!-- LEFT ARM 2 -->
-<!--  <xacro:kuka_lwr name="2_left_arm" parent="world">
+<!--  <xacro:kuka_lwr name="2_left_arm" parent="factory_anchor">
     <origin xyz="4.5 0.2 0.60" 
       rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>-->
@@ -147,7 +152,7 @@
   </xacro:soft_hand>-->
   
   <!-- RIGHT ARM 2 -->
-  <xacro:kuka_lwr name="2_right_arm" parent="world">
+  <xacro:kuka_lwr name="2_right_arm" parent="factory_anchor">
     <origin xyz="5.5 -1.5 0.60" 
       rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/>
   </xacro:kuka_lwr>
