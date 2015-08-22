@@ -99,6 +99,20 @@
         <limit lower="0" upper="${length-0.6}" effort="200" velocity="10" />
         <dynamics friction="10.0" damping="1.0"/>
         <parent link="${name}_plate_link"/>
+        <child link="${name}_p_1"/>
+    </joint>
+    <link name="${name}_p_1">
+        <inertial>
+            <insert_block name="negligible_inertia"/>
+        </inertial>
+    </link>
+
+    <!-- This additional joint is needed for KDLKinematicsPlugin to work properly (it needs at least two active joints to consider this a chain!!!) -->
+    <joint name="${name}_joint_r1" type="revolute">
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-0.001" upper="0.001" effort="200" velocity="10" />
+        <parent link="${name}_p_1"/>
         <child link="${name}_p"/>
     </joint>
     <link name="${name}_p">
@@ -112,7 +126,7 @@
                 <box size="0.3 ${width/2} 0.001"/>
             </geometry>
             <material name="Vito/Orange"/>
-	</visual>
+        </visual>
         <collision>
             <origin xyz="0 0 0"
             rpy="${M_PI*0.0/180} ${M_PI*0.0/180} ${M_PI*0.0/180}"/>
