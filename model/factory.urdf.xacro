@@ -83,6 +83,7 @@
                       length="2"
                       width="1.0"
                       height="0.0"
+		      leg_length="0.9"
                       plate_thickness="0.05">
     <origin xyz="3.5 0 0" rpy="0 0 0"/>
     </xacro:model_belt>
