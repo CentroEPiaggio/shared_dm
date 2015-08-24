@@ -25,7 +25,7 @@
                     height="0.4"
                     plate_thickness="0.4"
 		    color="Grey">
-    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <origin xyz="1.0 0 0.07" rpy="0 0 0"/>
   </xacro:model_shelf>
   <xacro:model_shelf name="shelf1" 
                     parent="factory_anchor"
@@ -34,7 +34,7 @@
                     height="0.5"
                     plate_thickness="0.1"
 		    color="DarkGrey">
-    <origin xyz="0.8 0 0" rpy="0 0 0"/>
+    <origin xyz="0.8 0 0.07" rpy="0 0 0"/>
   </xacro:model_shelf>
     
   <!-- TABLES -->
@@ -44,7 +44,7 @@
                     width="1.30"
                     height="0.9"
                     plate_thickness="0.1">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="0 0 0.07" rpy="0 0 0"/>
   </xacro:model_table>
     <xacro:model_table name="table1" 
                     parent="factory_anchor"
@@ -52,7 +52,7 @@
                     width="1.30"
                     height="0.9"
                     plate_thickness="0.1">
-    <origin xyz="1.0 0 0" rpy="0 0 0"/>
+    <origin xyz="1.0 0 0.07" rpy="0 0 0"/>
   </xacro:model_table>
     <xacro:model_table name="table2" 
                     parent="factory_anchor"
@@ -60,7 +60,7 @@
                     width="1.30"
                     height="0.9"
                     plate_thickness="0.1">
-    <origin xyz="2.0 0 0" rpy="0 0 0"/>
+    <origin xyz="2.0 0 0.07" rpy="0 0 0"/>
   </xacro:model_table>
 <!--    <xacro:model_table name="table3" 
                     parent="factory_anchor"
@@ -94,7 +94,7 @@
                     width="1.30"
                     height="0.9"
                     plate_thickness="0.1">
-    <origin xyz="6.0 0 0" rpy="0 0 0"/>
+    <origin xyz="6.0 0 0.07" rpy="0 0 0"/>
   </xacro:model_table>
   
   <!-- LEFT ARM 0 -->
