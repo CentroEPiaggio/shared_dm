@@ -1,6 +1,8 @@
 # "add" and "remove" work on the scene
 # "attach" and "detach" work on a hand
 string command
+# name of the end-effector - only considered if command=="attach"
+string ee_name
 # object unique name - has to be difference for each instance
 string object_id
 # object identifier - identifies the appropriate entry in the database
