@@ -9,11 +9,30 @@
 #include <ros/serialization.h>
 #include <geometry_msgs/Pose.h>
 #include <fstream>
+#include <boost/filesystem.hpp>
+
+#define RED "\033[0;31m"
+#define PURPLE "\033[0;35m"
+#define GREEN "\033[0;32m"
+#define ORANGE "\033[0;33m"
+#define YELLOW "\033[1;33m"
+#define BLUE "\033[0;34m"
+#define NC "\033[0m"
+#define CLASS_NAMESPACE "DualManipulationShared::"
 
 template< typename T> bool serialize_ik(const T & my_ik, std::string filename)
 {
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");
     path.append("/grasp_trajectories/").append(filename);
+    
+    boost::filesystem::path p(path);
+    if(!boost::filesystem::exists(p.parent_path()))
+    {
+        if(boost::filesystem::create_directories(p.parent_path()))
+            std::cout << GREEN << CLASS_NAMESPACE << __func__ << " : folder " << p.parent_path() << " didn't exist and was created!" << NC << std::endl;
+        else
+            std::cout << RED << CLASS_NAMESPACE << __func__ << " : folder " << p.parent_path() << " didn't exist, but it was not possible to creat it!" << NC << std::endl;
+    }
     
     uint32_t serial_size = ros::serialization::serializationLength(my_ik);
     

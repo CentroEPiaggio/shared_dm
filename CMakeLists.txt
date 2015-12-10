@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(dual_manipulation_shared)
 
 ENABLE_LANGUAGE(CXX)
+SET(CMAKE_BUILD_TYPE "Debug")
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-std=c++11" COMPILER_SUPPORTS_CXX11)
@@ -15,6 +16,7 @@ else()
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Please use a different C++ compiler.")
 endif()
 
+find_package(Boost REQUIRED filesystem)
 
 find_package(catkin REQUIRED COMPONENTS
   roslib
@@ -57,7 +59,7 @@ catkin_package(
 #  CATKIN_DEPENDS roscpp
    #DEPENDS
    )
-include_directories(include ${catkin_INCLUDE_DIRS})
+include_directories(include ${catkin_INCLUDE_DIRS} ${Boost_INCLUDE_DIR})
 link_directories(${catkin_LIBRARY_DIRS})
 include_directories(src/)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
