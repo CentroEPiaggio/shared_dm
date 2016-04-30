@@ -53,7 +53,7 @@ generate_messages(DEPENDENCIES std_msgs geometry_msgs moveit_msgs pacman_vision_
 
 catkin_package(
   INCLUDE_DIRS include/
-  LIBRARIES ${PROJECT_NAME} lemon
+  LIBRARIES ${PROJECT_NAME}
 #  CATKIN_DEPENDS roscpp
    #DEPENDS
    )
@@ -62,7 +62,7 @@ link_directories(${catkin_LIBRARY_DIRS})
 include_directories(src/)
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/src)
 
-add_subdirectory(src/lemon)
+#add_subdirectory(src/lemon)
 
 add_library(${PROJECT_NAME} SHARED src/databasemapper.cpp src/geometry_tools.cpp src/serialization_utils.cpp src/parsing_utils.cpp src/databasewriter.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} sqlite3)
@@ -99,9 +99,4 @@ add_executable(convert_ik_from_legacy test/convert_ik_from_legacy.cpp)
 target_link_libraries(convert_ik_from_legacy ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(convert_ik_from_legacy dual_manipulation_shared_gencpp)
 
-add_custom_command(TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND echo 'Installing lemon library...'
-    COMMAND make install
-    WORKING_DIRECTORY ${CATKIN_PACKAGE_BIN_DESTINATION}/../../
-)
+
