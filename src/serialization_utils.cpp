@@ -9,11 +9,35 @@
 #include <ros/serialization.h>
 #include <geometry_msgs/Pose.h>
 #include <fstream>
+#include <boost/filesystem.hpp>
 
-template< typename T> bool serialize_ik(const T & my_ik, std::string filename)
+#define RED "\033[0;31m"
+#define PURPLE "\033[0;35m"
+#define GREEN "\033[0;32m"
+#define ORANGE "\033[0;33m"
+#define YELLOW "\033[1;33m"
+#define BLUE "\033[0;34m"
+#define NC "\033[0m"
+#define CLASS_NAMESPACE "DualManipulationShared::"
+
+template< typename T> bool serialize_ik(const T & my_ik, std::string filename, std::string package, std::string sub_path)
 {
-    std::string path = ros::package::getPath("dual_manipulation_grasp_db");
-    path.append("/grasp_trajectories/").append(filename);
+    std::string path = ros::package::getPath(package);
+    boost::filesystem::path p(path);
+    p /= sub_path;
+    p /= filename;
+    path = p.string();
+    
+    if(!boost::filesystem::exists(p.parent_path()))
+    {
+        if(boost::filesystem::create_directories(p.parent_path()))
+            std::cout << GREEN << CLASS_NAMESPACE << __func__ << " : folder " << p.parent_path() << " didn't exist and was created!" << NC << std::endl;
+        else
+        {
+            std::cout << RED << CLASS_NAMESPACE << __func__ << " : folder " << p.parent_path() << " didn't exist, but it was not possible to creat it!" << NC << std::endl;
+            return false;
+        }
+    }
     
     uint32_t serial_size = ros::serialization::serializationLength(my_ik);
     
@@ -45,7 +69,7 @@ template< typename T> bool serialize_ik(const T & my_ik, std::string filename)
 }
 
 template<>
-bool serialize_ik<dual_manipulation_shared::ik_service::Request>(const dual_manipulation_shared::ik_service::Request & srv, std::string filename)
+bool serialize_ik<dual_manipulation_shared::ik_service::Request>(const dual_manipulation_shared::ik_service::Request & srv, std::string filename, std::string package, std::string sub_path)
 {
   dual_manipulation_shared::grasp_trajectory grasp_msg;
   
@@ -54,17 +78,19 @@ bool serialize_ik<dual_manipulation_shared::ik_service::Request>(const dual_mani
   grasp_msg.grasp_trajectory = srv.grasp_trajectory;
   grasp_msg.object_db_id = srv.object_db_id;
   
-  return serialize_ik(grasp_msg,filename);
+  return serialize_ik(grasp_msg,filename,package,sub_path);
 }
 
-template bool serialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(const dual_manipulation_shared::ik_service_legacy::Request &, std::string);
-template bool serialize_ik<dual_manipulation_shared::grasp_trajectory>(const dual_manipulation_shared::grasp_trajectory &, std::string);
+template bool serialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(const dual_manipulation_shared::ik_service_legacy::Request &, std::string, std::string, std::string);
+template bool serialize_ik<dual_manipulation_shared::grasp_trajectory>(const dual_manipulation_shared::grasp_trajectory &, std::string, std::string, std::string);
 
-template< typename T> bool deserialize_ik(T & my_ik, std::string filename)
+template< typename T> bool deserialize_ik(T & my_ik, std::string filename, std::string package, std::string sub_path)
 {
-    
-    std::string path = ros::package::getPath("dual_manipulation_grasp_db");
-    path.append("/grasp_trajectories/").append(filename);
+    std::string path = ros::package::getPath(package);
+    boost::filesystem::path p(path);
+    p /= sub_path;
+    p /= filename;
+    path = p.string();
     
     std::fstream fs;
     // fs.open (path, std::fstream::in | std::fstream::out | std::fstream::app);
@@ -96,10 +122,10 @@ template< typename T> bool deserialize_ik(T & my_ik, std::string filename)
 }
 
 template<>
-bool deserialize_ik<dual_manipulation_shared::ik_service::Request>(dual_manipulation_shared::ik_service::Request & srv, std::string filename)
+bool deserialize_ik<dual_manipulation_shared::ik_service::Request>(dual_manipulation_shared::ik_service::Request & srv, std::string filename, std::string package, std::string sub_path)
 {
   dual_manipulation_shared::grasp_trajectory grasp_msg;
-  if(!deserialize_ik(grasp_msg,filename))
+  if(!deserialize_ik(grasp_msg,filename,package,sub_path))
     return false;
   
   srv.attObject = grasp_msg.attObject;
@@ -110,8 +136,8 @@ bool deserialize_ik<dual_manipulation_shared::ik_service::Request>(dual_manipula
   return true;
 }
 
-template bool deserialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(dual_manipulation_shared::ik_service_legacy::Request &, std::string);
-template bool deserialize_ik<dual_manipulation_shared::grasp_trajectory>(dual_manipulation_shared::grasp_trajectory &, std::string);
+template bool deserialize_ik<dual_manipulation_shared::ik_service_legacy::Request>(dual_manipulation_shared::ik_service_legacy::Request &, std::string, std::string, std::string);
+template bool deserialize_ik<dual_manipulation_shared::grasp_trajectory>(dual_manipulation_shared::grasp_trajectory &, std::string, std::string, std::string);
 
 geometry_msgs::Point difference(geometry_msgs::Point p1, geometry_msgs::Point p2)
 {

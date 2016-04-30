@@ -1,0 +1,6 @@
+dual_manipulation_parameters:
+  database_name: objects_only_simple_grasp.db
+  # end-effector id to be used as a default when considering a table in the scene
+  table_ee_id: 3
+  # Notice that this parameters file is only useful to be used with GMU in order to review existing grasps.
+  # The creation of new grasps is suggested through copy-pasting of an existing one, before proceeding with modification.
