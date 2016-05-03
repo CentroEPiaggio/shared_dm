@@ -9,3 +9,5 @@ dual_manipulation_parameters:
   table_ee_id: 3
   # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
   parallelize_plan_execute: true
+  # list of namespaces, corresponding with maximum handlable objects
+  ns_list: [ciao,bau]
