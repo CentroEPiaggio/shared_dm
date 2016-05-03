@@ -1,12 +1,12 @@
 dual_manipulation_parameters:
-  database_name: full_vito.db
+  database_name: full_simple_factory.db
   # this is used to say whether or not to use vision
   # for the gui, this means that
   # - true: the vision will find the position and write it in the gui
   # - false: set the source with the gui as the target
-  use_vision: true
+  use_vision: false
   # end-effector id to be used as a default when considering a table in the scene
-  table_ee_id: 3
+  table_ee_id: 7
   # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
   parallelize_plan_execute: true
   # list of namespaces, corresponding with maximum handlable objects

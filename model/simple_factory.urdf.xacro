@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" 
+       name="simple_factory" >
+  
+  <!-- The following xacro:included files set up definitions of parts of the robot body -->
+  <!-- misc common stuff? -->
+  <xacro:include filename="$(find youbot_description)/urdf/common.xacro" />
+  
+    <!-- MODELS -->
+  <xacro:include filename="$(find vito_description)/model/table.urdf.xacro"/>
+  <!-- <xacro:include filename="$(find dual_manipulation_shared)/model/shelf.urdf.xacro"/> -->
+  <!-- <xacro:include filename="$(find dual_manipulation_shared)/model/conveyor_belt.urdf.xacro"/> -->
+  <xacro:include filename="$(find vito_description)/model/materials.urdf"/>
+  <xacro:include filename="$(find lwr_description)/model/kuka_lwr.urdf.xacro"/>
+  <xacro:include filename="$(find soft_hand_description)/model/soft_hand.urdf.xacro"/>
+  <xacro:include filename="$(find dual_manipulation_shared)/model/tinoBot.urdf.xacro" />
+ 
+  <!-- controller manager -->
+  <!-- <xacro:include filename="$(find youbot_description)/controller/ros_controller.urdf.xacro" /> -->
+  
+  <!-- materials for visualization -->
+  <xacro:include filename="$(find youbot_description)/urdf/materials.urdf.xacro" />
+						     
+  <!-- sensors -->
+  <!-- <xacro:include filename="$(find youbot_description)/urdf/sensors/hokuyo_urg04_laser.urdf.xacro"/> -->
+
+  <!-- Now we can start using the macros xacro:included above to define the actual youbot -->
+
+  <!-- The first use of a macro.  This one was defined in base.urdf.xacro above.
+       A macro like this will expand to a set of link and joint definitions, and to additional
+       Gazebo-related extensions (sensor plugins, etc).  The macro takes an argument, name, 
+       that equals "base", and uses it to generate names for its component links and joints 
+       (e.g., base_link).  The xacro:included origin block is also an argument to the macro.  By convention, 
+       the origin block defines where the component is w.r.t its parent (in this case the parent 
+       is the world frame). For more, see http://www.ros.org/wiki/xacro -->
+
+  <link name="simple_factory_anchor" />
+
+  <xacro:tinoBot name="tinoBot" parent="simple_factory_anchor">
+    <origin xyz="0 0 0.07"/>
+  </xacro:tinoBot>
+  
+  <!-- TABLES -->
+  <xacro:model_table name="table0" 
+                    parent="simple_factory_anchor"
+                    length="1.0"
+                    width="1.30"
+                    height="0.1"
+                    plate_thickness="0.1">
+    <origin xyz="-3.0 0.65 0.1" rpy="0 0 0"/>
+  </xacro:model_table>
+    <xacro:model_table name="table1" 
+                    parent="simple_factory_anchor"
+                    length="1.0"
+                    width="1.30"
+                    height="0.1"
+                    plate_thickness="0.1">
+    <origin xyz="2.0 0.65 0.1" rpy="0 0 0"/>
+  </xacro:model_table>
+
+  <!-- LEFT ARM 0 -->
+  <xacro:kuka_lwr name="0_arm" parent="simple_factory_anchor">
+    <origin xyz="2.15 -0.5 0.1" rpy="0 0 ${M_PI*180.0/180}"/>
+      <!-- rpy="${M_PI*80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/> -->
+  </xacro:kuka_lwr>
+
+  <!-- LEFT SOFTHAND 0 -->
+  <xacro:soft_hand parent="0_arm_7_link" name="0_hand" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+
+  <!-- RIGHT ARM 0 -->
+  <xacro:kuka_lwr name="1_arm" parent="simple_factory_anchor">
+    <origin xyz="-2.15 0.5 0.10" rpy="0 0 ${M_PI*0.0/180}"/>
+      <!-- rpy="${M_PI*-80/180} ${M_PI*180.0/180} ${M_PI*0.0/180}"/> -->
+  </xacro:kuka_lwr>
+
+  <!-- RIGHT SOFTHAND 0 -->
+  <xacro:soft_hand parent="1_arm_7_link" name="1_hand" left="false" withAdaptiveTransmission="true" useMimicTag="true">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </xacro:soft_hand>
+
+</robot>
