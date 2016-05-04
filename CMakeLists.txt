@@ -39,6 +39,8 @@ add_message_files(
   ik_response.msg
   gui_target_response.msg
   good_grasp_msg.msg
+  planner_service_request.msg
+  planner_service_response.msg
 )
 
 add_service_files(

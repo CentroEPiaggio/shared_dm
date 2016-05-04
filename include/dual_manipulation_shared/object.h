@@ -6,6 +6,7 @@ class Object
 {
 public:
     uint64_t id;
+    std::string name;
 };
 
 #endif

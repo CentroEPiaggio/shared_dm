@@ -1,0 +1,9 @@
+string command
+planner_item source
+planner_item destination
+uint32 object_id
+string object_name
+float64 time
+planner_item[] filtered_source_nodes
+planner_item[] filtered_target_nodes
+uint32 priority
