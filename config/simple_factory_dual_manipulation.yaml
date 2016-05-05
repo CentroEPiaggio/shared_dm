@@ -6,7 +6,7 @@ dual_manipulation_parameters:
   # - false: set the source with the gui as the target
   use_vision: false
   # end-effector id to be used as a default when considering a table in the scene
-  table_ee_id: 7
+  table_ee_id: 4
   # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
   parallelize_plan_execute: true
   # list of namespaces, corresponding with maximum handlable objects
