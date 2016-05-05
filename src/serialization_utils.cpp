@@ -3,7 +3,6 @@
 #include "ros/ros.h"
 #include "dual_manipulation_shared/ik_service.h"
 #include "dual_manipulation_shared/ik_service_legacy.h"
-#include "dual_manipulation_shared/grasp_trajectory.h"
 #include <ros/package.h>
 
 #include <ros/serialization.h>
@@ -189,4 +188,28 @@ void down_sampling(std::vector<geometry_msgs::Pose>& poses, int period)
     new_poses.push_back(poses.back());
     
     poses.swap(new_poses);
+}
+
+bool read_grasp_msg(uint obj_id, uint grasp_id, dual_manipulation_shared::grasp_trajectory& grasp_msg)
+{
+    if(deserialize_ik(grasp_msg,"object" + std::to_string(obj_id) + "/grasp" + std::to_string(grasp_id % OBJ_GRASP_FACTOR)))
+        std::cout << CLASS_NAMESPACE << __func__ << " : Deserialization object" + std::to_string(obj_id) + "/grasp" + std::to_string(grasp_id % OBJ_GRASP_FACTOR) << " OK!" << std::endl;
+    else
+    {
+        std::cout << CLASS_NAMESPACE << __func__ << " : Error in deserialization object" + std::to_string(obj_id) + "/grasp" + std::to_string(grasp_id % OBJ_GRASP_FACTOR) << "!" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::grasp_trajectory& grasp_msg)
+{
+    if(serialize_ik(grasp_msg,"object" + std::to_string(obj_id) + "/grasp" + std::to_string(grasp_id % OBJ_GRASP_FACTOR)))
+        std::cout << CLASS_NAMESPACE << __func__ << " : Serialization object" + std::to_string(obj_id) << "/grasp" << (grasp_id % OBJ_GRASP_FACTOR) << " OK!" << std::endl;
+    else
+    {
+        std::cout << CLASS_NAMESPACE << __func__ << " : Error in serialization object" + std::to_string(obj_id) << "/grasp" << (grasp_id % OBJ_GRASP_FACTOR) << "!" << std::endl;
+        return false;
+    }
+    return true;
 }
