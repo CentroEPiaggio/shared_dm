@@ -112,12 +112,12 @@
     <joint name="${name}_ee_joint" type="fixed">
       <origin xyz="0 0 0.025" rpy="0 0 0"/>
       <parent link="${name}_footprint"/>
-      <!-- <child link="${name}_ee"/> -->
-      <child link="belt0_p"/>
+      <child link="${name}_ee"/>
+      <!-- <child link="belt0_p"/> -->
     </joint>
 
-    <!-- <link name="${name}_ee"> -->
-    <link name="belt0_p">
+    <!-- <link name="belt0_p"> -->
+    <link name="${name}_ee">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
