@@ -69,7 +69,7 @@
         </collision>
     </link>
     
-    <joint name="${parent}_${name}_cylinder_joint1" type="fixed">
+    <!-- <joint name="${parent}_${name}_cylinder_joint1" type="fixed">
         <parent link="${name}_link1"/>
         <child link="${name}_cylinder_leg1"/>
     </joint>
@@ -117,7 +117,7 @@
                 <box size="0.05 0.05 ${leg_length}"/>
             </geometry>
         </collision>
-    </link>
+    </link> -->
 
     <!-- BOTTOM -->
     
@@ -146,7 +146,7 @@
         </collision>
     </link>
 
-    <joint name="${parent}_${name}_cylinder_joint3" type="fixed">
+   <!--  <joint name="${parent}_${name}_cylinder_joint3" type="fixed">
         <parent link="${name}_link2"/>
         <child link="${name}_cylinder_leg3"/>
     </joint>
@@ -194,7 +194,7 @@
                 <box size="0.05 0.05 ${leg_length}"/>
             </geometry>
         </collision>
-    </link>
+    </link> -->
     
     <!-- REAL ROBOT -->
     
