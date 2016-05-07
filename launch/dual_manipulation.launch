@@ -3,7 +3,8 @@
         <!-- LAUNCH INTERFACE -->
         <arg name="robot_name" default="vito" />
         <arg name="tf_prefix_custom" default=""/>
-	<arg name="is_tf_prefix_custom" default="false"/>
+        <arg name="is_tf_prefix_custom" default="false"/>
+        <arg name="y_offset" default="0"/>
         
         <!-- LAUNCH IMPLEMENTATION -->
         <!-- remember to set the parameters properly -->
@@ -13,11 +14,11 @@
         <rosparam command="load" file="$(find dual_manipulation_shared)/config/$(arg robot_name)_dual_manipulation.yaml" />
 
         <!-- set fixed transform between world and vito_anchor -->
-	<group if="$(is_tf_prefix_custom)">
-	  <node pkg="tf" type="static_transform_publisher" name="$(arg robot_name)_world" args="0 0 0 0 0 0 $(arg tf_prefix_custom)/$(arg robot_name)_anchor world 500"/>
+	<group if="$(arg is_tf_prefix_custom)">
+	  <node pkg="tf" type="static_transform_publisher" name="$(arg robot_name)_world" args="0 $(arg y_offset) 0 0 0 0 world $(arg tf_prefix_custom)/$(arg robot_name)_anchor 500"/>
 	</group>
-	<group unless="$(is_tf_prefix_custom)">
-	  <node pkg="tf" type="static_transform_publisher" name="$(arg robot_name)_world" args="0 0 0 0 0 0 $(arg robot_name)_anchor world 500"/>
+	<group unless="$(arg is_tf_prefix_custom)">
+	  <node pkg="tf" type="static_transform_publisher" name="$(arg robot_name)_world" args="0 0 0 0 0 0 world $(arg robot_name)_anchor 500"/>
 	</group>
 
 </launch>
