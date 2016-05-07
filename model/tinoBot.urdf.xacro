@@ -140,6 +140,34 @@
         </geometry>
         <material name="youBot/DarkGrey"/>
       </visual>
+      <visual>
+        <origin xyz="${caster_offset_x+wheel_offset_x} ${caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${wheel_radius}"/>
+        </geometry>
+        <material name="youBot/Orange"/>
+      </visual>
+      <visual>
+        <origin xyz="${caster_offset_x+wheel_offset_x} ${-caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${wheel_radius}"/>
+        </geometry>
+        <material name="youBot/Orange"/>
+      </visual>
+      <visual>
+        <origin xyz="${-caster_offset_x+wheel_offset_x} ${caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${wheel_radius}"/>
+        </geometry>
+        <material name="youBot/Orange"/>
+      </visual>
+      <visual>
+        <origin xyz="${-caster_offset_x+wheel_offset_x} ${-caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
+        <geometry>
+          <sphere radius="${wheel_radius}"/>
+        </geometry>
+        <material name="youBot/Orange"/>
+      </visual>
       <collision>
         <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
@@ -149,206 +177,42 @@
       </collision>
     </link>
 
-    <!-- front left wheel -->
-    <joint name="${name}_caster_joint_fl" type="fixed"> <!-- type="continuous"> -->
-      <origin xyz="${caster_offset_x} ${caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
-      <!-- <axis xyz="0 0 1"/>
-      <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
-      <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
-      <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
+    <!-- <joint name="${name}_link_wheels" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <child link="${name}_wheels"/>
       <parent link="${name}_link"/>
-      <child link="${name}_caster_link_fl"/>
     </joint>
-    <link name="${name}_caster_link_fl">
-      <inertial>
-        <mass value="${caster_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
-    </link>
-
-    <joint name="${name}_wheel_joint_fl" type="fixed"> <!-- type="continuous"> -->
-      <!-- <axis xyz="0 1 0"/>
-      <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
-      <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
-      <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
-      <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="${name}_caster_link_fl"/>
-      <child link="${name}_wheel_link_fl"/>
-    </joint>
-    <link name="${name}_wheel_link_fl">
-      <inertial>
-        <mass value="${wheel_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
+    <link name="${name}_wheels">
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
-        <!--<mesh filename="package://youbot_description/meshes/youbot_base/youbot_wheel.stl" />-->
+        <origin xyz="${caster_offset_x+wheel_offset_x} ${caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
         <geometry>
           <sphere radius="${wheel_radius}"/>
         </geometry>
         <material name="youBot/Orange"/>
       </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
-        <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_radius}"/>
-        </geometry>
-      </collision>
-    </link>
-
-    <!-- front right wheel -->
-    <joint name="${name}_caster_joint_fr"  type="fixed"> <!-- type="continuous"> -->
-      <origin xyz="${caster_offset_x} ${-caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
-      <!-- <axis xyz="0 0 1"/>
-      <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
-      <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
-      <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
-      <parent link="${name}_link"/>
-      <child link="${name}_caster_link_fr"/>
-    </joint>
-    <link name="${name}_caster_link_fr">
-      <inertial>
-        <mass value="${caster_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
-    </link>
-
-    <joint name="${name}_wheel_joint_fr"  type="fixed"> <!-- type="continuous"> -->
-      <!-- <axis xyz="0 1 0"/>
-      <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
-      <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
-      <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
-      <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="${name}_caster_link_fr"/>
-      <child link="${name}_wheel_link_fr"/>
-    </joint>
-    <link name="${name}_wheel_link_fr">
-      <inertial>
-        <mass value="${wheel_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="${caster_offset_x+wheel_offset_x} ${-caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
         <geometry>
-          <!--<mesh filename="package://youbot_description/meshes/youbot_base/youbot_wheel.stl" />-->
           <sphere radius="${wheel_radius}"/>
         </geometry>
         <material name="youBot/Orange"/>
       </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
-        <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_radius}"/>
-        </geometry>
-      </collision>
-    </link>
-
-    <!-- back left wheel -->
-    <joint name="${name}_caster_joint_bl"  type="fixed"> <!-- type="continuous"> -->
-      <origin xyz="${-caster_offset_x} ${caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
-      <!-- <axis xyz="0 0 1"/>
-      <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
-      <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
-      <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
-      <parent link="${name}_link"/>
-      <child link="${name}_caster_link_bl"/>
-    </joint>
-    <link name="${name}_caster_link_bl">
-      <inertial>
-        <mass value="${caster_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
-    </link>
-
-    <joint name="${name}_wheel_joint_bl"  type="fixed"> <!-- type="continuous"> -->
-      <!-- <axis xyz="0 1 0"/>
-      <limit effort="10" velocity="10"/>
-      <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
-      <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
-      <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
-      <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="${name}_caster_link_bl"/>
-      <child link="${name}_wheel_link_bl"/>
-    </joint>
-    <link name="${name}_wheel_link_bl">
-      <inertial>
-        <mass value="${wheel_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="${-caster_offset_x+wheel_offset_x} ${caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
         <geometry>
-          <!--<mesh filename="package://youbot_description/meshes/youbot_base/youbot_wheel.stl" />-->
           <sphere radius="${wheel_radius}"/>
         </geometry>
         <material name="youBot/Orange"/>
       </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
-        <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_radius}"/>
-        </geometry>
-      </collision>
-    </link>
-
-    <!-- back right wheel -->
-    <joint name="${name}_caster_joint_br" type="fixed"> <!-- type="continuous"> -->
-      <origin xyz="${-caster_offset_x} ${-caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
-      <!-- <axis xyz="0 0 1"/>
-      <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
-      <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
-      <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
-      <parent link="${name}_link"/>
-      <child link="${name}_caster_link_br"/>
-    </joint>
-    <link name="${name}_caster_link_br">
-      <inertial>
-        <mass value="${caster_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
-    </link>
-
-    <joint name="${name}_wheel_joint_br" type="fixed"> <!-- type="continuous"> -->
-      <axis xyz="0 1 0"/>
-      <!-- <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
-      <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
-      <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
-      <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="${name}_caster_link_br"/>
-      <child link="${name}_wheel_link_br"/>
-    </joint>
-    <link name="${name}_wheel_link_br">
-      <inertial>
-        <mass value="${wheel_mass}"/>
-        <origin xyz="0 0 0"/>
-        <inertia ixx="0.012411765597" ixy="-0.000711733678" ixz="0.00050272983" iyy="0.015218160428" iyz="-0.000004273467" izz="0.011763977943"/>
-      </inertial>
       <visual>
-        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <origin xyz="${-caster_offset_x+wheel_offset_x} ${-caster_offset_y+wheel_offset_y} ${caster_offset_z+wheel_offset_z}" rpy="0 0 0"/>
         <geometry>
-          <!--<mesh filename="package://youbot_description/meshes/youbot_base/youbot_wheel.stl" />-->
           <sphere radius="${wheel_radius}"/>
         </geometry>
         <material name="youBot/Orange"/>
       </visual>
-      <collision>
-        <origin xyz="0 0 0" rpy="${M_PI/2} 0 0"/>
-        <geometry>
-          <cylinder radius="${wheel_radius}" length="${wheel_radius}"/>
-        </geometry>
-      </collision>
-    </link>
-
-    <!-- extensions -->
-    <!-- <xacro:youbot_base_gazebo/> -->
-    <!-- <xacro:youbot_base_transmission/> -->
+    </link> -->
 
   </xacro:macro>
 </robot>
+
