@@ -40,12 +40,12 @@
 
   <property name="p_joint_effort" value="30"/>
   <property name="p_joint_velocity" value="10"/>
-  <property name="px_lower_limit" value="-2"/>
-  <property name="px_upper_limit" value="2"/>
-  <property name="py_lower_limit" value="-1"/>
-  <property name="py_upper_limit" value="1"/>
+  <property name="px_lower_limit_def" value="-2"/>
+  <property name="px_upper_limit_def" value="2"/>
+  <property name="py_lower_limit_def" value="-1"/>
+  <property name="py_upper_limit_def" value="1"/>
 
-  <xacro:macro name="tinoBot" params="parent name *origin">
+  <xacro:macro name="tinoBot" params="parent name *origin px_lower_limit:=${px_lower_limit_def} px_upper_limit:=${px_upper_limit_def} py_lower_limit:=${py_lower_limit_def} py_upper_limit:=${py_upper_limit_def}">
 
     <!-- <joint name="${name}_base_joint" type="fixed">
       <insert_block name="origin"/>
@@ -150,16 +150,16 @@
     </link>
 
     <!-- front left wheel -->
-    <joint name="caster_joint_fl" type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_caster_joint_fl" type="fixed"> <!-- type="continuous"> -->
       <origin xyz="${caster_offset_x} ${caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
       <!-- <axis xyz="0 0 1"/>
       <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
       <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
       <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
       <parent link="${name}_link"/>
-      <child link="caster_link_fl"/>
+      <child link="${name}_caster_link_fl"/>
     </joint>
-    <link name="caster_link_fl">
+    <link name="${name}_caster_link_fl">
       <inertial>
         <mass value="${caster_mass}"/>
         <origin xyz="0 0 0"/>
@@ -167,16 +167,16 @@
       </inertial>
     </link>
 
-    <joint name="wheel_joint_fl" type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_wheel_joint_fl" type="fixed"> <!-- type="continuous"> -->
       <!-- <axis xyz="0 1 0"/>
       <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
       <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
       <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
       <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="caster_link_fl"/>
-      <child link="wheel_link_fl"/>
+      <parent link="${name}_caster_link_fl"/>
+      <child link="${name}_wheel_link_fl"/>
     </joint>
-    <link name="wheel_link_fl">
+    <link name="${name}_wheel_link_fl">
       <inertial>
         <mass value="${wheel_mass}"/>
         <origin xyz="0 0 0"/>
@@ -199,16 +199,16 @@
     </link>
 
     <!-- front right wheel -->
-    <joint name="caster_joint_fr"  type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_caster_joint_fr"  type="fixed"> <!-- type="continuous"> -->
       <origin xyz="${caster_offset_x} ${-caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
       <!-- <axis xyz="0 0 1"/>
       <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
       <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
       <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
       <parent link="${name}_link"/>
-      <child link="caster_link_fr"/>
+      <child link="${name}_caster_link_fr"/>
     </joint>
-    <link name="caster_link_fr">
+    <link name="${name}_caster_link_fr">
       <inertial>
         <mass value="${caster_mass}"/>
         <origin xyz="0 0 0"/>
@@ -216,16 +216,16 @@
       </inertial>
     </link>
 
-    <joint name="wheel_joint_fr"  type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_wheel_joint_fr"  type="fixed"> <!-- type="continuous"> -->
       <!-- <axis xyz="0 1 0"/>
       <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
       <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
       <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
       <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="caster_link_fr"/>
-      <child link="wheel_link_fr"/>
+      <parent link="${name}_caster_link_fr"/>
+      <child link="${name}_wheel_link_fr"/>
     </joint>
-    <link name="wheel_link_fr">
+    <link name="${name}_wheel_link_fr">
       <inertial>
         <mass value="${wheel_mass}"/>
         <origin xyz="0 0 0"/>
@@ -248,16 +248,16 @@
     </link>
 
     <!-- back left wheel -->
-    <joint name="caster_joint_bl"  type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_caster_joint_bl"  type="fixed"> <!-- type="continuous"> -->
       <origin xyz="${-caster_offset_x} ${caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
       <!-- <axis xyz="0 0 1"/>
       <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
       <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
       <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
       <parent link="${name}_link"/>
-      <child link="caster_link_bl"/>
+      <child link="${name}_caster_link_bl"/>
     </joint>
-    <link name="caster_link_bl">
+    <link name="${name}_caster_link_bl">
       <inertial>
         <mass value="${caster_mass}"/>
         <origin xyz="0 0 0"/>
@@ -265,17 +265,17 @@
       </inertial>
     </link>
 
-    <joint name="wheel_joint_bl"  type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_wheel_joint_bl"  type="fixed"> <!-- type="continuous"> -->
       <!-- <axis xyz="0 1 0"/>
       <limit effort="10" velocity="10"/>
       <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
       <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
       <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
       <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="caster_link_bl"/>
-      <child link="wheel_link_bl"/>
+      <parent link="${name}_caster_link_bl"/>
+      <child link="${name}_wheel_link_bl"/>
     </joint>
-    <link name="wheel_link_bl">
+    <link name="${name}_wheel_link_bl">
       <inertial>
         <mass value="${wheel_mass}"/>
         <origin xyz="0 0 0"/>
@@ -298,16 +298,16 @@
     </link>
 
     <!-- back right wheel -->
-    <joint name="caster_joint_br" type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_caster_joint_br" type="fixed"> <!-- type="continuous"> -->
       <origin xyz="${-caster_offset_x} ${-caster_offset_y} ${caster_offset_z}" rpy="0 0 0"/>
       <!-- <axis xyz="0 0 1"/>
       <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
       <dynamics damping="${caster_joint_damping}" friction="${caster_joint_friction}"/>
       <safety_controller k_velocity="${caster_joint_safety_k_velocity}"/> -->
       <parent link="${name}_link"/>
-      <child link="caster_link_br"/>
+      <child link="${name}_caster_link_br"/>
     </joint>
-    <link name="caster_link_br">
+    <link name="${name}_caster_link_br">
       <inertial>
         <mass value="${caster_mass}"/>
         <origin xyz="0 0 0"/>
@@ -315,16 +315,16 @@
       </inertial>
     </link>
 
-    <joint name="wheel_joint_br" type="fixed"> <!-- type="continuous"> -->
+    <joint name="${name}_wheel_joint_br" type="fixed"> <!-- type="continuous"> -->
       <axis xyz="0 1 0"/>
       <!-- <limit effort="${wheel_joint_effort}" velocity="${wheel_joint_velocity}"/>
       <dynamics damping="${wheel_joint_damping}" friction="${wheel_joint_friction}"/>
       <safety_controller k_velocity="${wheel_joint_safety_k_velocity}"/> -->
       <origin xyz="${wheel_offset_x} ${wheel_offset_y} ${wheel_offset_z}" rpy="0 0 0"/>
-      <parent link="caster_link_br"/>
-      <child link="wheel_link_br"/>
+      <parent link="${name}_caster_link_br"/>
+      <child link="${name}_wheel_link_br"/>
     </joint>
-    <link name="wheel_link_br">
+    <link name="${name}_wheel_link_br">
       <inertial>
         <mass value="${wheel_mass}"/>
         <origin xyz="0 0 0"/>
