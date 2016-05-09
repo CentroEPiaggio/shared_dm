@@ -14,6 +14,7 @@
   <xacro:include filename="$(find lwr_description)/model/kuka_lwr.urdf.xacro"/>
   <xacro:include filename="$(find soft_hand_description)/model/soft_hand.urdf.xacro"/>
   <xacro:include filename="$(find dual_manipulation_shared)/model/tinoBot.urdf.xacro" />
+  <xacro:include filename="$(find dual_manipulation_shared)/model/robin.urdf.xacro" />
  
   <!-- controller manager -->
   <!-- <xacro:include filename="$(find youbot_description)/controller/ros_controller.urdf.xacro" /> -->
@@ -36,10 +37,22 @@
 
   <link name="simple_factory_anchor" />
 
-  <xacro:tinoBot name="tinoBot" parent="simple_factory_anchor">
+  <!-- <xacro:robin name="tinoBot1" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
+    <origin xyz="0.0 0.0 0.0"/>
+  </xacro:robin>
+
+  <xacro:robin name="tinoBot2" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
+    <origin xyz="0.0 1.0 0.0"/>
+  </xacro:robin> -->
+  
+  <xacro:tinoBot name="tinoBot1" parent="simple_factory_anchor">
     <origin xyz="0 0 0.07"/>
   </xacro:tinoBot>
   
+  <!-- <xacro:tinoBot name="tinoBot2" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
+    <origin xyz="0 0.5 0.07"/> -->
+  </xacro:tinoBot>
+
   <!-- TABLES -->
   <xacro:model_table name="table0" 
                     parent="simple_factory_anchor"
