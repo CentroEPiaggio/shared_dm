@@ -338,6 +338,12 @@ bool databaseMapper::fillTableList()
 
 void databaseMapper::initialize_database(std::string database_name)
 {
+    if (database_name.empty())
+    {
+        std::cout << "FATAL in databaseMapper : I need the name of a database to open: did you give me one, or loaded one on the server?" << std::endl;
+        abort();
+    }
+    
     std::string path = ros::package::getPath("dual_manipulation_grasp_db");
     
     int rc;
@@ -390,7 +396,7 @@ void databaseMapper::initialize_database(std::string database_name)
 
 databaseMapper::databaseMapper()
 {
-  std::string database_name("test.db");
+  std::string database_name;
   
   XmlRpc::XmlRpcValue params;
   ros::NodeHandle node;
