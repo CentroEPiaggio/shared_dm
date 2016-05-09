@@ -1,58 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- modified version of omnirob_robin_base from github.com/robinJKU/omnirob_robin -->
-<robot xmlns:xacro="http://ros.org/wiki/xacro" name="robin"> 
-   <xacro:macro name="base" params="">
-      <link name="world" />
-      <joint name="odom_joint" type="fixed">
+<robot xmlns:xacro="http://ros.org/wiki/xacro"> 
+
+   <property name="px_lower_limit_def" value="-2"/>
+   <property name="px_upper_limit_def" value="2"/>
+   <property name="py_lower_limit_def" value="-1"/>
+   <property name="py_upper_limit_def" value="1"/>
+
+   <xacro:macro name="robin" params="parent name *origin px_lower_limit:=${px_lower_limit_def} px_upper_limit:=${px_upper_limit_def} py_lower_limit:=${py_lower_limit_def} py_upper_limit:=${py_upper_limit_def}">
+
+      <!-- <link name="world" />
+      <joint name="${name}_odom_joint" type="fixed">
          <parent link="world" />
-         <child link="odom" />
+         <child link="${name}_odom" />
       </joint>
-      <link name="odom">
+      <link name="${name}_odom">
          <inertial>
             <mass value="1" />
             <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
             <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1" />
          </inertial>
-      </link>
-      <joint name="base_x_joint" type="prismatic">
-         <origin xyz="0 0 0" rpy="0 0 0" />
+      </link> -->
+      <joint name="${name}_base_p1_joint" type="prismatic">
+         <insert_block name="origin"/>
          <axis xyz="1 0 0" />
          <dynamics damping="0.0" friction="0.0" />
-         <limit effort="10" velocity="1.0" lower="-100" upper="100" />
-         <parent link="odom" />
-         <child link="base_x_link" />
+         <limit effort="10" velocity="1.0" lower="${px_lower_limit}" upper="${px_upper_limit}" />
+         <parent link="${parent}" />
+         <child link="${name}_base_x_link" />
       </joint>
-      <link name="base_x_link">
+      <link name="${name}_base_x_link">
          <inertial>
             <mass value="1" />
             <origin xyz="0 0 0.0" />
             <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1" />
          </inertial>
       </link>
-      <joint name="base_y_joint" type="prismatic">
+      <joint name="${name}_base_p2_joint" type="prismatic">
          <origin xyz="0 0 0" rpy="0 0 0" />
          <axis xyz="0 1 0" />
          <dynamics damping="0.0" friction="0.0" />
-         <limit effort="10" velocity="1.0" lower="-100" upper="100" />
-         <parent link="base_x_link" />
-         <child link="base_y_link" />
+         <limit effort="10" velocity="1.0" lower="${py_lower_limit}" upper="${py_upper_limit}" />
+         <parent link="${name}_base_x_link" />
+         <child link="${name}_base_y_link" />
       </joint>
-      <link name="base_y_link">
+      <link name="${name}_base_y_link">
          <inertial>
             <mass value="1" />
             <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
             <inertia ixx="0.1" ixy="0.0" ixz="0.0" iyy="0.1" iyz="0.0" izz="0.1" />
          </inertial>
       </link>
-      <joint name="base_yaw_joint" type="continuous">
+      <joint name="${name}_base_p3_joint" type="continuous">
          <origin xyz="0 0 0" rpy="0 0 0" />
          <axis xyz="0 0 1" />
          <dynamics damping="0.0" friction="0.0" />
          <limit effort="10" velocity="1.0" lower="-100" upper="100"/>
-         <parent link="base_y_link" />
-         <child link="base_link" />
+         <parent link="${name}_base_y_link" />
+         <child link="${name}_link" />
       </joint>
-      <link name="base_link">
+      <link name="${name}_link">
          <inertial>
             <mass value="1.0" />
             <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
@@ -68,29 +75,52 @@
                <color rgba="0.5 0.5 0.5 1.0" />
             </material>
          </visual>
-         <collision>
+         <!-- <collision>
             <origin xyz="0.0 0.0 0.36" rpy="0 0 0" />
             <geometry>
                <cylinder length="0.71" radius="0.425" />
             </geometry>
+         </collision> -->
+         <collision>
+            <origin xyz="100.0 100.0 100.36" rpy="0 0 0" />
+            <geometry>
+               <cylinder length="0.001" radius="0.005" />
+            </geometry>
          </collision>
       </link>
-      <joint name="base_mass_joint" type="fixed">
-         <origin xyz="0 0 0.4" rpy="0 0 0" />
-         <parent link="base_link" />
-         <child link="base_mass_link" />
+      <joint name="${name}_base_mass_joint" type="fixed">
+         <origin xyz="0 0 0.725" rpy="0 0 0" />
+         <parent link="${name}_link" />
+         <!-- <child link="${name}_base_mass_link" /> -->
+         <child link="${name}_ee"/>
       </joint>
-      <link name="base_mass_link">
+      <link name="${name}_ee">
+      <!-- <link name="${name}_base_mass_link"> -->
          <inertial>
             <mass value="80.0" />
             <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
             <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5" />
          </inertial>
       </link>
-   </xacro:macro>
 
-   <xacro:base>
-   </xacro:base>
+      <!-- <joint name="${name}_ee_joint" type="fixed">
+         <origin xyz="0 0 0.325" rpy="0 0 0"/>
+         <parent link="${name}_base_mass_link"/>
+         <child link="${name}_ee"/>
+      </joint>
+
+      <link name="${name}_ee">
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+               <box size="0.1 0.1 0.1"/>
+            </geometry>
+            <material name="blue">
+               <color rgba="0 0 .8 1"/>
+            </material>
+         </visual>
+      </link> -->
+   </xacro:macro>
 
 </robot>
 
