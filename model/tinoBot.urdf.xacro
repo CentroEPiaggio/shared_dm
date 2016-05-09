@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" 
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+<!-- <robot xmlns:sensor="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" 
        xmlns:controller="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" 
        xmlns:interface="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" 
        xmlns:xacro="http://ros.org/wiki/xacro">
  
   <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.gazebo.xacro"/>
-  <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.transmission.xacro"/>
+  <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.transmission.xacro"/> -->
 
   <!-- simplified box collision geometry for base -->
   <property name="base_size_x" value="0.570"/>
@@ -75,15 +76,15 @@
 
     <link name="${name}_footprint_p2"/>
 
-    <joint name="${name}_base_p3_joint" type="continuous">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+    <joint name="${name}_base_p3_joint" type="revolute">
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
       <axis xyz="0 0 1"/>
-      <limit effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
+      <limit lower="-6.28" upper="6.28" effort="${caster_joint_effort}" velocity="${caster_joint_velocity}"/>
       <parent link="${name}_footprint_p2"/>
-      <child link="${name}_footprint"/>
+      <child link="${name}_link"/>
     </joint>
 
-    <link name="${name}_footprint">
+    <!-- <link name="${name}_footprint">
       <inertial>
         <mass value="0.1"/>
         <origin xyz="0 0 ${-base_size_z / 2.0}" rpy="0 0 0"/>
@@ -107,13 +108,12 @@
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <child link="${name}_link"/>
       <parent link="${name}_footprint"/>
-    </joint>
+    </joint> -->
 
     <joint name="${name}_ee_joint" type="fixed">
       <origin xyz="0 0 0.025" rpy="0 0 0"/>
-      <parent link="${name}_footprint"/>
+      <parent link="${name}_link"/>
       <child link="${name}_ee"/>
-      <!-- <child link="belt0_p"/> -->
     </joint>
 
     <!-- <link name="belt0_p"> -->
