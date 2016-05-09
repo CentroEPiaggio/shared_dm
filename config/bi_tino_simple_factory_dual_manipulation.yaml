@@ -9,5 +9,7 @@ dual_manipulation_parameters:
   table_ee_id: 5
   # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
   parallelize_plan_execute: true
+  # when set to true, the moving state is triggered once in planned state
+  auto_moving_after_plan: true
   # list of namespaces, corresponding with maximum handlable objects
   ns_list: [ns_obj1,ns_obj2,ns_obj3]
