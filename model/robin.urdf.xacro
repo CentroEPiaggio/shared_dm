@@ -69,27 +69,28 @@
          <visual>
             <origin xyz="0 0 0" rpy="1.57079 0 1.57079" />
             <geometry>
-               <mesh filename="package://omnirob_robin_description/meshes/omnirob.stl" scale="0.001 0.001 0.001" />
+               <mesh filename="package://omnirob_robin_description/meshes/omnirob.stl" scale="0.0005 0.0005 0.0005" />
             </geometry>
             <material name="Green">
                <color rgba="0.5 0.5 0.5 1.0" />
             </material>
          </visual>
-         <!-- <collision>
-            <origin xyz="0.0 0.0 0.36" rpy="0 0 0" />
-            <geometry>
-               <cylinder length="0.71" radius="0.425" />
-            </geometry>
-         </collision> -->
          <collision>
+            <origin xyz="0.0 0.0 0.18" rpy="0 0 0" />
+            <geometry>
+               <box size="0.425 0.425 0.36"/>
+               <!-- <cylinder length="0.36" radius="0.2125" /> -->
+            </geometry>
+         </collision>
+         <!-- <collision>
             <origin xyz="100.0 100.0 100.36" rpy="0 0 0" />
             <geometry>
                <cylinder length="0.001" radius="0.005" />
             </geometry>
-         </collision>
+         </collision> -->
       </link>
       <joint name="${name}_base_mass_joint" type="fixed">
-         <origin xyz="0 0 0.725" rpy="0 0 0" />
+         <origin xyz="0 0 0.365" rpy="0 0 0" />
          <parent link="${name}_link" />
          <!-- <child link="${name}_base_mass_link" /> -->
          <child link="${name}_ee"/>
@@ -101,6 +102,23 @@
             <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
             <inertia ixx="0.5" ixy="0.0" ixz="0.0" iyy="0.5" iyz="0.0" izz="0.5" />
          </inertial>
+         <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+               <box size="0.1 0.1 0.001" />
+            </geometry>
+            <material name="Green">
+               <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+         </visual>
+         <collision>
+            <geometry>
+               <box size="0.1 0.1 0.001" />
+            </geometry>
+            <material name="Green">
+               <color rgba="0.5 0.5 0.5 1.0" />
+            </material>
+         </collision>
       </link>
 
       <!-- <joint name="${name}_ee_joint" type="fixed">
