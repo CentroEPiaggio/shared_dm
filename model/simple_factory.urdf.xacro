@@ -37,28 +37,28 @@
 
   <link name="simple_factory_anchor" />
 
-  <!-- <xacro:robin name="tinoBot1" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
-    <origin xyz="0.0 0.0 0.0"/>
+  <xacro:robin name="tinoBot1" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
+    <origin xyz="0.0 0.0 -0.35"/>
   </xacro:robin>
 
-  <xacro:robin name="tinoBot2" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
+  <!-- <xacro:robin name="tinoBot2" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
     <origin xyz="0.0 1.0 0.0"/>
   </xacro:robin> -->
   
-  <xacro:tinoBot name="tinoBot1" parent="simple_factory_anchor">
+  <!-- <xacro:tinoBot name="tinoBot1" parent="simple_factory_anchor">
     <origin xyz="0 0 0.07"/>
-  </xacro:tinoBot>
+  </xacro:tinoBot> -->
   
   <!-- <xacro:tinoBot name="tinoBot2" parent="simple_factory_anchor" px_lower_limit="-2" px_upper_limit="2" py_lower_limit="-1" py_upper_limit="1">
-    <origin xyz="0 0.5 0.07"/> -->
-  </xacro:tinoBot>
+    <origin xyz="0 0.5 0.07"/>
+  </xacro:tinoBot> -->
 
   <!-- TABLES -->
   <xacro:model_table name="table0" 
                     parent="simple_factory_anchor"
                     length="0.5"
                     width="1.0"
-                    height="0.1"
+                    height="0.45"
                     plate_thickness="0.1">
     <origin xyz="-2.5 0.5 0.1" rpy="0 0 0"/>
   </xacro:model_table>
@@ -66,7 +66,7 @@
                     parent="simple_factory_anchor"
                     length="0.5"
                     width="1.0"
-                    height="0.1"
+                    height="0.45"
                     plate_thickness="0.1">
     <origin xyz="2.0 0.5 0.1" rpy="0 0 0"/>
   </xacro:model_table>
@@ -92,5 +92,37 @@
   <xacro:soft_hand parent="1_arm_7_link" name="1_right_hand" left="false" withAdaptiveTransmission="true" useMimicTag="true">
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </xacro:soft_hand>
+
+  <!-- a collision column in the scene -->
+  <joint name="simple_factory_column_1_joint" type="fixed">
+    <origin xyz="-1.5 0.8 0.0" rpy="0 0 0" />
+    <parent link="simple_factory_anchor" />
+    <child link="simple_factory_column_1_link" />
+  </joint>
+  <link name="simple_factory_column_1_link">
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      <geometry>
+         <cylinder length="1.4" radius="0.35" />
+         <!-- <box size="1.0 0.3 1.4"/> -->
+      </geometry>
+    </collision>
+  </link>
+
+  <!-- a collision column in the scene -->
+  <joint name="simple_factory_column_2_joint" type="fixed">
+    <origin xyz="1.5 -0.8 0.0" rpy="0 0 0" />
+    <parent link="simple_factory_anchor" />
+    <child link="simple_factory_column_2_link" />
+  </joint>
+  <link name="simple_factory_column_2_link">
+    <collision>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
+      <geometry>
+         <cylinder length="1.4" radius="0.35" />
+         <!-- <box size="1.0 0.3 1.4"/> -->
+      </geometry>
+    </collision>
+  </link>
 
 </robot>
