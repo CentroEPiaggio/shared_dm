@@ -202,14 +202,21 @@ bool read_grasp_msg(uint obj_id, uint grasp_id, dual_manipulation_shared::grasp_
     return true;
 }
 
-bool write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::grasp_trajectory& grasp_msg)
+int write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::grasp_trajectory& grasp_msg)
 {
+    if(grasp_id >= OBJ_GRASP_FACTOR)
+    {
+        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : Cannot serialize grasps whose ID is greater than " << OBJ_GRASP_FACTOR << " (requested: " << grasp_id << ") - the file name will reflect this");
+    }
     if(serialize_ik(grasp_msg,"object" + std::to_string(obj_id) + "/grasp" + std::to_string(grasp_id % OBJ_GRASP_FACTOR)))
-        std::cout << CLASS_NAMESPACE << __func__ << " : Serialization object" + std::to_string(obj_id) << "/grasp" << (grasp_id % OBJ_GRASP_FACTOR) << " OK!" << std::endl;
+        ROS_DEBUG_STREAM(CLASS_NAMESPACE << __func__ << " : Serialization object" + std::to_string(obj_id) << "/grasp" << (grasp_id % OBJ_GRASP_FACTOR) << " OK!");
     else
     {
-        std::cout << CLASS_NAMESPACE << __func__ << " : Error in serialization object" + std::to_string(obj_id) << "/grasp" << (grasp_id % OBJ_GRASP_FACTOR) << "!" << std::endl;
-        return false;
+        ROS_ERROR_STREAM(CLASS_NAMESPACE << __func__ << " : Error in serialization object" + std::to_string(obj_id) << "/grasp" << (grasp_id % OBJ_GRASP_FACTOR) << "!");
+        return -2;
     }
-    return true;
+    
+    int new_grasp_id = OBJ_GRASP_FACTOR*obj_id + grasp_id;
+    ROS_DEBUG_STREAM(CLASS_NAMESPACE << __func__ << " : The new grasp can be added to the database with ID " << new_grasp_id);
+    return new_grasp_id;
 }

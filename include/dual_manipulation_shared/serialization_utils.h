@@ -25,6 +25,11 @@ void down_sampling(std::vector<geometry_msgs::Pose>& poses, int period);
 
 bool read_grasp_msg(uint obj_id, uint grasp_id, dual_manipulation_shared::grasp_trajectory& grasp_msg);
 
-bool write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::grasp_trajectory& grasp_msg);
+/**
+ * @brief Serialize a grasp on disk, returning the ID to use in the database in order to then be able to read the same grasp using @read_grasp_msg function
+ * 
+ * @return the ID of the serialized grasp to be written in the database; if ID <= 0, an error occurred.
+ */
+int write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::grasp_trajectory& grasp_msg);
 
 #endif //SERIALIZATION_UTILS_H
