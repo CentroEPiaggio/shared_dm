@@ -112,6 +112,7 @@ public:
   ~databaseWriter();
   bool open_global();
   bool close_global();
+  int checkGraspId(int grasp_id);
   
 private:
   std::string path_to_db_,db_name_;

@@ -220,3 +220,13 @@ int write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::
     ROS_DEBUG_STREAM(CLASS_NAMESPACE << __func__ << " : The new grasp can be added to the database with ID " << new_grasp_id);
     return new_grasp_id;
 }
+
+int compute_grasp_id(uint obj_id, uint grasp_id)
+{
+    if(grasp_id >= OBJ_GRASP_FACTOR)
+    {
+        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : Cannot serialize grasps whose ID is greater than " << OBJ_GRASP_FACTOR << " (requested: " << grasp_id << ") - the file name will reflect this");
+    }
+
+    return OBJ_GRASP_FACTOR*obj_id + grasp_id;
+}

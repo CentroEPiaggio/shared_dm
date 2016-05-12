@@ -32,4 +32,5 @@ bool read_grasp_msg(uint obj_id, uint grasp_id, dual_manipulation_shared::grasp_
  */
 int write_grasp_msg(uint obj_id, uint grasp_id, const dual_manipulation_shared::grasp_trajectory& grasp_msg);
 
+int compute_grasp_id(uint obj_id, uint grasp_id);
 #endif //SERIALIZATION_UTILS_H

@@ -97,6 +97,16 @@ databaseWriter::~databaseWriter()
   delete db_mapper_;
 }
 
+int databaseWriter::checkGraspId(int grasp_id)
+{
+    while(1)
+    {
+        if(grasp_name_map_.count(grasp_id)) grasp_id++;
+        else break;
+    }
+    return grasp_id;
+}
+
 int databaseWriter::writeNewGrasp(int object_id, int end_effector_id, std::string grasp_name)
 {
   if(object_name_map_.count(object_id) == 0)
