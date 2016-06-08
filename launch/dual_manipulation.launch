@@ -5,12 +5,15 @@
         <arg name="tf_prefix_custom" default=""/>
         <arg name="is_tf_prefix_custom" default="false"/>
         <arg name="y_offset" default="0"/>
+        <arg name="load_ik_params" default="true"/>
         
         <!-- LAUNCH IMPLEMENTATION -->
         <!-- remember to set the parameters properly -->
 
         <!-- load .yaml files -->
-        <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/$(arg robot_name)_ik_control.yaml" />
+        <group if="$(arg load_ik_params)">
+          <rosparam command="load" file="$(find dual_manipulation_ik_control)/config/$(arg robot_name)_ik_control.yaml" />
+        </group>
         <rosparam command="load" file="$(find dual_manipulation_shared)/config/$(arg robot_name)_dual_manipulation.yaml" />
 
         <!-- set fixed transform between world and vito_anchor -->
