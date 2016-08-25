@@ -1,5 +1,6 @@
 dual_manipulation_parameters:
   database_name: full_bi_tino_simple_factory.db
+  # database_name: full_house.db
   # this is used to say whether or not to use vision
   # for the gui, this means that
   # - true: the vision will find the position and write it in the gui
@@ -10,6 +11,8 @@ dual_manipulation_parameters:
   # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
   parallelize_plan_execute: true
   # when set to true, the moving state is triggered once in planned state
-  auto_moving_after_plan: true
+  auto_moving_after_plan: false
   # list of namespaces, corresponding with maximum handlable objects
-  ns_list: [ns_obj1,ns_obj2,ns_obj3]
+  ns_list: [ns_obj1,ns_obj2]
+  # corresponding object priorities
+  # obj_priorities: [61,62,63]

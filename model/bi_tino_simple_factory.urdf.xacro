@@ -102,7 +102,7 @@
   </xacro:soft_hand>
 
   <!-- a collision column in the scene -->
-  <joint name="bi_tino_column_1_joint" type="fixed">
+  <!-- <joint name="bi_tino_column_1_joint" type="fixed">
     <origin xyz="-1.5 0.8 0.0" rpy="0 0 0" />
     <parent link="bi_tino_simple_factory_anchor" />
     <child link="bi_tino_column_1_link" />
@@ -112,13 +112,13 @@
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
          <cylinder length="1.4" radius="0.35" />
-         <!-- <box size="1.0 0.3 1.4"/> -->
       </geometry>
     </collision>
-  </link>
+  </link> -->
+         <!-- <box size="1.0 0.3 1.4"/> -->
 
   <!-- a collision column in the scene -->
-  <joint name="bi_tino_column_2_joint" type="fixed">
+  <!-- <joint name="bi_tino_column_2_joint" type="fixed">
     <origin xyz="1.5 -0.8 0.0" rpy="0 0 0" />
     <parent link="bi_tino_simple_factory_anchor" />
     <child link="bi_tino_column_2_link" />
@@ -128,10 +128,10 @@
       <origin xyz="0.0 0.0 0.0" rpy="0 0 0" />
       <geometry>
          <cylinder length="1.4" radius="0.35" />
-         <!-- <box size="1.0 0.3 1.4"/> -->
       </geometry>
     </collision>
-  </link>
+  </link> -->
+         <!-- <box size="1.0 0.3 1.4"/> -->
 
   <!-- a collision box in the scene -->
   <!-- <joint name="bi_tino_box_1_joint" type="fixed">
