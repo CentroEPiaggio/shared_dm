@@ -4,10 +4,10 @@ dual_manipulation_parameters:
   # for the gui, this means that
   # - true: the vision will find the position and write it in the gui
   # - false: set the source with the gui as the target
-  use_vision: true
+  use_vision: false
   # end-effector id to be used as a default when considering a table in the scene
   table_ee_id: 3
   # when set to true, allows for motion plan to go on while executing the previos part of the trajectory
   parallelize_plan_execute: true
   # list of namespaces, corresponding with maximum handlable objects
-  ns_list: [ns_obj1,ns_obj2]
+  ## ns_list: [ns_obj1,ns_obj2]
