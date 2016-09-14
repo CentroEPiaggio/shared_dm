@@ -41,12 +41,13 @@
 #include <set>
 #include <sqlite3.h>
 #include <kdl/frames.hpp>
+#include <dual_manipulation_shared/node_transitions.h>
 
 typedef uint64_t object_id;
 typedef uint64_t grasp_id;
 typedef uint64_t workspace_id;
 typedef uint64_t endeffector_id;
-typedef std::string grasp_transition_type;
+typedef dual_manipulation::shared::NodeTransitionTypes grasp_transition_type;
 
 /**
  * @brief This is a low level database mapper that directly exposes
@@ -114,10 +115,10 @@ private:
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     std::vector<std::string> tables;
     sqlite3 *db;
-    /**
-     * @brief Between two grasps, tell me the type of the transition and other useful information
-     */
+    /// Between two grasps, tell me the type of the transition and other useful information
     std::map<grasp_id,std::map<grasp_id,std::tuple<grasp_transition_type,std::set<endeffector_id>>>> Grasp_transition_info;
+    /// contains information about transition types from names
+    const dual_manipulation::shared::NodeTransitions node_transitions;
 };
 
 #endif // DATABASEMAPPER_H

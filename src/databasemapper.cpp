@@ -220,7 +220,7 @@ bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_
         {
             grasp_id id;
             grasp_id item;
-            grasp_transition_type tr_type;
+            std::string tr_type;
             std::string busy_ee_string;
             std::set<endeffector_id> busy_ees;
             check_type_and_copy(id,0,stmt);
@@ -240,7 +240,7 @@ bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_
             }
             
             tr_result[id].insert(item);
-            tr_info_result[id][item] = std::make_tuple(tr_type,busy_ees);
+            tr_info_result[id][item] = std::make_tuple(node_transitions.getTransitionTypeFromName(tr_type),busy_ees);
         }
     }
     transitions.swap(tr_result);
