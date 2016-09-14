@@ -98,6 +98,17 @@ bool databaseMapper::step_query(sqlite3_stmt *stmt, int& rc)
     }
 }
 
+bool databaseMapper::check_type_and_copy_silent(std::string& data, int column_index, sqlite3_stmt *stmt)
+{
+    if (SQLITE_TEXT==sqlite3_column_type(stmt, column_index))
+        data=std::string((const char *)sqlite3_column_text(stmt,column_index));
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
 bool databaseMapper::check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt)
 {
     if (SQLITE_TEXT==sqlite3_column_type(stmt, column_index))
@@ -185,6 +196,55 @@ bool databaseMapper::fill(std::map<uint64_t,std::set<uint64_t>>& data, std::stri
         }
     }
     data.swap(result);
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, std::tuple< grasp_transition_type, std::set< endeffector_id > > > >& transition_info, std::string table_name)
+{
+    std::map<grasp_id, std::set<grasp_id>> tr_result;
+    std::map<grasp_id, std::map<grasp_id, std::tuple<grasp_transition_type, std::set<endeffector_id>>>> tr_info_result;
+    sqlite3_stmt *stmt;
+    prepare_query(table_name,&stmt);
+    bool exit=false;
+    int rc;
+    while(!exit)
+    {
+        if (!step_query(stmt,rc))
+            return false;
+        else if (rc == SQLITE_DONE)
+        {
+            exit = true;
+        }
+        else if (rc==SQLITE_ROW)
+        {
+            grasp_id id;
+            grasp_id item;
+            grasp_transition_type tr_type;
+            std::string busy_ee_string;
+            std::set<endeffector_id> busy_ees;
+            check_type_and_copy(id,0,stmt);
+            check_type_and_copy(item,1,stmt);
+            
+            // for backward compatibility, to avoid a huge amount of output for no reason...
+            check_type_and_copy_silent(tr_type,2,stmt);
+            check_type_and_copy_silent(busy_ee_string,3,stmt);
+            
+            // convert busy_ee_string to a set of end-effectors
+            std::istringstream iss (busy_ee_string);
+            endeffector_id ee_id;
+            while (!iss.eof())
+            {
+                iss >> ee_id;
+                busy_ees.insert(ee_id);
+            }
+            
+            tr_result[id].insert(item);
+            tr_info_result[id][item] = std::make_tuple(tr_type,busy_ees);
+        }
+    }
+    transitions.swap(tr_result);
+    transition_info.swap(tr_info_result);
     sqlite3_finalize(stmt);
     return true;
 }
@@ -411,7 +471,7 @@ void databaseMapper::initialize_database(std::string database_name)
         }
         else if (table=="Grasp_transitions")
         {
-            fill(Grasp_transitions, "Grasp_transitions");
+            fill_grasp_transitions(Grasp_transitions,Grasp_transition_info,"Grasp_transitions");
         }
         else if (table=="WorkspacesAdjacency")
         {

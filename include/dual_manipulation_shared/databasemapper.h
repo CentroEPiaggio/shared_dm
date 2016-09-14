@@ -46,6 +46,7 @@ typedef uint64_t object_id;
 typedef uint64_t grasp_id;
 typedef uint64_t workspace_id;
 typedef uint64_t endeffector_id;
+typedef std::string grasp_transition_type;
 
 /**
  * @brief This is a low level database mapper that directly exposes
@@ -100,6 +101,7 @@ private:
     bool prepare_query(std::string table_name, sqlite3_stmt **stmt);
     bool step_query(sqlite3_stmt *stmt, int& rc);
     bool check_type_and_copy(uint64_t& data, int column_index, sqlite3_stmt* stmt);
+    bool check_type_and_copy_silent(std::string& data, int column_index, sqlite3_stmt *stmt);
     bool check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt);
     bool check_type_and_copy(char* &pzBlob, int column_index, sqlite3_stmt *stmt, int& pnBlob);
     bool fillTableList();
@@ -107,10 +109,15 @@ private:
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
+    bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map<grasp_id,std::map<grasp_id,std::tuple<grasp_transition_type,std::set<endeffector_id>>>>& transition_info, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     std::vector<std::string> tables;
     sqlite3 *db;
+    /**
+     * @brief Between two grasps, tell me the type of the transition and other useful information
+     */
+    std::map<grasp_id,std::map<grasp_id,std::tuple<grasp_transition_type,std::set<endeffector_id>>>> Grasp_transition_info;
 };
 
 #endif // DATABASEMAPPER_H
