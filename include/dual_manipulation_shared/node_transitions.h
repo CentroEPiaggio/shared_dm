@@ -30,8 +30,8 @@ public:
     NodeTransitions()
     {
         fromName[GRASP_NAME] = NodeTransitionTypes::GRASP;
-        fromName[UNGRASP_NAME] = NodeTransitionTypes::GRASP;
-        fromName[EXCHANGE_GRASP_NAME] = NodeTransitionTypes::GRASP;
+        fromName[UNGRASP_NAME] = NodeTransitionTypes::UNGRASP;
+        fromName[EXCHANGE_GRASP_NAME] = NodeTransitionTypes::EXCHANGE_GRASP;
     }
     NodeTransitionTypes getTransitionTypeFromName(const std::string& name) const
     {
