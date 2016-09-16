@@ -17,6 +17,7 @@ static const std::string EXCHANGE_GRASP_NAME("exchange_grasp");
 enum class NodeTransitionTypes
 {
     UNKNOWN,                    // transition to consider empty or non-existent fields: will be found in the old way, for back-compatibility
+    MOVE_NONBLOCKING,           // move with a given end-effector from one point to another, non-blocking transition
     GRASP,                      // from one non-movable to one movable, grasp the object (change on ground)
     UNGRASP,                    // from one movable to one non-movable, ungrasp the object (change on ground)
     EXCHANGE_GRASP,             // both ee are movable, perform integrasp (change above ground)
