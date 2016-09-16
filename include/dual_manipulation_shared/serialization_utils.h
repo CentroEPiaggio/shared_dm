@@ -44,11 +44,16 @@
 #include <ros/serialization.h>
 #include <fstream>
 
-// maximum length of a grasp message
-// this does not affect older files: can be changed if needed: it's just
-#define max_grasp_size 100000
-
-#define OBJ_GRASP_FACTOR 1000
+namespace dual_manipulation
+{
+namespace shared
+{
+    // maximum number of grasps for a single object
+    static const int OBJ_GRASP_FACTOR = 1000;
+    // maximum length of a grasp message - this does not affect older files: can be changed if needed: it's just
+    static const int MAX_GRASP_SIZE = 1000;
+}
+}
 
 template< typename T> bool serialize_ik(const T & my_ik, std::string filename="unnamed_grasp.txt", std::string package="dual_manipulation_grasp_db", std::string sub_path="grasp_trajectories");
 

@@ -54,6 +54,9 @@
 #define NC "\033[0m"
 #define CLASS_NAMESPACE "DualManipulationShared::"
 
+#define OBJ_GRASP_FACTOR dual_manipulation::shared::OBJ_GRASP_FACTOR
+#define max_grasp_size dual_manipulation::shared::MAX_GRASP_SIZE
+
 template< typename T> bool serialize_ik(const T & my_ik, std::string filename, std::string package, std::string sub_path)
 {
     std::string path = ros::package::getPath(package);
