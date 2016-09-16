@@ -513,3 +513,17 @@ databaseMapper::databaseMapper(std::string database_name)
 //     std::cout<<Grasps<<std::endl;
 //     std::cout<<WorkspaceGeometry<<std::endl;
 }
+
+bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, std::set< endeffector_id >& busy_ees) const
+{
+    if(!Grasp_transition_info.count(source) || !Grasp_transition_info.at(source).count(target))
+    {
+        type = dual_manipulation::shared::NodeTransitionTypes::UNKNOWN;
+        return false;
+    }
+    
+    type = std::get<0>(Grasp_transition_info.at(source).at(target));
+    busy_ees = std::get<1>(Grasp_transition_info.at(source).at(target));
+    
+    return true;
+}

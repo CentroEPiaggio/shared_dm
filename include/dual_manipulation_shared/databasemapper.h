@@ -97,6 +97,19 @@ public:
      * 
      */
     std::map<grasp_id,std::set<grasp_id>> Grasp_transitions;
+    
+    /**
+     * @brief Get information about a transition from the database
+     * 
+     * @param source Initial grasp of the transition (input)
+     * @param target Final grasp of the transition (input)
+     * @param type Transition type
+     * @param busy_ees Set where new busy end-effectors are added
+     * 
+     * @return false if the transition does not exist, true otherwise
+     */
+    bool getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, std::set<endeffector_id>& busy_ees) const;
+    
 private:
     void initialize_database(std::string database_name);
     bool prepare_query(std::string table_name, sqlite3_stmt **stmt);
