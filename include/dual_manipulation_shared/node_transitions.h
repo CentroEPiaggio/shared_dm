@@ -1,6 +1,7 @@
 #ifndef NODE_TRANSITIONS_H
 #define NODE_TRANSITIONS_H
 #include <map>
+#include <iostream>
 
 /**
  * @brief A class for defining all possible transitions which are allowed between nodes in the graph for planning
@@ -48,5 +49,7 @@ private:
 
 }
 }
+
+std::ostream& operator<<(std::ostream &output, const dual_manipulation::shared::NodeTransitionTypes &ntype);
 
 #endif // NODE_TRANSITIONS_H
