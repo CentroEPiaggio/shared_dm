@@ -48,6 +48,7 @@ typedef uint64_t grasp_id;
 typedef uint64_t workspace_id;
 typedef uint64_t endeffector_id;
 typedef dual_manipulation::shared::NodeTransitionTypes grasp_transition_type;
+typedef double transition_cost_t;
 
 /**
  * @brief This is a low level database mapper that directly exposes
@@ -104,18 +105,22 @@ public:
      * @param source Initial grasp of the transition (input)
      * @param target Final grasp of the transition (input)
      * @param type Transition type
-     * @param busy_ees Set where new busy end-effectors are added
+     * @param cost Transition cost
+     * @param busy_ees Vector where new busy end-effectors are added
      * 
      * @return false if the transition does not exist, true otherwise
      */
-    bool getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, std::set<endeffector_id>& busy_ees) const;
+    bool getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, transition_cost_t& cost, std::vector<endeffector_id>& busy_ees) const;
     
 private:
+    typedef std::tuple<grasp_transition_type,transition_cost_t,std::vector<endeffector_id>> transition_info_t;
+    
     void initialize_database(std::string database_name);
     bool prepare_query(std::string table_name, sqlite3_stmt **stmt);
     bool step_query(sqlite3_stmt *stmt, int& rc);
     bool check_type_and_copy(uint64_t& data, int column_index, sqlite3_stmt* stmt);
     bool check_type_and_copy_silent(std::string& data, int column_index, sqlite3_stmt *stmt);
+    bool check_type_and_copy_silent(double& data, int column_index, sqlite3_stmt *stmt);
     bool check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt);
     bool check_type_and_copy(char* &pzBlob, int column_index, sqlite3_stmt *stmt, int& pnBlob);
     bool fillTableList();
@@ -123,13 +128,13 @@ private:
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
-    bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map<grasp_id,std::map<grasp_id,std::tuple<grasp_transition_type,std::set<endeffector_id>>>>& transition_info, std::string table_name);
+    bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map<grasp_id,std::map<grasp_id,transition_info_t>>& transition_info, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     std::vector<std::string> tables;
     sqlite3 *db;
     /// Between two grasps, tell me the type of the transition and other useful information
-    std::map<grasp_id,std::map<grasp_id,std::tuple<grasp_transition_type,std::set<endeffector_id>>>> Grasp_transition_info;
+    std::map<grasp_id,std::map<grasp_id,transition_info_t>> Grasp_transition_info;
     /// contains information about transition types from names
     const dual_manipulation::shared::NodeTransitions node_transitions;
 };

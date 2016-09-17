@@ -109,6 +109,17 @@ bool databaseMapper::check_type_and_copy_silent(std::string& data, int column_in
     return true;
 }
 
+bool databaseMapper::check_type_and_copy_silent(double& data, int column_index, sqlite3_stmt *stmt)
+{
+    if (SQLITE_FLOAT==sqlite3_column_type(stmt, column_index))
+        data=sqlite3_column_double(stmt,column_index);
+    else
+    {
+        return false;
+    }
+    return true;
+}
+
 bool databaseMapper::check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt)
 {
     if (SQLITE_TEXT==sqlite3_column_type(stmt, column_index))
@@ -200,10 +211,10 @@ bool databaseMapper::fill(std::map<uint64_t,std::set<uint64_t>>& data, std::stri
     return true;
 }
 
-bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, std::tuple< grasp_transition_type, std::set< endeffector_id > > > >& transition_info, std::string table_name)
+bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, databaseMapper::transition_info_t > >& transition_info, std::string table_name)
 {
     std::map<grasp_id, std::set<grasp_id>> tr_result;
-    std::map<grasp_id, std::map<grasp_id, std::tuple<grasp_transition_type, std::set<endeffector_id>>>> tr_info_result;
+    std::map<grasp_id, std::map<grasp_id, transition_info_t >> tr_info_result;
     sqlite3_stmt *stmt;
     prepare_query(table_name,&stmt);
     bool exit=false;
@@ -220,15 +231,17 @@ bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_
         {
             grasp_id id;
             grasp_id item;
-            std::string tr_type;
+            std::string tr_type = "bad transition name";
+            transition_cost_t tr_cost = 1.0;
             std::string busy_ee_string;
-            std::set<endeffector_id> busy_ees;
+            std::vector<endeffector_id> busy_ees;
             check_type_and_copy(id,0,stmt);
             check_type_and_copy(item,1,stmt);
             
             // for backward compatibility, to avoid a huge amount of output for no reason...
             check_type_and_copy_silent(tr_type,2,stmt);
-            check_type_and_copy_silent(busy_ee_string,3,stmt);
+            check_type_and_copy_silent(tr_cost,3,stmt);
+            check_type_and_copy_silent(busy_ee_string,4,stmt);
             
             // convert busy_ee_string to a set of end-effectors
             std::istringstream iss (busy_ee_string);
@@ -236,11 +249,11 @@ bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_
             while (!iss.eof())
             {
                 iss >> ee_id;
-                busy_ees.insert(ee_id);
+                busy_ees.push_back(ee_id);
             }
             
             tr_result[id].insert(item);
-            tr_info_result[id][item] = std::make_tuple(node_transitions.getTransitionTypeFromName(tr_type),busy_ees);
+            tr_info_result[id][item] = std::make_tuple(node_transitions.getTransitionTypeFromName(tr_type),tr_cost,busy_ees);
         }
     }
     transitions.swap(tr_result);
@@ -514,7 +527,7 @@ databaseMapper::databaseMapper(std::string database_name)
 //     std::cout<<WorkspaceGeometry<<std::endl;
 }
 
-bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, std::set< endeffector_id >& busy_ees) const
+bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, transition_cost_t& cost, std::vector< endeffector_id >& busy_ees) const
 {
     if(!Grasp_transition_info.count(source) || !Grasp_transition_info.at(source).count(target))
     {
@@ -523,7 +536,8 @@ bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& t
     }
     
     type = std::get<0>(Grasp_transition_info.at(source).at(target));
-    busy_ees = std::get<1>(Grasp_transition_info.at(source).at(target));
+    cost = std::get<1>(Grasp_transition_info.at(source).at(target));
+    busy_ees = std::get<2>(Grasp_transition_info.at(source).at(target));
     
     return true;
 }
