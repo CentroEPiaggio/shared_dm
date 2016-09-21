@@ -141,7 +141,7 @@ public:
     type[ik_control_capabilities::HOME] = ik_control_capability_types::MOVE;
     
     implemented_for_trees[ik_control_capability_types::SET_TARGET] = true;
-    implemented_for_trees[ik_control_capability_types::IK_CHECK] = true;
+    implemented_for_trees[ik_control_capability_types::IK_CHECK] = false;
     implemented_for_trees[ik_control_capability_types::PLAN] = true;
     implemented_for_trees[ik_control_capability_types::MOVE] = true;
     implemented_for_trees[ik_control_capability_types::GRASP] = false;
