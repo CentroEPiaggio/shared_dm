@@ -50,6 +50,7 @@
 #define GRASP_CAPABILITY "grasp"
 #define UNGRASP_CAPABILITY "ungrasp"
 #define HOME_CAPABILITY "home"
+#define PLAN_SLIDE_CAPABILITY "plan_slide"
 
 #define SET_TARGET_MSG "set_target_done"
 #define SET_HOME_TARGET_MSG "set_target_done"
@@ -62,6 +63,7 @@
 #define GRASP_MSG "grasp_done"
 #define UNGRASP_MSG "ungrasp_done"
 #define HOME_MSG "action_done"
+#define SLIDE_MSG "planning_done"
 
 enum class ik_control_capability_types
 {
@@ -84,6 +86,7 @@ enum class ik_control_capabilities
   MOVE,
   GRASP,
   UNGRASP,
+  PLAN_SLIDE,
   HOME
 };
 
@@ -103,6 +106,7 @@ public:
     name[ik_control_capabilities::GRASP] = GRASP_CAPABILITY;
     name[ik_control_capabilities::UNGRASP] = UNGRASP_CAPABILITY;
     name[ik_control_capabilities::HOME] = HOME_CAPABILITY;
+    name[ik_control_capabilities::PLAN_SLIDE] = PLAN_SLIDE_CAPABILITY;
     
     from_name[SET_TARGET_CAPABILITY] = ik_control_capabilities::SET_TARGET;
     from_name[SET_HOME_TARGET_CAPABILITY] = ik_control_capabilities::SET_HOME_TARGET;
@@ -115,6 +119,7 @@ public:
     from_name[GRASP_CAPABILITY] = ik_control_capabilities::GRASP;
     from_name[UNGRASP_CAPABILITY] = ik_control_capabilities::UNGRASP;
     from_name[HOME_CAPABILITY] = ik_control_capabilities::HOME;
+    from_name[PLAN_SLIDE_CAPABILITY] = ik_control_capabilities::PLAN_SLIDE;
     
     msg[ik_control_capabilities::SET_TARGET] = SET_TARGET_MSG;
     msg[ik_control_capabilities::SET_HOME_TARGET] = SET_HOME_TARGET_MSG;
@@ -127,6 +132,7 @@ public:
     msg[ik_control_capabilities::GRASP] = GRASP_MSG;
     msg[ik_control_capabilities::UNGRASP] = UNGRASP_MSG;
     msg[ik_control_capabilities::HOME] = HOME_MSG;
+    msg[ik_control_capabilities::PLAN_SLIDE] = SLIDE_MSG;
     
     type[ik_control_capabilities::SET_TARGET] = ik_control_capability_types::SET_TARGET;
     type[ik_control_capabilities::SET_HOME_TARGET] = ik_control_capability_types::SET_TARGET;
@@ -139,6 +145,7 @@ public:
     type[ik_control_capabilities::GRASP] = ik_control_capability_types::GRASP;
     type[ik_control_capabilities::UNGRASP] = ik_control_capability_types::GRASP;
     type[ik_control_capabilities::HOME] = ik_control_capability_types::MOVE;
+    type[ik_control_capabilities::PLAN_SLIDE] = ik_control_capability_types::PLAN;
     
     implemented_for_trees[ik_control_capability_types::SET_TARGET] = true;
     implemented_for_trees[ik_control_capability_types::IK_CHECK] = false;
