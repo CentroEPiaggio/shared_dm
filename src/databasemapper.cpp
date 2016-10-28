@@ -113,6 +113,8 @@ bool databaseMapper::check_type_and_copy_silent(double& data, int column_index, 
 {
     if (SQLITE_FLOAT==sqlite3_column_type(stmt, column_index))
         data=sqlite3_column_double(stmt,column_index);
+    else if(SQLITE_INTEGER==sqlite3_column_type(stmt, column_index))
+        data=sqlite3_column_int64(stmt,column_index);
     else
     {
         return false;
