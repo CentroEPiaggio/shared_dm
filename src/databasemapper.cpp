@@ -489,6 +489,7 @@ void databaseMapper::initialize_database(std::string database_name)
         else if (table=="WorkspacesAdjacency")
         {
             fill(WorkspacesAdjacency, "WorkspacesAdjacency");
+            makeMapBidirectional(WorkspacesAdjacency);
         }
         else if (table=="WorkspaceGeometry")
         {
@@ -540,6 +541,16 @@ bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& t
     busy_ees = std::get<2>(Grasp_transition_info.at(source).at(target));
     
     return true;
+}
+
+void databaseMapper::makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map)
+{
+    std::map< uint64_t, std::set< uint64_t >> tmp;
+    tmp = map;
+    for(auto& e:tmp)
+        for(auto& f:e.second)
+            if(!map[f].count(e.first))
+                map[f].insert(e.first);
 }
 
 std::ostream& operator<<( std::ostream& os, const transition_info& t )

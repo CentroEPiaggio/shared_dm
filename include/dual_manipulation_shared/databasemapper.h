@@ -160,6 +160,7 @@ private:
     bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map<grasp_id,std::map<grasp_id,transition_info_t>>& transition_info, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
+    void makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map);
     std::vector<std::string> tables;
     sqlite3 *db;
     /// Between two grasps, tell me the type of the transition and other useful information
