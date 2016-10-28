@@ -129,20 +129,17 @@ public:
     std::map<grasp_id,std::set<grasp_id>> Grasp_transitions;
     
     /**
-     * @brief Get information about a transition from the database
+     * @brief Get information about a transition 
      * 
-     * @param source Initial grasp of the transition (input)
-     * @param target Final grasp of the transition (input)
-     * @param type Transition type
-     * @param cost Transition cost
-     * @param busy_ees Vector where new busy end-effectors are added
+     * @param source Initial object state of the transition (input)
+     * @param target Final object state of the transition (input)
+     * @param t_info Transition information
      * 
      * @return false if the transition does not exist, true otherwise
      */
-    bool getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, transition_cost_t& cost, std::vector<endeffector_id>& busy_ees) const;
+    bool getTransitionInfo(const object_state& source, const object_state& target, transition_info& t_info) const;
     
 private:
-    typedef std::tuple<grasp_transition_type,transition_cost_t,std::vector<endeffector_id>> transition_info_t;
     
     void initialize_database(std::string database_name);
     bool prepare_query(std::string table_name, sqlite3_stmt **stmt);
@@ -157,14 +154,14 @@ private:
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
-    bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map<grasp_id,std::map<grasp_id,transition_info_t>>& transition_info, std::string table_name);
+    bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     void makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map);
     std::vector<std::string> tables;
     sqlite3 *db;
     /// Between two grasps, tell me the type of the transition and other useful information
-    std::map<grasp_id,std::map<grasp_id,transition_info_t>> Grasp_transition_info;
+    std::map<grasp_id,std::map<grasp_id,transition_info>> Grasp_transition_info;
     /// contains information about transition types from names
     const dual_manipulation::shared::NodeTransitions node_transitions;
 };

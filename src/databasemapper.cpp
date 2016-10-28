@@ -211,10 +211,10 @@ bool databaseMapper::fill(std::map<uint64_t,std::set<uint64_t>>& data, std::stri
     return true;
 }
 
-bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, databaseMapper::transition_info_t > >& transition_info, std::string table_name)
+bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name)
 {
     std::map<grasp_id, std::set<grasp_id>> tr_result;
-    std::map<grasp_id, std::map<grasp_id, transition_info_t >> tr_info_result;
+    std::map<grasp_id, std::map<grasp_id, transition_info >> tr_info_result;
     sqlite3_stmt *stmt;
     prepare_query(table_name,&stmt);
     bool exit=false;
@@ -239,25 +239,25 @@ bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_
             check_type_and_copy(item,1,stmt);
             
             // for backward compatibility, to avoid a huge amount of output for no reason...
-            check_type_and_copy_silent(tr_type,2,stmt);
-            check_type_and_copy_silent(tr_cost,3,stmt);
+            check_type_and_copy_silent(tr_cost,2,stmt);
+            check_type_and_copy_silent(tr_type,3,stmt);
             check_type_and_copy_silent(busy_ee_string,4,stmt);
             
             // convert busy_ee_string to a set of end-effectors
             std::istringstream iss (busy_ee_string);
             endeffector_id ee_id;
-            while (!iss.eof())
+            while (!busy_ee_string.empty() && !iss.eof())
             {
                 iss >> ee_id;
                 busy_ees.push_back(ee_id);
             }
             
             tr_result[id].insert(item);
-            tr_info_result[id][item] = std::make_tuple(node_transitions.getTransitionTypeFromName(tr_type),tr_cost,busy_ees);
+            tr_info_result[id][item] = transition_info(tr_cost, node_transitions.getTransitionTypeFromName(tr_type), busy_ees);
         }
     }
     transitions.swap(tr_result);
-    transition_info.swap(tr_info_result);
+    t_info.swap(tr_info_result);
     sqlite3_finalize(stmt);
     return true;
 }
@@ -528,19 +528,68 @@ databaseMapper::databaseMapper(std::string database_name)
 //     std::cout<<WorkspaceGeometry<<std::endl;
 }
 
-bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& target, grasp_transition_type& type, transition_cost_t& cost, std::vector< endeffector_id >& busy_ees) const
+bool databaseMapper::getTransitionInfo(const object_state& source, const object_state& target, transition_info& t_info) const
 {
-    if(!Grasp_transition_info.count(source) || !Grasp_transition_info.at(source).count(target))
+    try
     {
-        type = dual_manipulation::shared::NodeTransitionTypes::UNKNOWN;
-        return false;
+        endeffector_id source_ee_id =  std::get<1>(Grasps.at(source.grasp_id_));
+        endeffector_id target_ee_id =  std::get<1>(Grasps.at(target.grasp_id_));
+        /* Allowed transitions are as follows:
+        1 - Not in the database:
+                Transition between adjacent workspaces using movable end effector
+        2 - In the database 
+                a) In the same Workspace 
+                b) Between adjacent workspaces; only not movable end effectors; at least one additional end effector can reach both source and target workspaces
+        */
+        // 1
+        if( source.grasp_id_ == target.grasp_id_ &&
+            std::get<1>(EndEffectors.at(source_ee_id)) &&//E.E is movable
+            WorkspacesAdjacency.at(source.workspace_id_).count(target.workspace_id_) &&
+            Reachability.at(source_ee_id).count(source.workspace_id_) && Reachability.at(source_ee_id).count(target.workspace_id_))
+        {
+            t_info.ee_ids_.clear();
+            t_info.grasp_transition_type_ = dual_manipulation::shared::NodeTransitionTypes::MOVE_NONBLOCKING;
+            t_info.transition_cost_ = 1;
+            return true;
+        }
+        // from now on we are considering transitions written in the data base
+        bool found = false;
+        // not allowed 2
+        if (!Grasp_transition_info.count(source.grasp_id_) || !Grasp_transition_info.at(source.grasp_id_).count(target.grasp_id_))
+        {
+        }
+        // 2.a
+        else if (source.workspace_id_ == target.workspace_id_)
+        {
+            found = true;
+        }
+        // 2.b
+        else if( source.workspace_id_ != target.workspace_id_ && WorkspacesAdjacency.at(source.workspace_id_).count(target.workspace_id_) &&
+            source_ee_id == target_ee_id && !std::get<1>(EndEffectors.at(source_ee_id)) )
+        {
+            for(auto ee:(Grasp_transition_info.at(source.grasp_id_).at(target.grasp_id_)).ee_ids_)
+            {
+                if (Reachability.at(ee).count(source.workspace_id_) && Reachability.at(ee).count(target.workspace_id_))
+                {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        
+        if (found)
+        {
+            t_info = Grasp_transition_info.at(source.grasp_id_).at(target.grasp_id_);
+        }
+        else
+            t_info.grasp_transition_type_ = dual_manipulation::shared::NodeTransitionTypes::UNKNOWN;
+        return found;
     }
-    
-    type = std::get<0>(Grasp_transition_info.at(source).at(target));
-    cost = std::get<1>(Grasp_transition_info.at(source).at(target));
-    busy_ees = std::get<2>(Grasp_transition_info.at(source).at(target));
-    
-    return true;
+    catch(std::exception e)
+    {
+        std::cout << "databaseMapper::" << __func__ << " : failed because of the following reason \'" << e.what() << "\'\nAre you sure you wrote your database correctly?" << std::endl;
+        throw e;
+    }
 }
 
 void databaseMapper::makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map)
