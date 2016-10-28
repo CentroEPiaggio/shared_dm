@@ -89,10 +89,11 @@ public:
     * @param object_id the object id
     * @param end_effector_id the end-effector id
     * @param grasp_name the name to associate to the grasp
+    * @param ec_id the id of the currently active environment constraint
     * 
     * @return the newly inserted grasp ID (-1 on failure)
     */
-  int writeNewGrasp(int object_id, int end_effector_id, std::string grasp_name);
+  int writeNewGrasp(int object_id, int end_effector_id, std::string grasp_name, int ec_id = 0);
 
   /**
     * @brief Insert a new grasp in the database, specifying also the grasp_id (Attention! This will fail if the value already exists!)
@@ -101,11 +102,12 @@ public:
     * @param object_id the object id
     * @param end_effector_id the end-effector id
     * @param grasp_name the name to associate to the grasp
+    * @param ec_id the id of the currently active environment constraint
     * 
     * @return the newly inserted grasp ID (-1 on failure)
     */
-  int writeNewGrasp(int grasp_id, int object_id, int end_effector_id, std::string grasp_name);
-
+  int writeNewGrasp(int grasp_id, int object_id, int end_effector_id, std::string grasp_name, int ec_id = 0);
+  
   /**
     * @brief Insert a new grasp transition in the database
     * 

@@ -149,48 +149,13 @@ int databaseWriter::checkGraspId(int grasp_id)
     return grasp_id;
 }
 
-int databaseWriter::writeNewGrasp(int object_id, int end_effector_id, std::string grasp_name)
+int databaseWriter::writeNewGrasp(int object_id, int end_effector_id, std::string grasp_name, int ec_id)
 {
-  if(object_name_map_.count(object_id) == 0)
-  {
-    ROS_ERROR_STREAM("No object found in the DB with ID " << object_id);
-    return -1;
-  }
-  if(ee_name_map_.count(end_effector_id) == 0)
-  {
-    ROS_ERROR_STREAM("No end-effector found in the DB with ID " << end_effector_id);
-    return -1;
-  }
-  
-  const std::string& obj_name = object_name_map_.at(object_id);
-  const std::string& ee_name = ee_name_map_.at(end_effector_id);
-  std::string empty = "";
-
-  //INSERT INTO Grasps (Object_id, EndEffector_id, Grasp_id, Grasp_info, Grasp_name) VALUES ('3','1','','gatto')
-
-  std::string sqlstatement =
-    "INSERT INTO Grasps (Object_id, EndEffector_id, Grasp_info, Grasp_name) VALUES ("
-    + int_quotesql(object_id) + ","
-    + int_quotesql(end_effector_id) + ","
-    + str_quotesql(empty) + ","
-    + str_quotesql(grasp_name) + ");";
-
-  int newID = insert_db_entry(sqlstatement);
-  
-  if(newID <= 0)
-  {
-    newID = -1;
-  }
-  else
-  {
-    ROS_INFO_STREAM("New grasp \"" << grasp_name << "\" for object " << obj_name << " with end-effector " << ee_name << " added with ID " << newID);
-    grasp_name_map_[newID] = grasp_name;
-  }
-
-  return newID;
+  int grasp_id = checkGraspId(1);
+  return writeNewGrasp(grasp_id,object_id,end_effector_id,grasp_name,ec_id);
 }
 
-int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_id, std::string grasp_name)
+int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_id, std::string grasp_name, int ec_id)
 {
   if(object_name_map_.count(object_id) == 0)
   {
@@ -199,8 +164,12 @@ int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_
   }
   if(ee_name_map_.count(end_effector_id) == 0)
   {
-    ROS_ERROR_STREAM("No end-effector found in the DB with ID " << end_effector_id);
-    return -1;
+      ROS_ERROR_STREAM("No end-effector found in the DB with ID " << end_effector_id);
+      return -1;
+  }
+  if(ec_name_map_.count(ec_id) == 0)
+  {
+      ROS_WARN_STREAM("No environment constraint found in the DB with ID " << ec_id << " - proceeding anyway, just to let you know..." );
   }
   
   const std::string& obj_name = object_name_map_.at(object_id);
@@ -210,12 +179,13 @@ int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_
   //INSERT INTO Grasps (Object_id, EndEffector_id, Grasp_id, Grasp_info, Grasp_name) VALUES ('3','1','','gatto')
 
   std::string sqlstatement =
-    "INSERT INTO Grasps (Object_id, EndEffector_id, Grasp_id, Grasp_info, Grasp_name) VALUES ("
+    "INSERT INTO Grasps (Object_id, EndEffector_id, Grasp_id, Grasp_info, Grasp_name, EC_id) VALUES ("
     + int_quotesql(object_id) + ","
     + int_quotesql(end_effector_id) + ","
     + int_quotesql(grasp_id) + ","
     + str_quotesql(empty) + ","
-    + str_quotesql(grasp_name) + ");";
+    + str_quotesql(grasp_name) + ","
+    + int_quotesql(ec_id) + ");";
 
   int newID = insert_db_entry(sqlstatement);
   
@@ -345,32 +315,12 @@ int databaseWriter::writeNewGeometry(int workspace_id, std::string geometry_stri
 
 int databaseWriter::writeNewObject(std::string obj_name, std::string mesh_path, KDL::Frame obj_center)
 {
-  //INSERT INTO Objects (Id, Name, MeshPath) VALUES ('Gatto','gatto.dae')
+  // find the first free object ID, starting from 1
+  int obj_id(1);
+  while(object_name_map_.count(obj_id))
+    obj_id++;
 
-  std::string obj_center_string;
-  double x,y,z,w;
-  obj_center.M.GetQuaternion(x,y,z,w);
-  obj_center_string = std::to_string(obj_center.p.data[0]) + " " + std::to_string(obj_center.p.data[1]) + " " + std::to_string(obj_center.p.data[2]) + " " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " " + std::to_string(w);
-  
-  std::string sqlstatement =
-    "INSERT INTO Objects (Name, MeshPath, ObjectCenter) VALUES ("
-    + str_quotesql(obj_name) + ","
-    + str_quotesql(mesh_path) + ","
-    + str_quotesql(obj_center_string) + ");";
-
-  int newID = insert_db_entry(sqlstatement);
-  
-  if(newID <= 0)
-  {
-    newID = -1;
-  }
-  else
-  {
-    ROS_INFO_STREAM("New object \"" << obj_name << "\" added with ID " << newID);
-    object_name_map_[newID] = obj_name;
-  }
-
-  return newID;
+  return writeNewObject(obj_id,obj_name,mesh_path,obj_center);
 }
 
 int databaseWriter::writeNewObject(int object_id, std::string obj_name, std::string mesh_path, KDL::Frame obj_center)
