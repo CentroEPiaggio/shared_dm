@@ -45,6 +45,9 @@
 #include <ros/ros.h>
 #include "dual_manipulation_shared/stream_utils.h"
 #include <dual_manipulation_shared/parsing_utils.h>
+
+#define DEBUG 0
+
 /*
  * typedef int (*sqlite3_callback)(
  * void*,    // Data provided in the 4th argument of sqlite3_exec() 
@@ -516,22 +519,42 @@ databaseMapper::databaseMapper()
     parseSingleParameter(params,database_name,"database_name");
   
   initialize_database(database_name);
+  
+#if DEBUG>1
+  std::cout<<tables<<std::endl;
+  std::cout<<Grasp_transitions<<std::endl;
+  std::cout<<Grasp_transition_info<<std::endl;
+  //     std::cout<<Objects<<std::endl;
+  std::cout<<Workspaces<<std::endl;
+  std::cout<<Reachability<<std::endl;
+  std::cout<<Grasps<<std::endl;
+  std::cout<<WorkspaceGeometry<<std::endl;
+#endif
 }
 
 databaseMapper::databaseMapper(std::string database_name)
 {
   initialize_database(database_name);
-//     std::cout<<tables<<std::endl;
-//     std::cout<<Grasp_transitions<<std::endl;
+  
+#if DEBUG>1
+    std::cout<<tables<<std::endl;
+    std::cout<<Grasp_transitions<<std::endl;
+    std::cout<<Grasp_transition_info<<std::endl;
 //     std::cout<<Objects<<std::endl;
-//     std::cout<<Workspaces<<std::endl;
-//     std::cout<<Reachability<<std::endl;
-//     std::cout<<Grasps<<std::endl;
-//     std::cout<<WorkspaceGeometry<<std::endl;
+    std::cout<<Workspaces<<std::endl;
+    std::cout<<Reachability<<std::endl;
+    std::cout<<Grasps<<std::endl;
+    std::cout<<WorkspaceGeometry<<std::endl;
+#endif
 }
 
 bool databaseMapper::getTransitionInfo(const object_state& source, const object_state& target, transition_info& t_info) const
 {
+#if DEBUG>1
+    std::cout << __func__ << std::endl;
+    std::cout << " - source:" << source << std::endl;
+    std::cout << " - target:" << target << std::endl;
+#endif
     try
     {
         endeffector_id source_ee_id =  std::get<1>(Grasps.at(source.grasp_id_));
