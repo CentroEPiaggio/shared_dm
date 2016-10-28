@@ -144,6 +144,36 @@ public:
     */
   bool deleteGraspTransition(int source_grasp_id, int target_grasp_id);
   
+  /**
+   * @brief Insert a new Environment Constraint in the database
+   * 
+   * @param id the id of the constraint
+   * @param name the name of the constraint
+   * 
+   * @return the newly inserted ec ID (-1 on failure)
+   */
+  int writeNewEnvironmentConstraint(int id, std::string name);
+  
+  /**
+   * @brief Insert a new EC adjacenty in the database
+   * 
+   * @param source_id the id of the source constraint
+   * @param target_id the id of the target constraint
+   * 
+   * @return -1 on failure
+   */
+  int writeNewECAdjacency(int source_id, int target_id);
+  
+  /**
+   * @brief Insert a new EC reachability in the database
+   * 
+   * @param ec_id the id of the constraint
+   * @param workspace_id the id of the workspace
+   * 
+   * @return -1 on failure
+   */
+  int writeNewECReachability(int ec_id, int workspace_id);
+  
   ~databaseWriter();
   bool open_global();
   bool close_global();
@@ -159,13 +189,19 @@ private:
   std::map<int,std::string> workspace_name_map_;
   std::map<int,std::set<int>> adjacency_map_, reachability_map_;
   sqlite3* global_db;
-
-
+  // maps for environment constraints
+  std::map<int,std::string> ec_name_map_;
+  std::map<int,std::set<int>> ec_adjacency_map_, ec_reachability_map_;
+  
   int insert_db_entry(const std::string& sqlstatement, bool remove=false, bool just_dont=false);
 
   void bind_value_unwrap(sqlite3_stmt *stmt, int index, int value)
   {
       sqlite3_bind_int(stmt,index,value);
+  }
+  void bind_value_unwrap(sqlite3_stmt *stmt, int index, double value)
+  {
+      sqlite3_bind_double(stmt,index,value);
   }
   void bind_value_unwrap(sqlite3_stmt *stmt, int index, std::string value)
   {

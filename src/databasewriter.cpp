@@ -41,7 +41,11 @@ std::string str_quotesql( const std::string& s ) {
 }
 
 std::string int_quotesql( const int& s ) {
-  return std::string("'") + std::to_string(s) + std::string("'");
+    return std::string("'") + std::to_string(s) + std::string("'");
+}
+
+std::string double_quotesql( const double& s ) {
+    return std::string("'") + std::to_string(s) + std::string("'");
 }
 
 databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
@@ -66,8 +70,11 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
     std::cout << std::to_string(ee.first) << " -> " << ee.second << std::endl;
   std::cout << std::endl;
   
+  for(auto& ec:db_mapper_->EnvironmentConstraints)
+      ec_name_map_[ec.first] = ec.second;
+  
   for(auto& ee:db_mapper_->Grasps)
-    grasp_name_map_[ee.first] = std::get<2>(ee.second);
+      grasp_name_map_[ee.first] = std::get<2>(ee.second);
   
   for(auto& trans:db_mapper_->Grasp_transitions)
     for(auto target:trans.second)
@@ -525,4 +532,85 @@ bool databaseWriter::deleteGraspTransition(int source_grasp_id, int target_grasp
   }
   
   return (result == 1);
+}
+
+int databaseWriter::writeNewEnvironmentConstraint(int id, std::string name)
+{
+    std::string entity = "EnvironmentConstraint";
+    std::string table = entity + "s";
+    std::string sqlstatement =
+    "INSERT INTO " + table + " VALUES (? , ?)";
+    if (ec_name_map_.count(id))
+    {
+        ROS_ERROR_STREAM("Error adding " << entity << " \"" << name << "\" with ID " << id << " - ID already in the database");
+        return -1;
+    }
+    int newID = writeNewSomething(sqlstatement, id, name);
+    
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error adding " << entity << " \"" << name << "\" with ID " << newID);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New " << entity << " \"" << name << "\" added with ID " << newID);
+        ec_name_map_[id] = name;
+    }
+    return newID;
+}
+
+int databaseWriter::writeNewECAdjacency(int source_id, int target_id)
+{
+    std::string sqlstatement = "INSERT INTO EC_Adjacency VALUES (? , ?)";
+    if (!ec_name_map_.count(source_id) || !ec_name_map_.count(target_id))
+    {
+        ROS_ERROR_STREAM("One or both EnvironmentConstraints " << source_id << " and " << target_id << " do(es) not exist!");
+        return -1;
+    }
+    if (ec_adjacency_map_.count(source_id) && ec_adjacency_map_.at(source_id).count(target_id))
+    {
+        ROS_ERROR_STREAM("Error already exist EC_Adjacency \"" << source_id << "\" to " << target_id);
+        return -1;
+    }
+    int newID = writeNewSomething(sqlstatement, source_id, target_id );
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error writing new EC_Adjacency \"" << source_id << "\" to " << target_id);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New EC_Adjacency \"" << source_id << "\" to " << target_id);
+        ec_adjacency_map_[source_id].insert(target_id);
+    }
+    return newID;
+}
+
+int databaseWriter::writeNewECReachability(int ec_id, int workspace_id)
+{
+    std::string sqlstatement = "INSERT INTO EC_Reachability VALUES (? , ?)";
+    if (!ec_name_map_.count(ec_id) || !workspace_name_map_.count(workspace_id))
+    {
+        ROS_ERROR_STREAM("EnvironmentConstraint " << ec_id << " and/or Worskspace " << workspace_id << " do(es) not exist!");
+        return -1;
+    }
+    if (ec_reachability_map_.count(ec_id) && ec_reachability_map_.at(ec_id).count(workspace_id))
+    {
+        ROS_ERROR_STREAM("Error already exist EC_Reachability with id \"" << ec_id<< "\" to workspace " << workspace_id);
+        return -1;
+    }
+    int newID = writeNewSomething(sqlstatement, ec_id, workspace_id);
+    
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error adding EC_Reachability with id \"" << ec_id<< "\" to workspace " << workspace_id);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New EC_Reachability with id \"" << ec_id<< "\" to workspace " << workspace_id);
+        ec_reachability_map_[ec_id].insert(workspace_id);
+    }
+    return newID;
 }
