@@ -541,3 +541,17 @@ bool databaseMapper::getTransitionInfo(const grasp_id& source, const grasp_id& t
     
     return true;
 }
+
+std::ostream& operator<<( std::ostream& os, const transition_info& t )
+{
+    os << "c:" << t.transition_cost_ << " | type:" << t.grasp_transition_type_ << " | extra_ees: [ - ";
+    for(auto& e:t.ee_ids_) os << e << " - ";
+    os << "]" << std::endl;
+    return os;
+}
+
+std::ostream& operator<<( std::ostream& os, const object_state& t )
+{
+    os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_ << " | c_id:" << t.constraint_id_ << std::endl;
+    return os;
+}

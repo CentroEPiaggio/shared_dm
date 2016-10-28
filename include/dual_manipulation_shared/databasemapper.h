@@ -49,6 +49,35 @@ typedef uint64_t workspace_id;
 typedef uint64_t endeffector_id;
 typedef dual_manipulation::shared::NodeTransitionTypes grasp_transition_type;
 typedef double transition_cost_t;
+typedef uint64_t constraint_id; // not used for now
+
+/**
+ * @brief State of an object, represented by its grasp_id, workspace_id, and constraint_id
+ */
+struct object_state{
+    object_state(const grasp_id& g, const workspace_id& w, const constraint_id& c):grasp_id_(g), workspace_id_(w), constraint_id_(c){};
+    grasp_id grasp_id_;
+    workspace_id workspace_id_;
+    constraint_id constraint_id_; // not used for now
+};
+std::ostream& operator<<( std::ostream& os, const object_state& t );
+
+/**
+ * @brief Information about a transition between two object_states, containing a cost, type, and list of end-effectors
+ * Notice that the field @p ee_ids_ is a list of extra candidate end effectors to be used, but only ONE will be needed to perform a given transition
+ */
+struct transition_info{
+    transition_info(const transition_cost_t& c = 0, const grasp_transition_type& g_t = dual_manipulation::shared::NodeTransitionTypes::UNKNOWN, const std::vector<endeffector_id>& ees = std::vector<endeffector_id>()):transition_cost_(c), grasp_transition_type_(g_t){
+        ee_ids_ = ees;
+    };
+    transition_info(const transition_info& t):transition_cost_(t.transition_cost_), grasp_transition_type_(t.grasp_transition_type_){
+        ee_ids_ = t.ee_ids_;
+    };
+    transition_cost_t transition_cost_;
+    grasp_transition_type grasp_transition_type_;
+    std::vector<endeffector_id> ee_ids_; //list of extra candidate end effectors to be used: ONE will be needed to perform a given transition
+};
+std::ostream& operator<<( std::ostream& os, const transition_info& t );
 
 /**
  * @brief This is a low level database mapper that directly exposes
