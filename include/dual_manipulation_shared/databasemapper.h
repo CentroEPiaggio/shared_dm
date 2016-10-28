@@ -127,6 +127,10 @@ public:
      * 
      */
     std::map<grasp_id,std::set<grasp_id>> Grasp_transitions;
+    /**
+     * @brief List of environmental constraints and their names
+     */
+    std::map<constraint_id,std::string> EnvironmentConstraints;
     
     /**
      * @brief Get information about a transition 

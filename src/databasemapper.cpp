@@ -504,6 +504,10 @@ void databaseMapper::initialize_database(std::string database_name)
         {
             fill(EndEffectors, "EndEffectors");
         }
+        else if (table=="EnvironmentConstraints")
+        {
+            fill(EnvironmentConstraints, table);
+        }
     }
     sqlite3_close(db);
 }
@@ -529,6 +533,7 @@ databaseMapper::databaseMapper()
   std::cout<<Reachability<<std::endl;
   std::cout<<Grasps<<std::endl;
   std::cout<<WorkspaceGeometry<<std::endl;
+  std::cout << "EnvironmentConstraints = \n" << EnvironmentConstraints << std::endl;
 #endif
 }
 
@@ -545,6 +550,7 @@ databaseMapper::databaseMapper(std::string database_name)
     std::cout<<Reachability<<std::endl;
     std::cout<<Grasps<<std::endl;
     std::cout<<WorkspaceGeometry<<std::endl;
+    std::cout << "EnvironmentConstraints = \n" << EnvironmentConstraints << std::endl;
 #endif
 }
 
