@@ -14,6 +14,7 @@ namespace shared
 static const std::string GRASP_NAME("grasp");
 static const std::string UNGRASP_NAME("ungrasp");
 static const std::string EXCHANGE_GRASP_NAME("exchange_grasp");
+static const std::string SLIDE_NAME("slide");
 
 enum class NodeTransitionTypes
 {
@@ -22,6 +23,7 @@ enum class NodeTransitionTypes
     GRASP,                      // from one non-movable to one movable, grasp the object (change on ground)
     UNGRASP,                    // from one movable to one non-movable, ungrasp the object (change on ground)
     EXCHANGE_GRASP,             // both ee are movable, perform integrasp (change above ground)
+    SLIDE,                      // both ee are non-movable, use another movable end-effector to slide the object from source to target
     LAST_EE_FIXED,              // ee_id is the last end effector in the path, and is not movable
     LAST_EE_MOVABLE             // ee_id is the last end effector in the path, and is movable
 };
@@ -34,6 +36,7 @@ public:
         fromName[GRASP_NAME] = NodeTransitionTypes::GRASP;
         fromName[UNGRASP_NAME] = NodeTransitionTypes::UNGRASP;
         fromName[EXCHANGE_GRASP_NAME] = NodeTransitionTypes::EXCHANGE_GRASP;
+        fromName[SLIDE_NAME] = NodeTransitionTypes::SLIDE;
     }
     NodeTransitionTypes getTransitionTypeFromName(const std::string& name) const
     {
