@@ -109,14 +109,31 @@ public:
   int writeNewGrasp(int grasp_id, int object_id, int end_effector_id, std::string grasp_name, int ec_id = 0);
   
   /**
-    * @brief Insert a new grasp transition in the database
-    * 
-    * @param source_grasp_id source grasp id
-    * @param target_grasp_id target grasp id
-    * 
-    * @return the newly inserted grasp transition ID (-1 on failure)
-    */
+   * @brief Insert a new grasp transition in the database
+   * This will use default values for:
+   * - the transition cost (1)
+   * - the transition type (GRASP, UNGRASP, EXCHANGE_GRASP depending on whether end-effectors are movable)
+   * - extra involved end-effectors (none)
+   * 
+   * @param source_grasp_id source grasp id
+   * @param target_grasp_id target grasp id
+   * 
+   * @return the newly inserted grasp transition ID (-1 on failure)
+   */
   int writeNewTransition(int source_grasp_id, int target_grasp_id, bool just_dont=false);
+  
+  /**
+   * @brief Insert a new grasp transition in the database
+   * 
+   * @param source_grasp_id source grasp id
+   * @param target_grasp_id target grasp id
+   * @param cost the transition cost
+   * @param type the transition type
+   * @param extra_ees a vector of other end-effectors which may be needed to perform the transition
+   * 
+   * @return the newly inserted grasp transition ID (-1 on failure)
+   */
+  int writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector<int> extra_ees, bool just_dont=false);
 
   /**
     * @brief Delete a grasp from the database

@@ -356,6 +356,12 @@ int databaseWriter::writeNewObject(int object_id, std::string obj_name, std::str
 
 int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, bool just_dont)
 {
+    ROS_ERROR_STREAM(__func__ << " : implement me!");
+    return -1;
+}
+
+int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector< int > extra_ees, bool just_dont)
+{
   if(grasp_name_map_.count(source_grasp_id) == 0)
   {
     ROS_ERROR_STREAM("No grasp (source) found in the DB with ID " << source_grasp_id);
@@ -377,13 +383,36 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id,
     ROS_INFO_STREAM("Requested grasp transition between source:\"" << source_grasp << "\" and target:\"" << target_grasp << "\" was already present, returning...");
     return 0;
   }
+  
+  // prepare a string for the extra end-effectors
+  std::string ee_string;
+  int count = 0;
+  for(int ee:extra_ees)
+  {
+      if(ee_name_map_.count(ee) == 0)
+      {
+          ROS_ERROR_STREAM("No end-effector found in the DB with ID " << ee << " (was required as extra end-effector for the transition from " << source_grasp_id << " to " << target_grasp_id << ")");
+          return -1;
+      }
+      if(count++)
+          ee_string += " ";
+      ee_string += std::to_string(ee);
+  }
+  
+  // prepare a string for the transition type
+  std::ostringstream stream;
+  stream << type;
+  std::string type_string = stream.str();
 
   //INSERT INTO Grasp_transitions (Source_id, Target_id) VALUES ('3','1')
 
   std::string sqlstatement =
-    "INSERT INTO Grasp_transitions (Source_id, Target_id) VALUES ("
+    "INSERT INTO Grasp_transitions (Source_id, Target_id, actionCost, actionType, extraEE_id) VALUES ("
     + int_quotesql(source_grasp_id) + ","
-    + int_quotesql(target_grasp_id) + ");";
+    + int_quotesql(target_grasp_id) + ","
+    + double_quotesql(cost) + ","
+    + str_quotesql(type_string) + ","
+    + str_quotesql(ee_string) + ");";
 
   int newID = insert_db_entry(sqlstatement,false,just_dont);
   
