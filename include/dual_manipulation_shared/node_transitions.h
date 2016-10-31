@@ -11,10 +11,14 @@ namespace dual_manipulation
 namespace shared
 {
 
-static const std::string GRASP_NAME("grasp");
-static const std::string UNGRASP_NAME("ungrasp");
-static const std::string EXCHANGE_GRASP_NAME("exchange_grasp");
-static const std::string SLIDE_NAME("slide");
+static const std::string UNKNOWN_NAME("UNKNOWN");
+static const std::string MOVE_NONBLOCKING_NAME("MOVE_NONBLOCKING");
+static const std::string GRASP_NAME("GRASP");
+static const std::string UNGRASP_NAME("UNGRASP");
+static const std::string EXCHANGE_GRASP_NAME("EXCHANGE_GRASP");
+static const std::string SLIDE_NAME("SLIDE");
+static const std::string LAST_EE_FIXED_NAME("LAST_EE_FIXED");
+static const std::string LAST_EE_MOVABLE_NAME("LAST_EE_MOVABLE");
 
 enum class NodeTransitionTypes
 {
