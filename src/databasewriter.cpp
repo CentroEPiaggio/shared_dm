@@ -65,7 +65,10 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   std::cout << std::endl;
   
   for(auto& ee:db_mapper_->EndEffectors)
+  {
     ee_name_map_[ee.first] = std::get<0>(ee.second);
+    ee_map_[ee.first] = ee.second;
+  }
 
   std::cout << "End-effectors in DB:\n";
   for(auto& ee:ee_name_map_)
@@ -77,6 +80,9 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   
   for(auto& ee:db_mapper_->Grasps)
       grasp_name_map_[ee.first] = std::get<2>(ee.second);
+ 
+  for(auto& ee:db_mapper_->Grasps)
+      grasp_ee_map_[ee.first] = std::get<1>(ee.second);
   
   for(auto& trans:db_mapper_->Grasp_transitions)
     for(auto target:trans.second)
@@ -199,6 +205,7 @@ int databaseWriter::writeNewGrasp(int grasp_id, int object_id, int end_effector_
   {
     ROS_INFO_STREAM("New grasp \"" << grasp_name << "\" for object " << obj_name << " with end-effector " << ee_name << " added with ID " << newID);
     grasp_name_map_[newID] = grasp_name;
+    grasp_ee_map_[newID] = end_effector_id;
   }
 
   return newID;
@@ -292,6 +299,7 @@ int databaseWriter::writeNewEndEffectors(int end_effector_id, std::string name, 
     {
         ROS_INFO_STREAM("New End Effector \"" << end_effector_id << "\" added with name " << name << movable?" movable ":" NOT movable");
         ee_name_map_[end_effector_id]=name;
+        ee_map_[end_effector_id] = std::make_tuple(name,movable);
     }
     return newID;
 }
@@ -362,7 +370,7 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id,
     return -1;
 }
 
-int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector< int > extra_ees, bool just_dont)
+int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector<endeffector_id> extra_ees, bool just_dont)
 {
   if(grasp_name_map_.count(source_grasp_id) == 0)
   {

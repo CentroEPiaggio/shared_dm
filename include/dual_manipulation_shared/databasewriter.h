@@ -133,7 +133,7 @@ public:
    * 
    * @return the newly inserted grasp transition ID (-1 on failure)
    */
-  int writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector<int> extra_ees, bool just_dont=false);
+  int writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector<endeffector_id> extra_ees, bool just_dont=false);
 
   /**
     * @brief Delete a grasp from the database
@@ -202,8 +202,10 @@ private:
   std::string path_to_db_,db_name_;
   databaseMapper* db_mapper_;
   std::map<int,std::string> object_name_map_;
-  std::map<int,std::string> ee_name_map_;
+  std::map<int,std::string> ee_name_map_; /// redundant on @p ee_map_, should be removed
   std::map<int,std::string> grasp_name_map_;
+  std::map<int,int> grasp_ee_map_;
+  std::map<int,std::tuple<std::string,bool>> ee_map_;
   std::set<std::pair<int,int>> transitions_set_;
   std::map<int,std::string> workspace_name_map_;
   std::map<int,std::set<int>> adjacency_map_, reachability_map_;
