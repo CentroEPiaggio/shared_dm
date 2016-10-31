@@ -366,8 +366,31 @@ int databaseWriter::writeNewObject(int object_id, std::string obj_name, std::str
 
 int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, bool just_dont)
 {
-    ROS_ERROR_STREAM(__func__ << " : implement me!");
-    return -1;
+    if(grasp_name_map_.count(source_grasp_id) == 0)
+    {
+        ROS_ERROR_STREAM("No grasp (source) found in the DB with ID " << source_grasp_id);
+        return -1;
+    }
+    if(grasp_name_map_.count(target_grasp_id) == 0)
+    {
+        ROS_ERROR_STREAM("No grasp (target) found in the DB with ID " << target_grasp_id);
+        return -1;
+    }
+    dual_manipulation::shared::NodeTransitionTypes type = dual_manipulation::shared::NodeTransitionTypes::UNKNOWN;
+
+    bool source_movable, target_movable;
+    source_movable = std::get<1>(ee_map_.at(grasp_ee_map_.at(source_grasp_id)));
+    target_movable = std::get<1>(ee_map_.at(grasp_ee_map_.at(target_grasp_id)));
+    if(source_movable && target_movable)
+        type = dual_manipulation::shared::NodeTransitionTypes::EXCHANGE_GRASP;
+    else if(source_movable && !target_movable)
+        type = dual_manipulation::shared::NodeTransitionTypes::UNGRASP;
+    else if(!source_movable && target_movable)
+        type = dual_manipulation::shared::NodeTransitionTypes::GRASP;
+    else
+        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : saving a transition of UNKNOWN type... this may be a problem!");
+    
+    return writeNewTransition(source_grasp_id,target_grasp_id,1.0,type,std::vector<endeffector_id>());
 }
 
 int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id, double cost, dual_manipulation::shared::NodeTransitionTypes type, std::vector<endeffector_id> extra_ees, bool just_dont)
