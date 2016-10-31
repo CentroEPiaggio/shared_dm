@@ -36,6 +36,8 @@
 #include "dual_manipulation_shared/databasewriter.h"
 #include <sqlite3.h>
 
+#define CLASS_NAMESPACE "databaseWriter::"
+
 std::string str_quotesql( const std::string& s ) {
   return std::string("'") + s + std::string("'");
 }
@@ -431,12 +433,6 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id,
 
 bool databaseWriter::deleteGrasp(int grasp_id)
 {
-  if(grasp_name_map_.count(grasp_id) == 0)
-  {
-    ROS_ERROR_STREAM("No grasp found in the DB with ID " << grasp_id);
-    return -1;
-  }
-  
   std::string sqlstatement =
     "DELETE FROM Grasps WHERE Grasp_id="
     + int_quotesql(grasp_id) + ";";
@@ -444,25 +440,27 @@ bool databaseWriter::deleteGrasp(int grasp_id)
   bool remove = true;
   int result = insert_db_entry(sqlstatement,remove);
   
-  std::string grasp_name = grasp_name_map_.at(grasp_id);
+  std::string grasp_name;
+  if(grasp_name_map_.count(grasp_id))
+    grasp_name = grasp_name_map_.at(grasp_id);
+  else
+    grasp_name = "UNKNOWN GRASP";
   
-  if(result == 1)
+  if(result > 0)
   {
     ROS_INFO_STREAM("Grasp \"" << grasp_name << "\" (id:" << grasp_id << ") successfully removed!");
     grasp_name_map_.erase(grasp_id);
   }
+  else
+  {
+    ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : grasp #" << grasp_id << " was not present in the database - proceeding anyway");
+  }
   
-  return (result == 1);
+  return (result > 0);
 }
 
 bool databaseWriter::deleteObject(int obj_id)
 {
-  if(object_name_map_.count(obj_id) == 0)
-  {
-    ROS_ERROR_STREAM("No object found in the DB with ID " << obj_id);
-    return -1;
-  }
-  
   std::string sqlstatement =
     "DELETE FROM Objects WHERE Id="
     + int_quotesql(obj_id) + ";";
@@ -470,47 +468,55 @@ bool databaseWriter::deleteObject(int obj_id)
   bool remove = true;
   int result = insert_db_entry(sqlstatement,remove);
   
-  std::string obj_name = object_name_map_.at(obj_id);
+  std::string obj_name;
+  if(object_name_map_.count(obj_id))
+      obj_name = object_name_map_.at(obj_id);
+  else
+      obj_name = "UNKNOWN OBJ";
   
-  if(result == 1)
+  if(result > 1)
   {
     ROS_INFO_STREAM("Object \"" << obj_name << "\" (id:" << obj_id << ") successfully removed!");
     object_name_map_.erase(obj_id);
   }
+  else
+  {
+    ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : object #" << obj_id << " was not present in the database - proceeding anyway");
+  }
   
-  return (result == 1);
+  return (result > 0);
 }
 
 bool databaseWriter::deleteGraspTransition(int source_grasp_id, int target_grasp_id)
 {
-  if(grasp_name_map_.count(source_grasp_id) == 0)
-  {
-    ROS_ERROR_STREAM("No grasp (source) found in the DB with ID " << source_grasp_id);
-    return -1;
-  }
-  if(grasp_name_map_.count(target_grasp_id) == 0)
-  {
-    ROS_ERROR_STREAM("No grasp (target) found in the DB with ID " << target_grasp_id);
-    return -1;
-  }
-  
-  const std::string& source_grasp = grasp_name_map_.at(source_grasp_id);
-  const std::string& target_grasp = grasp_name_map_.at(target_grasp_id);
+  std::string target_grasp,source_grasp;
+  if(grasp_name_map_.count(target_grasp_id))
+    target_grasp = grasp_name_map_.at(target_grasp_id);
+  else
+    target_grasp = "UNKNOWN TARGET GRASP";
+  if(grasp_name_map_.count(source_grasp_id))
+    source_grasp = grasp_name_map_.at(source_grasp_id);
+  else
+    source_grasp = "UNKNOWN SOURCE GRASP";
 
   std::string sqlstatement =
     "DELETE FROM Grasp_transitions WHERE Source_id="
     + int_quotesql(source_grasp_id) + " AND Target_id="
-    + int_quotesql(target_grasp_id) + ");";
+    + int_quotesql(target_grasp_id) + ";";
 
   bool remove = true;
   int result = insert_db_entry(sqlstatement,remove);
   
-  if(result == 1)
+  if(result > 0)
   {
     ROS_INFO_STREAM("Transition between source:\"" << source_grasp << "\" and target:\"" << target_grasp << "\" successfully removed!");
   }
+  else
+  {
+    ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : no transition between grasps " << source_grasp_id << " > " << target_grasp_id << " was present in the database - proceeding anyway");
+  }
   
-  return (result == 1);
+  return (result > 0);
 }
 
 int databaseWriter::writeNewEnvironmentConstraint(int id, std::string name)
