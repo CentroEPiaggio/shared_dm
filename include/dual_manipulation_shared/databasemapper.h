@@ -114,7 +114,7 @@ public:
      * @brief List of grasps, each grasp is associated to an object, an e.e. and a name
      * grasp_id -> object_id,endeffector_id,std::string
      */
-    std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>> Grasps;
+    std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>> Grasps;
     std::map<endeffector_id,std::set<workspace_id>> Reachability;
 
     /**
@@ -154,7 +154,7 @@ private:
     bool check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt);
     bool check_type_and_copy(char* &pzBlob, int column_index, sqlite3_stmt *stmt, int& pnBlob);
     bool fillTableList();
-    bool fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>>& data, std::string table_name);
+    bool fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>>& data, std::string table_name);
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);

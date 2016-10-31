@@ -380,10 +380,10 @@ bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::stri
     return true;
 }
 
-bool databaseMapper::fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>>& data, std::string table_name)
+bool databaseMapper::fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>>& data, std::string table_name)
 {
-    std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string>> result;
-    std::string sql = "SELECT Grasp_id, Object_id, EndEffector_id, Grasp_name FROM ";
+    std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>> result;
+    std::string sql = "SELECT Grasp_id, Object_id, EndEffector_id, Grasp_name, EC_id FROM ";
     sql.append(table_name);
     sql.append(";");
     sqlite3_stmt *stmt;
@@ -407,11 +407,13 @@ bool databaseMapper::fill(std::map<grasp_id, std::tuple<object_id,endeffector_id
             object_id objectId;
             endeffector_id endeffectorId;
             std::string name;
+            constraint_id ec_id;
             check_type_and_copy(graspId,0,stmt);
             check_type_and_copy(objectId,1,stmt);
             check_type_and_copy(endeffectorId,2,stmt);
             check_type_and_copy(name,3,stmt);
-            result[graspId]=std::tuple<object_id,endeffector_id,std::string>(objectId,endeffectorId,name);
+            check_type_and_copy(ec_id,4,stmt);
+            result[graspId]=std::tuple<object_id,endeffector_id,std::string,constraint_id>(objectId,endeffectorId,name,ec_id);
         }
     }
     data.swap(result);
