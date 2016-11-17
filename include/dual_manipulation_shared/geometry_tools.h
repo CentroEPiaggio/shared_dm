@@ -56,7 +56,7 @@ public:
         return point_in_ordered_polygon(p.x,p.y,polygon);
     }
     
-    bool point_in_ordered_polygon(double x, double y, const std::vector<Point>& polygon);
+    bool point_in_ordered_polygon(double x, double y, const std::vector<Point>& polygon) const;
     
 };
 

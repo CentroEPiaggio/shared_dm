@@ -42,6 +42,7 @@
 #include <sqlite3.h>
 #include <kdl/frames.hpp>
 #include <dual_manipulation_shared/node_transitions.h>
+#include <dual_manipulation_shared/geometry_tools.h>
 
 typedef uint64_t object_id;
 typedef uint64_t grasp_id;
@@ -143,6 +144,15 @@ public:
      */
     bool getTransitionInfo(const object_state& source, const object_state& target, transition_info& t_info) const;
     
+    /**
+     * @brief Return the ID of the workspace which contains the @p object_pose passed as input
+     * 
+     * @param object_pose pose of the object to find in the environment, expressed in world frame
+     * 
+     * @return -1 if the pose is outside all known workspaces; the found workspace_id otherwise.
+     */
+    workspace_id getWorkspaceIDFromPose(const KDL::Frame& object_pose) const;
+    
 private:
     
     void initialize_database(std::string database_name);
@@ -168,6 +178,7 @@ private:
     std::map<grasp_id,std::map<grasp_id,transition_info>> Grasp_transition_info;
     /// contains information about transition types from names
     const dual_manipulation::shared::NodeTransitions node_transitions;
+    geometry_tools geom;
 };
 
 #endif // DATABASEMAPPER_H

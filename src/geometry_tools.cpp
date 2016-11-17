@@ -40,7 +40,7 @@
 //     return x < p.x || (x == p.x && y < p.y);
 // }
 
-bool geometry_tools::point_in_ordered_polygon(double x, double y, const std::vector< Point >& polygon)
+bool geometry_tools::point_in_ordered_polygon(double x, double y, const std::vector< Point >& polygon) const
 {
     bool result = false;
     if (polygon.size() < 3) return false;

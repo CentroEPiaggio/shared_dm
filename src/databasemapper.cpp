@@ -648,3 +648,20 @@ std::ostream& operator<<( std::ostream& os, const object_state& t )
     os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_ << " | c_id:" << t.constraint_id_ << std::endl;
     return os;
 }
+
+workspace_id databaseMapper::getWorkspaceIDFromPose(const KDL::Frame& object_pose) const
+{
+    const double& xs(object_pose.p.data[0]);
+    const double& ys(object_pose.p.data[1]);
+    for (auto workspace: WorkspaceGeometry)
+    {
+        std::vector<Point> temp;
+        for (auto point : workspace.second)
+            temp.emplace_back(point.first,point.second);
+        if (geom.point_in_ordered_polygon(xs,ys,temp))
+        {
+            return workspace.first;
+        }
+    }
+    return -1;
+}
