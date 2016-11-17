@@ -153,6 +153,17 @@ public:
      */
     workspace_id getWorkspaceIDFromPose(const KDL::Frame& object_pose) const;
     
+    /**
+     * @brief Return the Workspace centroid
+     * 
+     * @param ws_id the ID of the workspace
+     * @param high_centroid a flag to decide whether to use a low (false) or high (true) centroid position
+     * @param ws_centroid pose of the workspace centroid
+     * 
+     * @return false if the workspace does not exist
+     */
+    bool getWorkspaceCentroid(const workspace_id& ws_id, bool high_centroid, KDL::Frame& ws_centroid) const;
+    
 private:
     
     void initialize_database(std::string database_name);

@@ -665,3 +665,28 @@ workspace_id databaseMapper::getWorkspaceIDFromPose(const KDL::Frame& object_pos
     }
     return -1;
 }
+
+bool databaseMapper::getWorkspaceCentroid(const workspace_id& ws_id, bool high_centroid, KDL::Frame& ws_centroid) const
+{
+    if(!WorkspaceGeometry.count(ws_id))
+        return false;
+    
+    double centroid_x = 0;
+    double centroid_y = 0;
+    double centroid_z = 0;
+    for (auto workspace: WorkspaceGeometry.at(ws_id))
+    {
+        centroid_x += workspace.first;
+        centroid_y += workspace.second;
+    }
+    centroid_x = centroid_x/WorkspaceGeometry.at(ws_id).size();
+    centroid_y = centroid_y/WorkspaceGeometry.at(ws_id).size();
+    if (high_centroid)
+        centroid_z = 0.35; //HIGH;
+    else
+        centroid_z = 0.06; //LOW;
+    ws_centroid.M = KDL::Rotation::Identity();
+    ws_centroid.p = KDL::Vector( centroid_x, centroid_y, centroid_z );
+    
+    return true;
+}
