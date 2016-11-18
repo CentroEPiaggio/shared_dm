@@ -120,27 +120,17 @@ public:
      */
     std::map<workspace_id,workspace_info> Workspaces;
     /**
-     * @brief From a workspace to an adjacent one
-     * 
-     */
-    std::map<workspace_id,std::set<workspace_id>> WorkspacesAdjacency;
-    /**
      * @brief List of grasps, each grasp is associated to an object, an e.e. and a name
      * grasp_id -> object_id,endeffector_id,std::string
      */
     std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>> Grasps;
     std::map<endeffector_id,std::set<workspace_id>> Reachability;
-
-    /**
-     * @brief This table associates a 2Dpolygon (vector of 2D points) to each workspace
-     * It is currently used to convert semantic into cartesian and viceversa
-     */
-    std::map<workspace_id,std::vector<std::pair<double,double>>> WorkspaceGeometry;
     /**
      * @brief From a grasp to another
      * 
      */
     std::map<grasp_id,std::set<grasp_id>> Grasp_transitions;
+    
     /**
      * @brief List of environmental constraints and their names
      */
@@ -204,6 +194,7 @@ private:
     /// contains information about transition types from names
     const dual_manipulation::shared::NodeTransitions node_transitions;
     geometry_tools geom;
+    std::map<workspace_id,std::set<workspace_id>> WorkspacesAdjacency;
 };
 
 #endif // DATABASEMAPPER_H

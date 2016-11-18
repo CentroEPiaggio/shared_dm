@@ -497,10 +497,10 @@ void databaseMapper::initialize_database(std::string database_name)
         {
             fill(WorkspacesAdjacency, "WorkspacesAdjacency");
             makeMapBidirectional(WorkspacesAdjacency);
-        }
-        else if (table=="WorkspaceGeometry")
-        {
-            fill(WorkspaceGeometry, "WorkspaceGeometry");
+            for(auto& rt:WorkspacesAdjacency)
+            {
+                Workspaces[rt.first].adjacent_ws = rt.second;
+            }
         }
         else if (table=="EndEffectors")
         {
@@ -534,7 +534,6 @@ databaseMapper::databaseMapper()
   std::cout<<Workspaces<<std::endl;
   std::cout<<Reachability<<std::endl;
   std::cout<<Grasps<<std::endl;
-  std::cout<<WorkspaceGeometry<<std::endl;
   std::cout << "EnvironmentConstraints = \n" << EnvironmentConstraints << std::endl;
 #endif
 }
@@ -551,7 +550,6 @@ databaseMapper::databaseMapper(std::string database_name)
     std::cout<<Workspaces<<std::endl;
     std::cout<<Reachability<<std::endl;
     std::cout<<Grasps<<std::endl;
-    std::cout<<WorkspaceGeometry<<std::endl;
     std::cout << "EnvironmentConstraints = \n" << EnvironmentConstraints << std::endl;
 #endif
 }
@@ -577,7 +575,7 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
         // 1
         if( source.grasp_id_ == target.grasp_id_ &&
             std::get<1>(EndEffectors.at(source_ee_id)) &&//E.E is movable
-            WorkspacesAdjacency.at(source.workspace_id_).count(target.workspace_id_) &&
+            Workspaces.at(source.workspace_id_).adjacent_ws.count(target.workspace_id_) &&
             Reachability.at(source_ee_id).count(source.workspace_id_) && Reachability.at(source_ee_id).count(target.workspace_id_))
         {
             t_info.ee_ids_.clear();
@@ -597,7 +595,7 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
             found = true;
         }
         // 2.b
-        else if( source.workspace_id_ != target.workspace_id_ && WorkspacesAdjacency.at(source.workspace_id_).count(target.workspace_id_) &&
+        else if( source.workspace_id_ != target.workspace_id_ && Workspaces.at(source.workspace_id_).adjacent_ws.count(target.workspace_id_) &&
             source_ee_id == target_ee_id && !std::get<1>(EndEffectors.at(source_ee_id)) )
         {
             for(auto ee:(Grasp_transition_info.at(source.grasp_id_).at(target.grasp_id_)).ee_ids_)
@@ -651,12 +649,18 @@ std::ostream& operator<<( std::ostream& os, const object_state& t )
 
 workspace_id databaseMapper::getWorkspaceIDFromPose(const KDL::Frame& object_pose) const
 {
-    const double& xs(object_pose.p.data[0]);
-    const double& ys(object_pose.p.data[1]);
-    for (auto workspace: WorkspaceGeometry)
+    for (auto workspace: Workspaces)
     {
+        KDL::Frame workspace_object;
+        workspace_object = workspace.second.center.Inverse()*object_pose;
+        const double& xs(workspace_object.p.data[0]);
+        const double& ys(workspace_object.p.data[1]);
+        const double& zs(workspace_object.p.data[2]);
+    
+        if (zs < workspace.second.z_min_max.first || zs > workspace.second.z_min_max.second)
+            continue;
         std::vector<Point> temp;
-        for (auto point : workspace.second)
+        for (auto point : workspace.second.polygon)
             temp.emplace_back(point.first,point.second);
         if (geom.point_in_ordered_polygon(xs,ys,temp))
         {
@@ -668,25 +672,13 @@ workspace_id databaseMapper::getWorkspaceIDFromPose(const KDL::Frame& object_pos
 
 bool databaseMapper::getWorkspaceCentroid(const workspace_id& ws_id, bool high_centroid, KDL::Frame& ws_centroid) const
 {
-    if(!WorkspaceGeometry.count(ws_id))
+    if(!Workspaces.count(ws_id))
         return false;
     
-    double centroid_x = 0;
-    double centroid_y = 0;
-    double centroid_z = 0;
-    for (auto workspace: WorkspaceGeometry.at(ws_id))
-    {
-        centroid_x += workspace.first;
-        centroid_y += workspace.second;
-    }
-    centroid_x = centroid_x/WorkspaceGeometry.at(ws_id).size();
-    centroid_y = centroid_y/WorkspaceGeometry.at(ws_id).size();
-    if (high_centroid)
-        centroid_z = 0.35; //HIGH;
+    if(!high_centroid)
+        ws_centroid = Workspaces.at(ws_id).center;
     else
-        centroid_z = 0.06; //LOW;
-    ws_centroid.M = KDL::Rotation::Identity();
-    ws_centroid.p = KDL::Vector( centroid_x, centroid_y, centroid_z );
+        ws_centroid = Workspaces.at(ws_id).center*KDL::Frame(KDL::Vector(0.0,0.0, (Workspaces.at(ws_id).z_min_max.second + Workspaces.at(ws_id).z_min_max.first)/2.0 ));
     
     return true;
 }
