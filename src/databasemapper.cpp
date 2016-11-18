@@ -479,7 +479,7 @@ void databaseMapper::initialize_database(std::string database_name)
         }
         else if (table=="Workspaces")
         {
-            fill(Workspaces, "Workspaces");
+            fill_workspaces(Workspaces, "Workspaces");
         }
         else if (table=="Grasps")
         {
@@ -687,6 +687,83 @@ bool databaseMapper::getWorkspaceCentroid(const workspace_id& ws_id, bool high_c
         centroid_z = 0.06; //LOW;
     ws_centroid.M = KDL::Rotation::Identity();
     ws_centroid.p = KDL::Vector( centroid_x, centroid_y, centroid_z );
+    
+    return true;
+}
+
+bool databaseMapper::fill_workspaces(std::map< workspace_id, workspace_info >& data, std::string table_name)
+{
+    
+    std::map<workspace_id, workspace_info> result;
+    sqlite3_stmt* stmt;
+    prepare_query(table_name,&stmt);
+    bool exit=false;
+    int rc;
+    while(!exit)
+    {
+        if (!step_query(stmt,rc))
+            return false;
+        else if (rc == SQLITE_DONE) {
+            exit=true;
+        }
+        else if (rc == SQLITE_ROW)
+        {
+            uint64_t index;
+            std::string name, polygon, z_min_max, centroid;
+            check_type_and_copy(index,0,stmt);
+            check_type_and_copy(name,1,stmt);
+            check_type_and_copy(polygon,2,stmt);
+            check_type_and_copy(z_min_max,3,stmt);
+            check_type_and_copy(centroid,4,stmt);
+            workspace_info ws_info;
+            ws_info.name = name;
+            double x=0,y=0;
+            std::istringstream iss (polygon);
+            while (!iss.eof())
+            {
+                iss >> x >> y;
+                ws_info.polygon.push_back(std::make_pair(x,y));
+            }
+            
+            std::istringstream iss_z (z_min_max);
+            iss_z >> x >> y;
+            ws_info.z_min_max = std::make_pair(x,y);
+            
+            
+            std::istringstream iss_c (centroid);
+            std::vector<double> object_center;
+            KDL::Frame obj_f;
+            while (!iss_c.eof())
+            {
+                double x;
+                iss_c >> x;
+                object_center.push_back(x);
+            }
+            if (object_center.size() < 6)
+            {
+                std::cout << "databaseMapper::fill : Error getting object center pose from DB" << std::endl;
+            }
+            else
+            {
+                obj_f.p.x(object_center[0]);
+                obj_f.p.y(object_center[1]);
+                obj_f.p.z(object_center[2]);
+                
+                if(object_center.size() == 6)
+                    obj_f.M = KDL::Rotation::RPY(object_center[3],object_center[4],object_center[5]);
+                else
+                    obj_f.M = KDL::Rotation::Quaternion(object_center[3],object_center[4],object_center[5],object_center[6]);
+            }
+            
+            ws_info.center = obj_f;
+            if(data.count(index))
+                ws_info.adjacent_ws = data.at(index).adjacent_ws;
+            result[index]=ws_info;
+        }
+    }
+    
+    data.swap(result);
+    sqlite3_finalize(stmt);
     
     return true;
 }

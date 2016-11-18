@@ -64,6 +64,19 @@ struct object_state{
 std::ostream& operator<<( std::ostream& os, const object_state& t );
 
 /**
+ * @brief struct containing all the information related to a workspace
+ */
+
+struct workspace_info{
+    std::string name;
+    std::vector<std::pair<double,double>> polygon;
+    std::pair<double,double> z_min_max;
+    KDL::Frame center;
+    std::set<workspace_id> adjacent_ws;
+};
+
+
+/**
  * @brief Information about a transition between two object_states, containing a cost, type, and list of end-effectors
  * Notice that the field @p ee_ids_ is a list of extra candidate end effectors to be used, but only ONE will be needed to perform a given transition
  */
@@ -102,10 +115,10 @@ public:
      */
     std::map<endeffector_id,std::tuple<std::string,bool>> EndEffectors;
     /**
-     * @brief List of workspaces and their names
+     * @brief List of workspaces and their information
      * 
      */
-    std::map<workspace_id,std::string> Workspaces;
+    std::map<workspace_id,workspace_info> Workspaces;
     /**
      * @brief From a workspace to an adjacent one
      * 
@@ -182,6 +195,7 @@ private:
     bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
+    bool fill_workspaces(std::map<workspace_id, workspace_info>& data, std::string table_name);
     void makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map);
     std::vector<std::string> tables;
     sqlite3 *db;
