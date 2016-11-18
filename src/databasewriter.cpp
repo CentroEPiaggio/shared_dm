@@ -630,3 +630,49 @@ int databaseWriter::writeNewECReachability(int ec_id, int workspace_id)
     }
     return newID;
 }
+
+int databaseWriter::writeNewWorkspace(int workspace_id, std::string workspace_name, std::vector< std::pair< double, double > > polygon, std::pair< double, double > height_min_max, KDL::Frame centroid)
+{
+
+    assert(polygon.size() > 2);
+    
+    std::string sqlstatement = "INSERT INTO Workspaces VALUES (? , ? , ? , ? , ?)";
+    if (workspace_name_map_.count(workspace_id))
+    {
+        ROS_ERROR_STREAM("Error adding workspace \"" << workspace_name << "\" with ID " << workspace_id << "already in the database");
+        return -1;
+    }
+    
+    std::string geometry_string;
+    
+    for(auto vertex:polygon)
+    {
+        geometry_string += std::to_string(vertex.first) + " " + std::to_string(vertex.second) + " ";
+    }
+    geometry_string.erase(geometry_string.size()-1, 1);
+    
+    
+    std::string height_string = std::to_string(height_min_max.first) + " " + std::to_string(height_min_max.second);
+    
+    std::string centroid_string;
+    double x,y,z,w;
+    centroid.M.GetQuaternion(x,y,z,w);
+    centroid_string = std::to_string(centroid.p.data[0]) + " " + std::to_string(centroid.p.data[1]) + " " + std::to_string(centroid.p.data[2]) + " " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " " + std::to_string(w);
+    
+    int newID = writeNewSomething(sqlstatement, workspace_id, workspace_name, geometry_string, height_string, centroid_string);
+    
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error adding workspace \"" << workspace_name << "\" with ID " << newID);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New workspace \"" << workspace_name << "\" added with ID " << newID);
+        workspace_name_map_[workspace_id] = workspace_name;
+    }
+        
+    return newID;
+    
+}
+

@@ -59,6 +59,7 @@ public:
   int writeNewReachability(int end_effector_id, int workspace_id);
   int writeNewEndEffectors(int end_effector_id, std::string name, bool movable);
   int writeNewGeometry(int workspace_id, std::string geometry_string);
+  int writeNewWorkspace(int workspace_id, std::string workspace_name, std::vector<std::pair<double,double>> polygon, std::pair<double, double> height_min_max, KDL::Frame centroid);
 
   /**
     * @brief Insert a new object in the database
