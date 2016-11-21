@@ -65,7 +65,6 @@ std::ostream& operator<<( std::ostream& os, const object_state& t );
 /**
  * @brief struct containing all the information related to a workspace
  */
-
 struct workspace_info{
     std::string name;
     std::vector<std::pair<double,double>> polygon;
@@ -74,6 +73,16 @@ struct workspace_info{
     std::set<workspace_id> adjacent_ws;
 };
 
+/**
+ * @brief Information regarding a certain grasp
+ */
+struct grasp_info{
+    object_id obj_id; // the ID of the object this grasp refers to
+    endeffector_id ee_id; // the ID of the end-effector for this grasp
+    std::string name; // the name of the grasp
+    constraint_id ec_id; // the ID of the environmental constraint for this grasp
+};
+std::ostream& operator<<( std::ostream& os, const grasp_info& t );
 
 /**
  * @brief Information about a transition between two object_states, containing a cost, type, and list of end-effectors
@@ -101,6 +110,9 @@ std::ostream& operator<<( std::ostream& os, const transition_info& t );
 class databaseMapper
 {
 public:
+    
+    typedef std::map<grasp_id, grasp_info> grasp_map_t;
+    
     databaseMapper();
     databaseMapper(std::string database_name);
     /**
@@ -119,10 +131,9 @@ public:
      */
     std::map<workspace_id,workspace_info> Workspaces;
     /**
-     * @brief List of grasps, each grasp is associated to an object, an e.e. and a name
-     * grasp_id -> object_id,endeffector_id,std::string
+     * @brief List of grasps
      */
-    std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>> Grasps;
+    grasp_map_t Grasps;
     std::map<endeffector_id,std::set<workspace_id>> Reachability;
     /**
      * @brief From a grasp to another
@@ -177,7 +188,7 @@ private:
     bool check_type_and_copy(std::string& data, int column_index, sqlite3_stmt *stmt);
     bool check_type_and_copy(char* &pzBlob, int column_index, sqlite3_stmt *stmt, int& pnBlob);
     bool fillTableList();
-    bool fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>>& data, std::string table_name);
+    bool fill(grasp_map_t& data, std::string table_name);
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
     bool fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);

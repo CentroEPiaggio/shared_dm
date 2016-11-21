@@ -380,9 +380,9 @@ bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::stri
     return true;
 }
 
-bool databaseMapper::fill(std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>>& data, std::string table_name)
+bool databaseMapper::fill(databaseMapper::grasp_map_t& data, std::string table_name)
 {
-    std::map<grasp_id, std::tuple<object_id,endeffector_id,std::string,constraint_id>> result;
+    databaseMapper::grasp_map_t result;
     std::string sql = "SELECT Grasp_id, Object_id, EndEffector_id, Grasp_name, EC_id FROM ";
     sql.append(table_name);
     sql.append(";");
@@ -404,16 +404,13 @@ bool databaseMapper::fill(std::map<grasp_id, std::tuple<object_id,endeffector_id
         else if (rc == SQLITE_ROW)
         {
             grasp_id graspId;
-            object_id objectId;
-            endeffector_id endeffectorId;
-            std::string name;
-            constraint_id ec_id;
+            grasp_info g_info;
             check_type_and_copy(graspId,0,stmt);
-            check_type_and_copy(objectId,1,stmt);
-            check_type_and_copy(endeffectorId,2,stmt);
-            check_type_and_copy(name,3,stmt);
-            check_type_and_copy(ec_id,4,stmt);
-            result[graspId]=std::tuple<object_id,endeffector_id,std::string,constraint_id>(objectId,endeffectorId,name,ec_id);
+            check_type_and_copy(g_info.obj_id,1,stmt);
+            check_type_and_copy(g_info.ee_id,2,stmt);
+            check_type_and_copy(g_info.name,3,stmt);
+            check_type_and_copy(g_info.ec_id,4,stmt);
+            result[graspId] = g_info;
         }
     }
     data.swap(result);
@@ -563,8 +560,8 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
 #endif
     try
     {
-        endeffector_id source_ee_id =  std::get<1>(Grasps.at(source.grasp_id_));
-        endeffector_id target_ee_id =  std::get<1>(Grasps.at(target.grasp_id_));
+        endeffector_id source_ee_id =  Grasps.at(source.grasp_id_).ee_id;
+        endeffector_id target_ee_id =  Grasps.at(target.grasp_id_).ee_id;
         /* Allowed transitions are as follows:
         1 - Not in the database:
                 Transition between adjacent workspaces using movable end effector
@@ -644,6 +641,12 @@ std::ostream& operator<<( std::ostream& os, const transition_info& t )
 std::ostream& operator<<( std::ostream& os, const object_state& t )
 {
     os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_ << std::endl;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const grasp_info& t)
+{
+    os << "obj:" << t.obj_id << " ee:" << t.ee_id << " ec:" << t.ec_id << " | " << t.name << std::endl;
     return os;
 }
 

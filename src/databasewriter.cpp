@@ -79,10 +79,10 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
       ec_name_map_[ec.first] = ec.second;
   
   for(auto& ee:db_mapper_->Grasps)
-      grasp_name_map_[ee.first] = std::get<2>(ee.second);
- 
-  for(auto& ee:db_mapper_->Grasps)
-      grasp_ee_map_[ee.first] = std::get<1>(ee.second);
+  {
+      grasp_name_map_[ee.first] = ee.second.name;
+      grasp_ee_map_[ee.first] = ee.second.ee_id;
+  }
   
   for(auto& trans:db_mapper_->Grasp_transitions)
     for(auto target:trans.second)

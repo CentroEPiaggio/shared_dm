@@ -94,7 +94,7 @@ int main(int argc, char **argv)
     
     for(auto item:dbMapper.Grasps)
     {
-      reserialize_grasp(std::get<0>(item.second),item.first);
+      reserialize_grasp(item.second.obj_id,item.first);
     }
     
     return 0;
