@@ -39,18 +39,19 @@
 #include "ros/ros.h"
 
 #define CLASS_NAMESPACE "ParsingUtils::"
+#define CLASS_LOGNAME "dualManipulationShared::ParsingUtils"
 
 bool parseSingleParameter(XmlRpc::XmlRpcValue& params, bool& param, std::string param_name)
 {
     if( !params.hasMember(param_name) )
     {
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << (param?"true":"false") << " as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << (param?"true":"false") << " as default value.");
         return false;
     }
 
     ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeBoolean);
     param = (bool) params[param_name];
-    ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << (param?"true":"false"));
+    ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << (param?"true":"false"));
 
     return true;
 }
@@ -59,13 +60,13 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, double& param, std::strin
 {
     if( !params.hasMember(param_name) )
     {
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
         return false;
     }
 
     ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeDouble);
     param = (double) params[param_name];
-    ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << param);
+    ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << param);
 
     return true;
 }
@@ -74,13 +75,13 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, int& param, std::string p
 {
     if( !params.hasMember(param_name) )
     {
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
         return false;
     }
 
     ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeInt);
     param = (int) params[param_name];
-    ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << param);
+    ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << param);
 
     return true;
 }
@@ -89,13 +90,13 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::string& param, std::
 {
     if( !params.hasMember(param_name) )
     {
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use " << param << " as default value.");
         return false;
     }
 
     ROS_ASSERT(params[param_name].getType() == XmlRpc::XmlRpcValue::TypeString);
     param = (std::string) params[param_name];
-    ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << param);
+    ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = " << param);
 
     return true;
 }
@@ -109,7 +110,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< double >& pa
         for(auto item:param)
             vector_str.append( std::to_string(item) ).append(" | ");
         
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use | " << vector_str << "as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use | " << vector_str << "as default value.");
         return false;
     }
     
@@ -118,7 +119,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< double >& pa
         for(auto item:param)
             vector_str.append( std::to_string(item) ).append(" | ");
         
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Parameter array " << param_name << " did not have enough elements (min " << min_size << "). Check the yaml configuration, we will use | " << vector_str << "as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Parameter array " << param_name << " did not have enough elements (min " << min_size << "). Check the yaml configuration, we will use | " << vector_str << "as default value.");
         return false;
     }
 
@@ -131,7 +132,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< double >& pa
       vector_str.append( std::to_string(param.back()) ).append(" | ");
     }
     
-    ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = | " << vector_str);
+    ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = | " << vector_str);
 
     return true;
 }
@@ -145,7 +146,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< std::string 
         for(auto item:param)
             vector_str.append( item ).append(" | ");
         
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use | " << vector_str << "as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use | " << vector_str << "as default value.");
         return false;
     }
     
@@ -154,7 +155,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< std::string 
         for(auto item:param)
             vector_str.append( item ).append(" | ");
         
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Parameter array " << param_name << " did not have enough elements (min " << min_size << "). Check the yaml configuration, we will use | " << vector_str << "as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Parameter array " << param_name << " did not have enough elements (min " << min_size << "). Check the yaml configuration, we will use | " << vector_str << "as default value.");
         return false;
     }
 
@@ -167,7 +168,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::vector< std::string 
       vector_str.append( param.back() ).append(" | ");
     }
     
-    ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = | " << vector_str);
+    ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = | " << vector_str);
 
     return true;
 }
@@ -181,7 +182,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
         for(auto item:param)
             vector_str.append( item.first ).append(" : ").append( item.second ).append(" | ");
         
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use | " << vector_str << "as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name <<". Check the yaml configuration, we will use | " << vector_str << "as default value.");
         return false;
     }
 
@@ -194,7 +195,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
     {
         if( !params[param_name].hasMember(names_list.at(i)) )
         {
-            ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name << ":" << names_list.at(i) << ". Check the yaml configuration.");
+            ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "No value for " << param_name << ":" << names_list.at(i) << ". Check the yaml configuration.");
             everything_ok = false;
             continue;
         }
@@ -204,7 +205,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
     
     if(!param_tmp.empty())
     {
-        ROS_INFO_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = | " << vector_str);
+        ROS_DEBUG_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read parameter " << param_name << " = | " << vector_str);
         param.swap(param_tmp);
         param_tmp.clear();
     }
@@ -213,7 +214,7 @@ bool parseSingleParameter(XmlRpc::XmlRpcValue& params, std::map< std::string, st
         for(auto item:param)
             vector_str.append( item.first ).append(" : ").append( item.second ).append(" | ");
         
-        ROS_WARN_STREAM(CLASS_NAMESPACE << __func__ << " : " << "Read EMPTY parameter " << param_name << ". Check the yaml configuration, we will use | " << vector_str << "as default value.");
+        ROS_WARN_STREAM_NAMED(CLASS_LOGNAME,CLASS_NAMESPACE << __func__ << " : " << "Read EMPTY parameter " << param_name << ". Check the yaml configuration, we will use | " << vector_str << "as default value.");
         return false;
     }
 
