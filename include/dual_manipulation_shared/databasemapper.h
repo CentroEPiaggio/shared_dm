@@ -95,6 +95,15 @@ struct grasp_info{
 std::ostream& operator<<( std::ostream& os, const grasp_info& t );
 
 /**
+ * @brief struct containing all the information related to an environmental constraint
+ */
+struct constraint_info{
+    constraint_info(const std::string& name_) : name(name_) {};
+    std::string name;
+};
+std::ostream& operator<<(std::ostream& os, const constraint_info& t);
+
+/**
  * @brief Information about a transition between two object_states, containing a cost, type, and list of end-effectors
  * Notice that the field @p ee_ids_ is a list of extra candidate end effectors to be used, but only ONE will be needed to perform a given transition
  */
@@ -123,6 +132,7 @@ public:
     
     typedef std::map<object_id, object_info> object_map_t;
     typedef std::map<grasp_id, grasp_info> grasp_map_t;
+    typedef std::map<constraint_id, constraint_info> constraint_map_t;
     
     databaseMapper();
     databaseMapper(std::string database_name);
@@ -154,7 +164,7 @@ public:
     /**
      * @brief List of environmental constraints and their names
      */
-    std::map<constraint_id,std::string> EnvironmentConstraints;
+    constraint_map_t EnvironmentConstraints;
     
     /**
      * @brief Get information about a transition 
@@ -199,7 +209,7 @@ private:
     bool check_type_and_copy(char* &pzBlob, int column_index, sqlite3_stmt *stmt, int& pnBlob);
     bool fillTableList();
     bool fill(grasp_map_t& data, std::string table_name);
-    bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
+    bool fill(constraint_map_t& data, std::string table_name);
     bool fill(object_map_t& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
     bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name);

@@ -76,7 +76,7 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   std::cout << std::endl;
   
   for(auto& ec:db_mapper_->EnvironmentConstraints)
-      ec_name_map_[ec.first] = ec.second;
+      ec_name_map_[ec.first] = ec.second.name;
   
   for(auto& ee:db_mapper_->Grasps)
   {

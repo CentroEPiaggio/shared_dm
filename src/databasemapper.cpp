@@ -298,9 +298,9 @@ bool databaseMapper::fill(std::map<endeffector_id,std::tuple<std::string,bool>>&
     return true;
 }
 
-bool databaseMapper::fill(std::map<object_id,std::string>& data, std::string table_name)
+bool databaseMapper::fill(constraint_map_t& data, std::string table_name)
 {
-    std::map<object_id,std::string> result;
+    constraint_map_t result;
     sqlite3_stmt* stmt;
     prepare_query(table_name,&stmt);
     bool exit=false;
@@ -318,7 +318,8 @@ bool databaseMapper::fill(std::map<object_id,std::string>& data, std::string tab
             std::string name;
             check_type_and_copy(index,0,stmt);
             check_type_and_copy(name,1,stmt);
-            result[index]=name;
+            constraint_info c_info(name);
+            result.emplace(index,c_info);
         }
     }
     data.swap(result);
@@ -656,6 +657,12 @@ std::ostream& operator<<(std::ostream& os, const grasp_info& t)
 std::ostream& operator<<(std::ostream& os, const object_info& t)
 {
     os << " name: " << t.name << " | mesh: " << t.mesh_path << " | center:" << t.object_center << std::endl;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const constraint_info& t)
+{
+    os << " name: " << t.name << std::endl;
     return os;
 }
 
