@@ -53,13 +53,12 @@ typedef double transition_cost_t;
 typedef uint64_t constraint_id; // not used for now
 
 /**
- * @brief State of an object, represented by its grasp_id, workspace_id, and constraint_id
+ * @brief State of an object, represented by its grasp_id and workspace_id
  */
 struct object_state{
-    object_state(const grasp_id& g, const workspace_id& w, const constraint_id& c):grasp_id_(g), workspace_id_(w), constraint_id_(c){};
+    object_state(const grasp_id& g, const workspace_id& w):grasp_id_(g), workspace_id_(w){};
     grasp_id grasp_id_;
     workspace_id workspace_id_;
-    constraint_id constraint_id_; // not used for now
 };
 std::ostream& operator<<( std::ostream& os, const object_state& t );
 

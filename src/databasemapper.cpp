@@ -643,7 +643,7 @@ std::ostream& operator<<( std::ostream& os, const transition_info& t )
 
 std::ostream& operator<<( std::ostream& os, const object_state& t )
 {
-    os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_ << " | c_id:" << t.constraint_id_ << std::endl;
+    os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_ << std::endl;
     return os;
 }
 
