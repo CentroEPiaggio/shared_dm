@@ -268,9 +268,9 @@ bool databaseMapper::fill_grasp_transitions(std::map< grasp_id, std::set< grasp_
     return true;
 }
 
-bool databaseMapper::fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name)
+bool databaseMapper::fill(endeffector_map_t& data, std::string table_name)
 {
-    std::map<endeffector_id,std::tuple<std::string,bool>> result;
+    endeffector_map_t result;
     sqlite3_stmt* stmt;
     prepare_query(table_name,&stmt);
     bool exit=false;
@@ -290,7 +290,7 @@ bool databaseMapper::fill(std::map<endeffector_id,std::tuple<std::string,bool>>&
             check_type_and_copy(index,0,stmt);
             check_type_and_copy(name,1,stmt);
             check_type_and_copy(property,2,stmt);
-            result[index]=std::make_tuple(name,property);
+            result.emplace(index,endeffector_info(name,property));
         }
     }
     data.swap(result);
@@ -575,7 +575,7 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
         */
         // 1
         if( source.grasp_id_ == target.grasp_id_ &&
-            std::get<1>(EndEffectors.at(source_ee_id)) &&//E.E is movable
+            EndEffectors.at(source_ee_id).movable &&//E.E is movable
             Workspaces.at(source.workspace_id_).adjacent_ws.count(target.workspace_id_) &&
             Reachability.at(source_ee_id).count(source.workspace_id_) && Reachability.at(source_ee_id).count(target.workspace_id_))
         {
@@ -597,7 +597,7 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
         }
         // 2.b
         else if( source.workspace_id_ != target.workspace_id_ && Workspaces.at(source.workspace_id_).adjacent_ws.count(target.workspace_id_) &&
-            source_ee_id == target_ee_id && !std::get<1>(EndEffectors.at(source_ee_id)) )
+            source_ee_id == target_ee_id && !EndEffectors.at(source_ee_id).movable )
         {
             for(auto ee:(Grasp_transition_info.at(source.grasp_id_).at(target.grasp_id_)).ee_ids_)
             {
@@ -675,6 +675,12 @@ std::ostream& operator<<(std::ostream& os, const workspace_info& t)
     os << "] | z_min_max: (" << t.z_min_max.first << "," << t.z_min_max.second << ") | adjacent_ws: " << t.adjacent_ws << "\nws_center:\n";
     os << t.center;
 
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const endeffector_info& t)
+{
+    os << "ee_name: " << t.name << " | movable: " << (t.movable?"YES":"NO");
     return os;
 }
 

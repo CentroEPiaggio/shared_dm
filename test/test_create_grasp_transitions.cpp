@@ -95,7 +95,7 @@ int main(int argc, char **argv)
     ee_map["world"] = 3;
     
     for (auto item:db_mapper.EndEffectors)
-      std::cout << "Ee ID " << item.first << ": name = " << std::get<0>(item.second) << " - movable = " << std::get<1>(item.second) << std::endl;
+      std::cout << "Ee ID " << item.first << " : " << item.second << std::endl;
     
     srv_obj.request.command = "add";
     
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
 	  continue;
 
 	// if no end-effector is movable, go ahead
-	if (!((std::get<1>(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(i))))) || (std::get<1>(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(j)))))))
+	if (!((db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(i))).movable) || (db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(j))).movable)))
 	  continue;
 	
 	KDL::Frame fj;
@@ -179,13 +179,13 @@ int main(int argc, char **argv)
 	bool condition_distance = dist > DIST_THRESHOLD;
 	
 	// if the i-th end-effector is not movable
-	if (!(std::get<1>(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(i))))))
+	if (!(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(i))).movable))
 	{
 	  // dot product of z-axis of fi and x-axis of fj + small distance
  	  condition_dot_prod = ( dot( fi.M*sel_z, fj.M*sel_x ) < -1*DOTPROD_THRESHOLD) && (dist > DIST_THRESHOLD_FIXED);
 	}
 	// else, if the j-th end-effector is not movable
-	else if (!(std::get<1>(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(j))))))
+	else if (!(db_mapper.EndEffectors.at(ee_map.at(grasp_links.at(j))).movable))
 	{
 	  // dot product of z-axis of fj and x-axis of fi + small distance
 	  condition_dot_prod = ( dot( fj.M*sel_z, fi.M*sel_x ) < -1*DOTPROD_THRESHOLD) && (dist > DIST_THRESHOLD_FIXED);

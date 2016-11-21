@@ -85,6 +85,16 @@ struct workspace_info{
 std::ostream& operator<<( std::ostream& os, const workspace_info& t );
 
 /**
+ * @brief Information regarding a certain end-effector
+ */
+struct endeffector_info{
+    endeffector_info(const std::string& name_, bool movable_) : name(name_), movable(movable_) {};
+    std::string name; // the name of the end-effector
+    bool movable; // is the end-effector movable?
+};
+std::ostream& operator<<( std::ostream& os, const endeffector_info& t );
+
+/**
  * @brief Information regarding a certain grasp
  */
 struct grasp_info{
@@ -132,6 +142,7 @@ class databaseMapper
 public:
     
     typedef std::map<object_id, object_info> object_map_t;
+    typedef std::map<endeffector_id, endeffector_info> endeffector_map_t;
     typedef std::map<grasp_id, grasp_info> grasp_map_t;
     typedef std::map<constraint_id, constraint_info> constraint_map_t;
     
@@ -142,10 +153,9 @@ public:
      */
     object_map_t Objects;
     /**
-     * @brief List of endeffectors and their names, and a bool if the e.e. is movable
-     * 
+     * @brief List of endeffectors and their properties
      */
-    std::map<endeffector_id,std::tuple<std::string,bool>> EndEffectors;
+    endeffector_map_t EndEffectors;
     /**
      * @brief List of workspaces and their information
      * 
@@ -214,7 +224,7 @@ private:
     bool fill(object_map_t& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
     bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name);
-    bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
+    bool fill(endeffector_map_t& data, std::string table_name);
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     bool fill_workspaces(std::map<workspace_id, workspace_info>& data, std::string table_name);
     void makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map);

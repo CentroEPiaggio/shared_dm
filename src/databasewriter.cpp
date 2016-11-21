@@ -66,8 +66,8 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   
   for(auto& ee:db_mapper_->EndEffectors)
   {
-    ee_name_map_[ee.first] = std::get<0>(ee.second);
-    ee_map_[ee.first] = ee.second;
+    ee_name_map_[ee.first] = ee.second.name;
+    ee_map_.emplace(ee.first,ee.second);
   }
 
   std::cout << "End-effectors in DB:\n";
@@ -299,7 +299,7 @@ int databaseWriter::writeNewEndEffectors(int end_effector_id, std::string name, 
     {
         ROS_INFO_STREAM("New End Effector \"" << end_effector_id << "\" added with name " << name << movable?" movable ":" NOT movable");
         ee_name_map_[end_effector_id]=name;
-        ee_map_[end_effector_id] = std::make_tuple(name,movable);
+        ee_map_.emplace(end_effector_id, endeffector_info(name,movable));
     }
     return newID;
 }
@@ -379,8 +379,8 @@ int databaseWriter::writeNewTransition(int source_grasp_id, int target_grasp_id,
     dual_manipulation::shared::NodeTransitionTypes type = dual_manipulation::shared::NodeTransitionTypes::UNKNOWN;
 
     bool source_movable, target_movable;
-    source_movable = std::get<1>(ee_map_.at(grasp_ee_map_.at(source_grasp_id)));
-    target_movable = std::get<1>(ee_map_.at(grasp_ee_map_.at(target_grasp_id)));
+    source_movable = ee_map_.at(grasp_ee_map_.at(source_grasp_id)).movable;
+    target_movable = ee_map_.at(grasp_ee_map_.at(target_grasp_id)).movable;
     if(source_movable && target_movable)
         type = dual_manipulation::shared::NodeTransitionTypes::EXCHANGE_GRASP;
     else if(source_movable && !target_movable)

@@ -206,7 +206,7 @@ private:
   std::map<int,std::string> ee_name_map_; /// redundant on @p ee_map_, should be removed
   std::map<int,std::string> grasp_name_map_;
   std::map<int,int> grasp_ee_map_;
-  std::map<int,std::tuple<std::string,bool>> ee_map_;
+  std::map<int,endeffector_info> ee_map_;
   std::set<std::pair<int,int>> transitions_set_;
   std::map<int,std::string> workspace_name_map_;
   std::map<int,std::set<int>> adjacency_map_, reachability_map_;
