@@ -45,6 +45,7 @@
 #include <ros/ros.h>
 #include "dual_manipulation_shared/stream_utils.h"
 #include <dual_manipulation_shared/parsing_utils.h>
+#include <kdl/frames_io.hpp>
 
 #define DEBUG 0
 
@@ -325,9 +326,9 @@ bool databaseMapper::fill(std::map<object_id,std::string>& data, std::string tab
     return true;
 }
 
-bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name)
+bool databaseMapper::fill(object_map_t& data, std::string table_name)
 {
-    std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > > result;
+    object_map_t result;
     sqlite3_stmt* stmt;
     prepare_query(table_name,&stmt);
     bool exit=false;
@@ -341,12 +342,12 @@ bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::stri
         }
         else if (rc == SQLITE_ROW)
         {
-            uint64_t index;
-            std::string name, path;
+            object_id index;
+            object_info obj_info;
             std::string data;
             check_type_and_copy(index,0,stmt);
-            check_type_and_copy(name,1,stmt);
-            check_type_and_copy(path,2,stmt);
+            check_type_and_copy(obj_info.name,1,stmt);
+            check_type_and_copy(obj_info.mesh_path,2,stmt);
             check_type_and_copy(data,3,stmt);
             std::istringstream iss (data);
             std::vector<double> object_center;
@@ -371,8 +372,10 @@ bool databaseMapper::fill(std::map< uint64_t, std::tuple< std::string, std::stri
                 obj_f.M = KDL::Rotation::RPY(object_center[3],object_center[4],object_center[5]);
               else
                 obj_f.M = KDL::Rotation::Quaternion(object_center[3],object_center[4],object_center[5],object_center[6]);
+              
+              obj_info.object_center = obj_f;
             }
-            result[index]=std::tuple< std::string, std::string, KDL::Frame >(name,path,obj_f);
+            result[index] = obj_info;
         }
     }
     data.swap(result);
@@ -647,6 +650,12 @@ std::ostream& operator<<( std::ostream& os, const object_state& t )
 std::ostream& operator<<(std::ostream& os, const grasp_info& t)
 {
     os << "obj:" << t.obj_id << " ee:" << t.ee_id << " ec:" << t.ec_id << " | " << t.name << std::endl;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const object_info& t)
+{
+    os << " name: " << t.name << " | mesh: " << t.mesh_path << " | center:" << t.object_center << std::endl;
     return os;
 }
 

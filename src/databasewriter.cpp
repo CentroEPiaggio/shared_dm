@@ -57,7 +57,7 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   db_mapper_ = new databaseMapper(db_name_);
   
   for(auto& obj:db_mapper_->Objects)
-    object_name_map_[obj.first] = std::get<0>(obj.second);
+    object_name_map_[obj.first] = obj.second.name;
   
   std::cout << "Object already in DB:\n";
   for(auto& obj:object_name_map_)

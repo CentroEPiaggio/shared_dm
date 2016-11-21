@@ -63,6 +63,16 @@ struct object_state{
 std::ostream& operator<<( std::ostream& os, const object_state& t );
 
 /**
+ * @brief Information related to an object
+ */
+struct object_info{
+    std::string name;
+    std::string mesh_path;
+    KDL::Frame object_center;
+};
+std::ostream& operator<<( std::ostream& os, const object_info& t );
+
+/**
  * @brief struct containing all the information related to a workspace
  */
 struct workspace_info{
@@ -111,15 +121,15 @@ class databaseMapper
 {
 public:
     
+    typedef std::map<object_id, object_info> object_map_t;
     typedef std::map<grasp_id, grasp_info> grasp_map_t;
     
     databaseMapper();
     databaseMapper(std::string database_name);
     /**
      * @brief List of objects and their names
-     * 
      */
-    std::map<object_id,std::tuple<std::string,std::string,KDL::Frame>> Objects;
+    object_map_t Objects;
     /**
      * @brief List of endeffectors and their names, and a bool if the e.e. is movable
      * 
@@ -190,7 +200,7 @@ private:
     bool fillTableList();
     bool fill(grasp_map_t& data, std::string table_name);
     bool fill(std::map<uint64_t,std::string>& data, std::string table_name);
-    bool fill(std::map< uint64_t, std::tuple< std::string, std::string, KDL::Frame > >& data, std::string table_name);
+    bool fill(object_map_t& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
     bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name);
     bool fill(std::map<endeffector_id,std::tuple<std::string,bool>>& data, std::string table_name);
