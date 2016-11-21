@@ -528,14 +528,14 @@ databaseMapper::databaseMapper()
   initialize_database(database_name);
   
 #if DEBUG>1
-  std::cout<<tables<<std::endl;
-  std::cout<<Grasp_transitions<<std::endl;
-  std::cout<<Grasp_transition_info<<std::endl;
-  //     std::cout<<Objects<<std::endl;
-  std::cout<<Workspaces<<std::endl;
-  std::cout<<Reachability<<std::endl;
-  std::cout<<Grasps<<std::endl;
-  std::cout << "EnvironmentConstraints = \n" << EnvironmentConstraints << std::endl;
+    std::cout << "Tables list:\n" << tables << std::endl;
+    std::cout << "Objects:\n" << Objects << std::endl;
+    std::cout << "Workspaces:\n" << Workspaces << std::endl;
+    std::cout << "Reachability:\n" << Reachability << std::endl;
+    std::cout << "EnvironmentConstraints:\n" << EnvironmentConstraints << std::endl;
+    std::cout << "Grasps:\n" << Grasps << std::endl;
+    std::cout << "Grasp_transitions:\n" << Grasp_transitions << std::endl;
+    std::cout << "Grasp_transition_info:\n" << Grasp_transition_info << std::endl;
 #endif
 }
 
@@ -544,14 +544,14 @@ databaseMapper::databaseMapper(std::string database_name)
   initialize_database(database_name);
   
 #if DEBUG>1
-    std::cout<<tables<<std::endl;
-    std::cout<<Grasp_transitions<<std::endl;
-    std::cout<<Grasp_transition_info<<std::endl;
-//     std::cout<<Objects<<std::endl;
-    std::cout<<Workspaces<<std::endl;
-    std::cout<<Reachability<<std::endl;
-    std::cout<<Grasps<<std::endl;
-    std::cout << "EnvironmentConstraints = \n" << EnvironmentConstraints << std::endl;
+    std::cout << "Tables list:\n" << tables << std::endl;
+    std::cout << "Objects:\n" << Objects << std::endl;
+    std::cout << "Workspaces:\n" << Workspaces << std::endl;
+    std::cout << "Reachability:\n" << Reachability << std::endl;
+    std::cout << "EnvironmentConstraints:\n" << EnvironmentConstraints << std::endl;
+    std::cout << "Grasps:\n" << Grasps << std::endl;
+    std::cout << "Grasp_transitions:\n" << Grasp_transitions << std::endl;
+    std::cout << "Grasp_transition_info:\n" << Grasp_transition_info << std::endl;
 #endif
 }
 
@@ -638,31 +638,43 @@ std::ostream& operator<<( std::ostream& os, const transition_info& t )
 {
     os << "c:" << t.transition_cost_ << " | type:" << t.grasp_transition_type_ << " | extra_ees: [ - ";
     for(auto& e:t.ee_ids_) os << e << " - ";
-    os << "]" << std::endl;
+    os << "]";
     return os;
 }
 
 std::ostream& operator<<( std::ostream& os, const object_state& t )
 {
-    os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_ << std::endl;
+    os << "g_id:" << t.grasp_id_ << " | ws_id:" << t.workspace_id_;
     return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const grasp_info& t)
 {
-    os << "obj:" << t.obj_id << " ee:" << t.ee_id << " ec:" << t.ec_id << " | " << t.name << std::endl;
+    os << "obj:" << t.obj_id << " ee:" << t.ee_id << " ec:" << t.ec_id << " | " << t.name;
     return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const object_info& t)
 {
-    os << " name: " << t.name << " | mesh: " << t.mesh_path << " | center:" << t.object_center << std::endl;
+    os << " name: " << t.name << " | mesh: " << t.mesh_path << " |\n";
+    os << "ojbect_center:\n" << t.object_center;
     return os;
 }
 
 std::ostream& operator<<(std::ostream& os, const constraint_info& t)
 {
-    os << " name: " << t.name << std::endl;
+    os << " name: " << t.name;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const workspace_info& t)
+{
+    os << "name: " << t.name << " | polygon: [(" << t.polygon.at(0).first << "," << t.polygon.at(0).second << ")";
+    for(int i=1; i<t.polygon.size(); ++i)
+        os << ", (" << t.polygon.at(0).first << "," << t.polygon.at(0).second << ")";
+    os << "] | z_min_max: (" << t.z_min_max.first << "," << t.z_min_max.second << ") | adjacent_ws: " << t.adjacent_ws << "\nws_center:\n";
+    os << t.center;
+
     return os;
 }
 

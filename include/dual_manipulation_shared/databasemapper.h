@@ -82,6 +82,7 @@ struct workspace_info{
     KDL::Frame center;
     std::set<workspace_id> adjacent_ws;
 };
+std::ostream& operator<<( std::ostream& os, const workspace_info& t );
 
 /**
  * @brief Information regarding a certain grasp
