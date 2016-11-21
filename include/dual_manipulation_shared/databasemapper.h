@@ -66,9 +66,9 @@ std::ostream& operator<<( std::ostream& os, const object_state& t );
  * @brief Information related to an object
  */
 struct object_info{
-    std::string name;
-    std::string mesh_path;
-    KDL::Frame object_center;
+    std::string name; // the name of the object
+    std::string mesh_path; // the path to the object mesh (usually in package://...)
+    KDL::Frame object_center; // frame representing the center of the object, w.r.t. the mesh frame
 };
 std::ostream& operator<<( std::ostream& os, const object_info& t );
 
@@ -76,11 +76,11 @@ std::ostream& operator<<( std::ostream& os, const object_info& t );
  * @brief struct containing all the information related to a workspace
  */
 struct workspace_info{
-    std::string name;
-    std::vector<std::pair<double,double>> polygon;
-    std::pair<double,double> z_min_max;
-    KDL::Frame center;
-    std::set<workspace_id> adjacent_ws;
+    std::string name; // name of the workspace
+    std::vector<std::pair<double,double>> polygon; // planar geometry representing the workspace: expressed in the xy plane, in workspace frame
+    std::pair<double,double> z_min_max; // minimum and maximum z for the workspace, in workspace frame
+    KDL::Frame center; // frame transformation from world to workspace centroid
+    std::set<workspace_id> adjacent_ws; // set of adjacent workspaces
 };
 std::ostream& operator<<( std::ostream& os, const workspace_info& t );
 
