@@ -74,11 +74,11 @@ std::string object_selection_utility(int obj_id)
     std::string path = "package://dual_manipulation_grasp_db/object_meshes/";
     for(auto item:db_mapper.Objects)
     {
-	if(item.first == obj_id)
-	{
-	    path.append(std::get<1>(item.second));
-	    break;
-	}
+        if(item.first == obj_id)
+        {
+            path.append(item.second.mesh_path);
+            break;
+        }
     }
     
     ROS_DEBUG_STREAM("object path: "<<path<<std::endl);
