@@ -707,15 +707,24 @@ workspace_id databaseMapper::getWorkspaceIDFromPose(const KDL::Frame& object_pos
     return -1;
 }
 
-bool databaseMapper::getWorkspaceCentroid(const workspace_id& ws_id, bool high_centroid, KDL::Frame& ws_centroid) const
+bool databaseMapper::getTargetPose(const object_state& os_source, const object_state& os_target, KDL::Frame& target_pose) const
 {
-    if(!Workspaces.count(ws_id))
+    if(!Workspaces.count(os_source.workspace_id_) || !Workspaces.count(os_target.workspace_id_) || !Grasps.count(os_source.grasp_id_) || !Grasps.count(os_target.grasp_id_))
         return false;
     
+    bool high_centroid(false);
+    transition_info t_info;
+    
+    if(!getTransitionInfo(os_source, os_target, t_info))
+        return false;
+    if(t_info.grasp_transition_type_==dual_manipulation::shared::NodeTransitionTypes::EXCHANGE_GRASP)
+        high_centroid = true;
+    
+    workspace_id ws_id =  os_target.workspace_id_;
     if(!high_centroid)
-        ws_centroid = Workspaces.at(ws_id).center;
+        target_pose = Workspaces.at(ws_id).center;
     else
-        ws_centroid = Workspaces.at(ws_id).center*KDL::Frame(KDL::Vector(0.0,0.0, (Workspaces.at(ws_id).z_min_max.second + Workspaces.at(ws_id).z_min_max.first)/2.0 ));
+        target_pose = Workspaces.at(ws_id).center*KDL::Frame(KDL::Vector(0.0,0.0, (Workspaces.at(ws_id).z_min_max.second + Workspaces.at(ws_id).z_min_max.first)/2.0 ));
     
     return true;
 }

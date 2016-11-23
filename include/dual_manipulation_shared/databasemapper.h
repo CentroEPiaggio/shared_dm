@@ -198,15 +198,15 @@ public:
     workspace_id getWorkspaceIDFromPose(const KDL::Frame& object_pose) const;
     
     /**
-     * @brief Return the Workspace centroid
+     * @brief Return a Pose for a target state. Could be the centroid or a point in an edge
      * 
-     * @param ws_id the ID of the workspace
-     * @param high_centroid a flag to decide whether to use a low (false) or high (true) centroid position
-     * @param ws_centroid pose of the workspace centroid
+     * @param os_source object state of source node
+     * @param os_target object state of target node
+     * @param target_pose pose for the target state
      * 
-     * @return false if the workspace does not exist
+     * @return false if the object states do not exist
      */
-    bool getWorkspaceCentroid(const workspace_id& ws_id, bool high_centroid, KDL::Frame& ws_centroid) const;
+    bool getTargetPose(const object_state& os_source, const object_state& os_target, KDL::Frame& target_pose) const;
     
 private:
     
