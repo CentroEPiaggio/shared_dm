@@ -143,6 +143,7 @@ public:
     
     typedef std::map<object_id, object_info> object_map_t;
     typedef std::map<endeffector_id, endeffector_info> endeffector_map_t;
+    typedef std::map<workspace_id,workspace_info> workspace_map_t;
     typedef std::map<grasp_id, grasp_info> grasp_map_t;
     typedef std::map<constraint_id, constraint_info> constraint_map_t;
     
@@ -151,31 +152,31 @@ public:
     /**
      * @brief List of objects and their names
      */
-    object_map_t Objects;
+    const object_map_t& Objects;
     /**
      * @brief List of endeffectors and their properties
      */
-    endeffector_map_t EndEffectors;
+    const endeffector_map_t& EndEffectors;
     /**
      * @brief List of workspaces and their information
-     * 
      */
-    std::map<workspace_id,workspace_info> Workspaces;
+    const workspace_map_t& Workspaces;
     /**
      * @brief List of grasps
      */
-    grasp_map_t Grasps;
-    std::map<endeffector_id,std::set<workspace_id>> Reachability;
+    const grasp_map_t& Grasps;
+    /**
+     * @brief List of reachable workspace by any end-effector
+     */
+    const std::map<endeffector_id,std::set<workspace_id>>& Reachability;
     /**
      * @brief From a grasp to another
-     * 
      */
-    std::map<grasp_id,std::set<grasp_id>> Grasp_transitions;
-    
+    const std::map<grasp_id,std::set<grasp_id>>& Grasp_transitions;
     /**
      * @brief List of environmental constraints and their names
      */
-    constraint_map_t EnvironmentConstraints;
+    const constraint_map_t& EnvironmentConstraints;
     
     /**
      * @brief Get information about a transition 
@@ -228,6 +229,16 @@ private:
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     bool fill_workspaces(std::map<workspace_id, workspace_info>& data, std::string table_name);
     void makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map);
+
+private:
+    object_map_t ObjectsMap;
+    endeffector_map_t EndEffectorsMap;
+    workspace_map_t WorkspacesMap;
+    grasp_map_t GraspsMap;
+    std::map<endeffector_id,std::set<workspace_id>> ReachabilityMap;
+    std::map<grasp_id,std::set<grasp_id>> Grasp_transitionsMap;
+    constraint_map_t EnvironmentConstraintsMap;
+    
     std::vector<std::string> tables;
     sqlite3 *db;
     /// Between two grasps, tell me the type of the transition and other useful information

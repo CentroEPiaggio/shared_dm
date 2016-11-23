@@ -476,23 +476,23 @@ void databaseMapper::initialize_database(std::string database_name)
     {
         if (table=="Objects")
         {
-            fill(Objects,"Objects");
+            fill(ObjectsMap,"Objects");
         }
         else if (table=="Workspaces")
         {
-            fill_workspaces(Workspaces, "Workspaces");
+            fill_workspaces(WorkspacesMap, "Workspaces");
         }
         else if (table=="Grasps")
         {
-            fill(Grasps,"Grasps");
+            fill(GraspsMap,"Grasps");
         }
         else if (table=="Reachability")
         {
-            fill(Reachability, "Reachability");
+            fill(ReachabilityMap, "Reachability");
         }
         else if (table=="Grasp_transitions")
         {
-            fill_grasp_transitions(Grasp_transitions,Grasp_transition_info,"Grasp_transitions");
+            fill_grasp_transitions(Grasp_transitionsMap,Grasp_transition_info,"Grasp_transitions");
         }
         else if (table=="WorkspacesAdjacency")
         {
@@ -500,22 +500,22 @@ void databaseMapper::initialize_database(std::string database_name)
             makeMapBidirectional(WorkspacesAdjacency);
             for(auto& rt:WorkspacesAdjacency)
             {
-                Workspaces[rt.first].adjacent_ws = rt.second;
+                WorkspacesMap[rt.first].adjacent_ws = rt.second;
             }
         }
         else if (table=="EndEffectors")
         {
-            fill(EndEffectors, "EndEffectors");
+            fill(EndEffectorsMap, "EndEffectors");
         }
         else if (table=="EnvironmentConstraints")
         {
-            fill(EnvironmentConstraints, table);
+            fill(EnvironmentConstraintsMap, table);
         }
     }
     sqlite3_close(db);
 }
 
-databaseMapper::databaseMapper()
+databaseMapper::databaseMapper() : Objects(ObjectsMap), EndEffectors(EndEffectorsMap), Workspaces(WorkspacesMap), Grasps(GraspsMap), Reachability(ReachabilityMap), Grasp_transitions(Grasp_transitionsMap), EnvironmentConstraints(EnvironmentConstraintsMap)
 {
   std::string database_name;
   
@@ -539,7 +539,7 @@ databaseMapper::databaseMapper()
 #endif
 }
 
-databaseMapper::databaseMapper(std::string database_name)
+databaseMapper::databaseMapper(std::string database_name) : Objects(ObjectsMap), EndEffectors(EndEffectorsMap), Workspaces(WorkspacesMap), Grasps(GraspsMap), Reachability(ReachabilityMap), Grasp_transitions(Grasp_transitionsMap), EnvironmentConstraints(EnvironmentConstraintsMap)
 {
   initialize_database(database_name);
   
