@@ -43,6 +43,18 @@ namespace dual_manipulation
 namespace shared
 {
 
+/**
+ * A proxy class to ensure a certain variable is used in mutual exclusion:
+ * return an object of this class constructed with the same mutex to ensure such behavior
+ * 
+ * @example
+ * use this proxy as return of a function such the following
+ * LockedObject<myClass,std::mutex> getMyLockedObject()
+ * {
+ *    // my_mutex is a class object
+ *    return LockedObject<myClass,std::mutex>(my_object,my_mutex);
+ * }
+ */
 template<class T, class LOCK>
 class LockedObject
 {

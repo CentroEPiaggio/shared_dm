@@ -43,9 +43,9 @@
 std::mutex m,m2;
 std::shared_ptr<KDL::Frame> my_frame(new KDL::Frame(KDL::Vector(0.0,0.0,0.0)));
 
-std::shared_ptr<dual_manipulation::shared::LockedObject<KDL::Frame,std::mutex>> getMyLockedFrame()
+dual_manipulation::shared::LockedObject<KDL::Frame,std::mutex> getMyLockedFrame()
 {
-    return std::shared_ptr<dual_manipulation::shared::LockedObject<KDL::Frame,std::mutex>>(new dual_manipulation::shared::LockedObject<KDL::Frame,std::mutex>(my_frame,m));
+    return dual_manipulation::shared::LockedObject<KDL::Frame,std::mutex>(my_frame,m);
 }
 
 void printMutex(const std::string& s)
@@ -60,8 +60,8 @@ void threadFcn(int i)
     auto f = getMyLockedFrame();
     sleep(1);
     printMutex("Thread #" + std::to_string(i) + ": got one! Doing z+=0.1...");
-    (*f)->p.z( (*f)->p.z() + 0.1 );
-    printMutex("Thread #" + std::to_string(i) + ": z = " + std::to_string((*f)->p.z()));
+    f->p.z( f->p.z() + 0.1 );
+    printMutex("Thread #" + std::to_string(i) + ": z = " + std::to_string(f->p.z()));
 }
 
 int main(int argc, char **argv)
