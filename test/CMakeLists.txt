@@ -1,0 +1,19 @@
+add_executable(test_serialization test_serialization.cpp)
+target_link_libraries(test_serialization ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(test_serialization dual_manipulation_shared_gencpp)
+
+add_executable(test_deserialization test_deserialization.cpp )
+target_link_libraries(test_deserialization ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(test_deserialization dual_manipulation_shared_gencpp)
+
+add_executable(test_create_grasp_transitions test_create_grasp_transitions.cpp)
+target_link_libraries(test_create_grasp_transitions ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(test_create_grasp_transitions dual_manipulation_shared_gencpp)
+
+add_executable(convert_rh_to_lh convert_RH_to_LH_grasps.cpp)
+target_link_libraries(convert_rh_to_lh ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(convert_rh_to_lh dual_manipulation_shared_gencpp)
+
+add_executable(convert_ik_from_legacy convert_ik_from_legacy.cpp)
+target_link_libraries(convert_ik_from_legacy ${catkin_LIBRARIES} ${PROJECT_NAME})
+add_dependencies(convert_ik_from_legacy dual_manipulation_shared_gencpp)
