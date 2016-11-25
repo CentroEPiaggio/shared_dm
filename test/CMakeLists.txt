@@ -17,3 +17,6 @@ add_dependencies(convert_rh_to_lh dual_manipulation_shared_gencpp)
 add_executable(convert_ik_from_legacy convert_ik_from_legacy.cpp)
 target_link_libraries(convert_ik_from_legacy ${catkin_LIBRARIES} ${PROJECT_NAME})
 add_dependencies(convert_ik_from_legacy dual_manipulation_shared_gencpp)
+
+add_executable(test_locked_object test_locked_object.cpp)
+target_link_libraries(test_locked_object ${catkin_LIBRARIES})
