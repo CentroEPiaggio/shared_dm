@@ -74,6 +74,11 @@ public:
         return myObj;
     }
     
+    operator T&()
+    {
+        return *myObj;
+    }
+    
     const std::shared_ptr<T>& operator->()
     {
         return myObj;
