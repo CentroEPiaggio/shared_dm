@@ -1,5 +1,5 @@
 dual_manipulation_parameters:
-  database_name: full_vito.db
+  database_name: full_box_soma.db
   # this is used to say whether or not to use vision
   # for the gui, this means that
   # - true: the vision will find the position and write it in the gui
