@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- modified version of omnirob_robin_base from github.com/robinJKU/omnirob_robin -->
-<robot xmlns:xacro="http://ros.org/wiki/xacro"> 
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"> 
 
    <property name="px_lower_limit_def" value="-2"/>
    <property name="px_upper_limit_def" value="2"/>
