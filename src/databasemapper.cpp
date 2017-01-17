@@ -692,8 +692,8 @@ std::ostream& operator<<(std::ostream& os, const object_info& t)
 std::ostream& operator<<(std::ostream& os, const constraint_info& t)
 {
     os << " name: " << t.name << " | Type: " << t.type << std::endl;
-    os << " pose: " << t.pose;
-    os << " min: " << t.min;
+    os << " pose:\n " << t.pose << std::endl;
+    os << " min: " << t.min << std::endl;
     os << " max: " << t.max;
     return os;
 }
