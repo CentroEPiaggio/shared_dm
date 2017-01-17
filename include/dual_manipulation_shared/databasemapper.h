@@ -50,7 +50,8 @@ typedef uint64_t workspace_id;
 typedef uint64_t endeffector_id;
 typedef dual_manipulation::shared::NodeTransitionTypes grasp_transition_type;
 typedef double transition_cost_t;
-typedef uint64_t constraint_id; // not used for now
+typedef uint64_t constraint_id; 
+typedef uint64_t constraint_type; // To define the constraint type
 
 /**
  * @brief State of an object, represented by its grasp_id and workspace_id
@@ -109,10 +110,24 @@ std::ostream& operator<<( std::ostream& os, const grasp_info& t );
  * @brief struct containing all the information related to an environmental constraint
  */
 struct constraint_info{
-    constraint_info(const std::string& name_) : name(name_) {};
+    constraint_info(const std::string& name_, constraint_type type_, KDL::Frame& pose_, KDL::Twist& min_, KDL::Twist& max_) : 
+    name(name_), type(type_),  pose(pose_), min(min_), max(max_) {};
+    std::string name;
+    constraint_type type;
+    KDL::Frame pose;
+    KDL::Twist max;
+    KDL::Twist min;
+};
+
+std::ostream& operator<<(std::ostream& os, const constraint_info& t);
+
+struct constraint_type_info{
+    constraint_type_info(const std::string& name_) : 
+    name(name_) {};
     std::string name;
 };
-std::ostream& operator<<(std::ostream& os, const constraint_info& t);
+
+std::ostream& operator<<(std::ostream& os, const constraint_type_info& t);
 
 /**
  * @brief Information about a transition between two object_states, containing a cost, type, and list of end-effectors
@@ -146,6 +161,7 @@ public:
     typedef std::map<workspace_id,workspace_info> workspace_map_t;
     typedef std::map<grasp_id, grasp_info> grasp_map_t;
     typedef std::map<constraint_id, constraint_info> constraint_map_t;
+    typedef std::map<constraint_type, constraint_type_info> constraint_type_map_t;
     
     databaseMapper();
     databaseMapper(std::string database_name);
@@ -177,6 +193,8 @@ public:
      * @brief List of environmental constraints and their names
      */
     const constraint_map_t& EnvironmentConstraints;
+    
+    const constraint_type_map_t& EnvironmentConstraintTypes;
     
     /**
      * @brief Get information about a transition 
@@ -222,6 +240,7 @@ private:
     bool fillTableList();
     bool fill(grasp_map_t& data, std::string table_name);
     bool fill(constraint_map_t& data, std::string table_name);
+    bool fill(constraint_type_map_t& data, std::string table_name);
     bool fill(object_map_t& data, std::string table_name);
     bool fill(std::map<uint64_t,std::set<uint64_t>>& data, std::string table_name);
     bool fill_grasp_transitions(std::map< grasp_id, std::set< grasp_id > >& transitions, std::map< grasp_id, std::map< grasp_id, transition_info > >& t_info, std::string table_name);
@@ -229,6 +248,8 @@ private:
     bool fill(std::map<workspace_id,std::vector<std::pair<double,double>>>& data, std::string table_name);
     bool fill_workspaces(std::map<workspace_id, workspace_info>& data, std::string table_name);
     void makeMapBidirectional(std::map< uint64_t, std::set< uint64_t > >& map);
+    bool convert_string2pose(const std::string& data, KDL::Frame& obj_f);
+    bool convert_string2twist(const std::string& data, KDL::Twist& obj_t);
 
 private:
     object_map_t ObjectsMap;
@@ -238,6 +259,7 @@ private:
     std::map<endeffector_id,std::set<workspace_id>> ReachabilityMap;
     std::map<grasp_id,std::set<grasp_id>> Grasp_transitionsMap;
     constraint_map_t EnvironmentConstraintsMap;
+    constraint_type_map_t EnvironmentConstraintTypesMap;
     
     std::vector<std::string> tables;
     sqlite3 *db;

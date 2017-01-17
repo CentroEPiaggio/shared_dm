@@ -78,6 +78,9 @@ databaseWriter::databaseWriter(std::string db_name):db_name_(db_name)
   for(auto& ec:db_mapper_->EnvironmentConstraints)
       ec_name_map_[ec.first] = ec.second.name;
   
+  for(auto& ec:db_mapper_->EnvironmentConstraintTypes)
+      ec_type_map_[ec.first] = ec.second.name;
+  
   for(auto& ee:db_mapper_->Grasps)
   {
       grasp_name_map_[ee.first] = ee.second.name;
@@ -550,13 +553,13 @@ bool databaseWriter::deleteGraspTransition(int source_grasp_id, int target_grasp
   return (result > 0);
 }
 
-int databaseWriter::writeNewEnvironmentConstraint(int id, std::string name)
+int databaseWriter::writeNewEnvironmentConstraintType(int id, std::string name)
 {
-    std::string entity = "EnvironmentConstraint";
+    std::string entity = "EnvironmentConstraintType";
     std::string table = entity + "s";
     std::string sqlstatement =
     "INSERT INTO " + table + " VALUES (? , ?)";
-    if (ec_name_map_.count(id))
+    if (ec_type_map_.count(id))
     {
         ROS_ERROR_STREAM("Error adding " << entity << " \"" << name << "\" with ID " << id << " - ID already in the database");
         return -1;
@@ -571,7 +574,7 @@ int databaseWriter::writeNewEnvironmentConstraint(int id, std::string name)
     else
     {
         ROS_INFO_STREAM("New " << entity << " \"" << name << "\" added with ID " << newID);
-        ec_name_map_[id] = name;
+        ec_type_map_[id] = name;
     }
     return newID;
 }
@@ -579,7 +582,7 @@ int databaseWriter::writeNewEnvironmentConstraint(int id, std::string name)
 int databaseWriter::writeNewECAdjacency(int source_id, int target_id)
 {
     std::string sqlstatement = "INSERT INTO EC_Adjacency VALUES (? , ?)";
-    if (!ec_name_map_.count(source_id) || !ec_name_map_.count(target_id))
+    if (!ec_type_map_.count(source_id) || !ec_type_map_.count(target_id))
     {
         ROS_ERROR_STREAM("One or both EnvironmentConstraints " << source_id << " and " << target_id << " do(es) not exist!");
         return -1;
@@ -676,3 +679,38 @@ int databaseWriter::writeNewWorkspace(int workspace_id, std::string workspace_na
     
 }
 
+int databaseWriter::writeNewEnvironmentConstraint (int constraint_id, std::string constraint_name,  int type, KDL::Frame pose, KDL::Twist min, KDL::Twist max)
+{
+    
+    std::string sqlstatement = "INSERT INTO EnvironmentConstraints VALUES (? , ? , ? , ? , ?, ?)";
+    if (ec_name_map_.count(constraint_id))
+    {
+        ROS_ERROR_STREAM("Error adding environment constraint \"" << constraint_name << "\" with ID " << constraint_id << " already in the database");
+        return -1;
+    }
+    
+    std::string pose_string, max_string, min_string;
+    double x,y,z,w;
+    pose.M.GetQuaternion(x,y,z,w);
+    pose_string = std::to_string(pose.p.data[0]) + " " + std::to_string(pose.p.data[1]) + " " + std::to_string(pose.p.data[2]) + " " + std::to_string(x) + " " + std::to_string(y) + " " + std::to_string(z) + " " + std::to_string(w);
+    
+    min_string = std::to_string(min(0)) + " " + std::to_string(min(1)) + " " + std::to_string(min(2)) + " " +  std::to_string(min(3)) + " " + std::to_string(min(4)) + " " + std::to_string(min(5));
+    
+    max_string = std::to_string(max(0)) + " " + std::to_string(max(1)) + " " + std::to_string(max(2)) + " " +  std::to_string(max(3)) + " " + std::to_string(max(4)) + " " + std::to_string(max(5));
+         
+    int newID = writeNewSomething(sqlstatement, constraint_id, constraint_name, type, pose_string, min_string, max_string);
+    
+    if(newID <= 0)
+    {
+        newID = -1;
+        ROS_ERROR_STREAM("Error adding constraint \"" << constraint_name << "\" with ID " << newID);
+    }
+    else
+    {
+        ROS_INFO_STREAM("New constraint \"" << constraint_name << "\" added with ID " << newID);
+        ec_name_map_[constraint_id] = constraint_name;
+    }
+    
+    return newID;
+    
+}

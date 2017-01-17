@@ -172,7 +172,7 @@ public:
    * 
    * @return the newly inserted ec ID (-1 on failure)
    */
-  int writeNewEnvironmentConstraint(int id, std::string name);
+  int writeNewEnvironmentConstraintType(int id, std::string name);
   
   /**
    * @brief Insert a new EC adjacenty in the database
@@ -182,6 +182,7 @@ public:
    * 
    * @return -1 on failure
    */
+  
   int writeNewECAdjacency(int source_id, int target_id);
   
   /**
@@ -193,6 +194,19 @@ public:
    * @return -1 on failure
    */
   int writeNewECReachability(int ec_id, int workspace_id);
+  /**
+   * @brief Insert a new Environment constraint in the database
+   * 
+   * @param constraint_id the id of the constraint
+   * @param constraint_name The name of the constraint
+   * @param type constraint type
+   * @param pose The reference frame of the constraint.
+   * @param min the minimum of the constraint on each axis
+   * @param max the maximum of the constraint on each axis
+   * 
+   * @return -1 on failure
+   */
+  int writeNewEnvironmentConstraint (int constraint_id, std::string constraint_name, int type, KDL::Frame pose, KDL::Twist min, KDL::Twist max);
   
   ~databaseWriter();
   bool open_global();
@@ -213,6 +227,7 @@ private:
   sqlite3* global_db;
   // maps for environment constraints
   std::map<int,std::string> ec_name_map_;
+  std::map<int,std::string> ec_type_map_;
   std::map<int,std::set<int>> ec_adjacency_map_, ec_reachability_map_;
   
   int insert_db_entry(const std::string& sqlstatement, bool remove=false, bool just_dont=false);

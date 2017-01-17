@@ -316,9 +316,49 @@ bool databaseMapper::fill(constraint_map_t& data, std::string table_name)
         {
             uint64_t index;
             std::string name;
+            std::string data_s;
+            KDL::Frame pose;            
+            constraint_type type;
+            KDL::Twist min,max;
             check_type_and_copy(index,0,stmt);
             check_type_and_copy(name,1,stmt);
-            constraint_info c_info(name);
+            check_type_and_copy(type,2,stmt);
+            check_type_and_copy(data_s,3,stmt);
+            convert_string2pose(data_s, pose);
+            check_type_and_copy(data_s,4,stmt);
+            convert_string2twist(data_s, min);
+            check_type_and_copy(data_s,5,stmt);
+            convert_string2twist(data_s, max);
+            constraint_info c_info(name, type, pose, min, max);
+            result.emplace(index,c_info);
+        }
+    }
+    data.swap(result);
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+bool databaseMapper::fill(constraint_type_map_t& data, std::string table_name)
+{
+    constraint_type_map_t result;
+    sqlite3_stmt* stmt;
+    prepare_query(table_name,&stmt);
+    bool exit=false;
+    int rc;
+    while(!exit)
+    {
+        if (!step_query(stmt,rc))
+            return false;
+        else if (rc == SQLITE_DONE) {
+            exit=true;
+        }
+        else if (rc == SQLITE_ROW)
+        {
+            uint64_t index;
+            std::string name;
+            check_type_and_copy(index,0,stmt);
+            check_type_and_copy(name,1,stmt);
+            constraint_type_info c_info(name);
             result.emplace(index,c_info);
         }
     }
@@ -350,31 +390,13 @@ bool databaseMapper::fill(object_map_t& data, std::string table_name)
             check_type_and_copy(obj_info.name,1,stmt);
             check_type_and_copy(obj_info.mesh_path,2,stmt);
             check_type_and_copy(data,3,stmt);
-            std::istringstream iss (data);
-            std::vector<double> object_center;
             KDL::Frame obj_f;
-            while (!iss.eof())
-            {
-              double x;
-              iss >> x;
-              object_center.push_back(x);
-            }
-            if (object_center.size() < 6)
-            {
-              std::cout << "databaseMapper::fill : Error getting object center pose from DB" << std::endl;
-            }
+            if(convert_string2pose(data, obj_f))
+                obj_info.object_center = obj_f;
             else
             {
-              obj_f.p.x(object_center[0]);
-              obj_f.p.y(object_center[1]);
-              obj_f.p.z(object_center[2]);
-            
-              if(object_center.size() == 6)
-                obj_f.M = KDL::Rotation::RPY(object_center[3],object_center[4],object_center[5]);
-              else
-                obj_f.M = KDL::Rotation::Quaternion(object_center[3],object_center[4],object_center[5],object_center[6]);
-              
-              obj_info.object_center = obj_f;
+                std::cout << "databaseMapper::fill : Error getting object center pose from DB" << std::endl;
+                return false;
             }
             result[index] = obj_info;
         }
@@ -511,11 +533,15 @@ void databaseMapper::initialize_database(std::string database_name)
         {
             fill(EnvironmentConstraintsMap, table);
         }
+        else if (table=="EnvironmentConstraintTypes")
+        {
+            fill(EnvironmentConstraintTypesMap, table);
+        }
     }
     sqlite3_close(db);
 }
 
-databaseMapper::databaseMapper() : Objects(ObjectsMap), EndEffectors(EndEffectorsMap), Workspaces(WorkspacesMap), Grasps(GraspsMap), Reachability(ReachabilityMap), Grasp_transitions(Grasp_transitionsMap), EnvironmentConstraints(EnvironmentConstraintsMap)
+databaseMapper::databaseMapper() : Objects(ObjectsMap), EndEffectors(EndEffectorsMap), Workspaces(WorkspacesMap), Grasps(GraspsMap), Reachability(ReachabilityMap), Grasp_transitions(Grasp_transitionsMap), EnvironmentConstraints(EnvironmentConstraintsMap), EnvironmentConstraintTypes(EnvironmentConstraintTypesMap)
 {
   std::string database_name;
   
@@ -533,13 +559,14 @@ databaseMapper::databaseMapper() : Objects(ObjectsMap), EndEffectors(EndEffector
     std::cout << "Workspaces:\n" << Workspaces << std::endl;
     std::cout << "Reachability:\n" << Reachability << std::endl;
     std::cout << "EnvironmentConstraints:\n" << EnvironmentConstraints << std::endl;
+    std::cout << "EnvironmentConstraintTypes:\n" << EnvironmentConstraintTypes<< std::endl;
     std::cout << "Grasps:\n" << Grasps << std::endl;
     std::cout << "Grasp_transitions:\n" << Grasp_transitions << std::endl;
     std::cout << "Grasp_transition_info:\n" << Grasp_transition_info << std::endl;
 #endif
 }
 
-databaseMapper::databaseMapper(std::string database_name) : Objects(ObjectsMap), EndEffectors(EndEffectorsMap), Workspaces(WorkspacesMap), Grasps(GraspsMap), Reachability(ReachabilityMap), Grasp_transitions(Grasp_transitionsMap), EnvironmentConstraints(EnvironmentConstraintsMap)
+databaseMapper::databaseMapper(std::string database_name) : Objects(ObjectsMap), EndEffectors(EndEffectorsMap), Workspaces(WorkspacesMap), Grasps(GraspsMap), Reachability(ReachabilityMap), Grasp_transitions(Grasp_transitionsMap), EnvironmentConstraints(EnvironmentConstraintsMap), EnvironmentConstraintTypes(EnvironmentConstraintTypesMap)
 {
   initialize_database(database_name);
   
@@ -549,6 +576,7 @@ databaseMapper::databaseMapper(std::string database_name) : Objects(ObjectsMap),
     std::cout << "Workspaces:\n" << Workspaces << std::endl;
     std::cout << "Reachability:\n" << Reachability << std::endl;
     std::cout << "EnvironmentConstraints:\n" << EnvironmentConstraints << std::endl;
+    std::cout << "EnvironmentConstraintTypes:\n" << EnvironmentConstraintTypes<< std::endl;
     std::cout << "Grasps:\n" << Grasps << std::endl;
     std::cout << "Grasp_transitions:\n" << Grasp_transitions << std::endl;
     std::cout << "Grasp_transition_info:\n" << Grasp_transition_info << std::endl;
@@ -662,6 +690,15 @@ std::ostream& operator<<(std::ostream& os, const object_info& t)
 }
 
 std::ostream& operator<<(std::ostream& os, const constraint_info& t)
+{
+    os << " name: " << t.name << " | Type: " << t.type << std::endl;
+    os << " pose: " << t.pose;
+    os << " min: " << t.min;
+    os << " max: " << t.max;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const constraint_type_info& t)
 {
     os << " name: " << t.name;
     return os;
@@ -805,3 +842,62 @@ bool databaseMapper::fill_workspaces(std::map< workspace_id, workspace_info >& d
     
     return true;
 }
+
+bool databaseMapper::convert_string2pose(const std::string& data, KDL::Frame& obj_f)
+{
+    std::istringstream iss (data);
+    std::vector<double> object_center;
+    while (!iss.eof())
+    {
+        double x;
+        iss >> x;
+        object_center.push_back(x);
+    }
+    if (object_center.size() < 6)
+    {
+        std::cout << "databaseMapper::fill : Error getting object center pose from DB" << std::endl;
+        return false;
+    }
+    else
+    {
+        obj_f.p.x(object_center[0]);
+        obj_f.p.y(object_center[1]);
+        obj_f.p.z(object_center[2]);
+        
+        if(object_center.size() == 6)
+            obj_f.M = KDL::Rotation::RPY(object_center[3],object_center[4],object_center[5]);
+        else
+            obj_f.M = KDL::Rotation::Quaternion(object_center[3],object_center[4],object_center[5],object_center[6]);
+        
+    }
+    return true;
+}
+
+
+bool databaseMapper::convert_string2twist(const std::string& data, KDL::Twist& obj_t)
+{
+    std::istringstream iss (data);
+    std::vector<double> object_center;
+    while (!iss.eof())
+    {
+        double x;
+        iss >> x;
+        object_center.push_back(x);
+    }
+    if (object_center.size() != 6)
+    {
+        std::cout << "databaseMapper::fill : Error getting object center pose from DB" << std::endl;
+        return false;
+    }
+    else
+    {
+        obj_t.vel.x(object_center[0]);
+        obj_t.vel.y(object_center[1]);
+        obj_t.vel.z(object_center[2]);
+        obj_t.rot.x(object_center[3]);
+        obj_t.rot.y(object_center[4]);
+        obj_t.rot.z(object_center[5]);        
+    }
+    return true;
+}
+
