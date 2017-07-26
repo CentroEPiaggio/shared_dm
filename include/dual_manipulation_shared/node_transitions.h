@@ -17,6 +17,7 @@ static const std::string GRASP_NAME("GRASP");
 static const std::string UNGRASP_NAME("UNGRASP");
 static const std::string EXCHANGE_GRASP_NAME("EXCHANGE_GRASP");
 static const std::string SLIDE_NAME("SLIDE");
+static const std::string TILT_NAME("TILT");
 static const std::string LAST_EE_FIXED_NAME("LAST_EE_FIXED");
 static const std::string LAST_EE_MOVABLE_NAME("LAST_EE_MOVABLE");
 
@@ -28,6 +29,7 @@ enum class NodeTransitionTypes
     UNGRASP,                    // from one movable to one non-movable, ungrasp the object (change on ground)
     EXCHANGE_GRASP,             // both ee are movable, perform integrasp (change above ground)
     SLIDE,                      // both ee are non-movable, use another movable end-effector to slide the object from source to target
+    TILT,                       // both ee are non-movable, use another movable end-effector to tilt the object from source to target
     LAST_EE_FIXED,              // ee_id is the last end effector in the path, and is not movable
     LAST_EE_MOVABLE             // ee_id is the last end effector in the path, and is movable
 };
@@ -41,6 +43,7 @@ public:
         fromName[UNGRASP_NAME] = NodeTransitionTypes::UNGRASP;
         fromName[EXCHANGE_GRASP_NAME] = NodeTransitionTypes::EXCHANGE_GRASP;
         fromName[SLIDE_NAME] = NodeTransitionTypes::SLIDE;
+        fromName[TILT_NAME] = NodeTransitionTypes::TILT;
     }
     NodeTransitionTypes getTransitionTypeFromName(const std::string& name) const
     {
