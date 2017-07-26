@@ -600,6 +600,7 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
         2 - In the database 
                 a) In the same Workspace 
                 b) Between adjacent workspaces; only not movable end effectors; at least one additional end effector can reach both source and target workspaces
+                c) Two different non movable ee (table and edge)
         */
         // 1
         if( source.grasp_id_ == target.grasp_id_ &&
@@ -626,6 +627,19 @@ bool databaseMapper::getTransitionInfo(const object_state& source, const object_
         // 2.b
         else if( source.workspace_id_ != target.workspace_id_ && Workspaces.at(source.workspace_id_).adjacent_ws.count(target.workspace_id_) &&
             source_ee_id == target_ee_id && !EndEffectors.at(source_ee_id).movable )
+        {
+            for(auto ee:(Grasp_transition_info.at(source.grasp_id_).at(target.grasp_id_)).ee_ids_)
+            {
+                if (Reachability.at(ee).count(source.workspace_id_) && Reachability.at(ee).count(target.workspace_id_))
+                {
+                    found = true;
+                    break;
+                }
+            }
+        }
+        // 2.c
+        else if( source.workspace_id_ != target.workspace_id_ && Workspaces.at(source.workspace_id_).adjacent_ws.count(target.workspace_id_) &&
+            source_ee_id != target_ee_id && !EndEffectors.at(source_ee_id).movable )
         {
             for(auto ee:(Grasp_transition_info.at(source.grasp_id_).at(target.grasp_id_)).ee_ids_)
             {
