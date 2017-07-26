@@ -18,5 +18,11 @@ uint64 object_db_id
 moveit_msgs/AttachedCollisionObject attObject
 #sequence number
 uint32 seq
+#object starting and final position
+geometry_msgs/Pose[] obj_poses
+#current source grasp id
+uint64 current_source_grasp_id
+#bool info about tilting used or not
+bool current_transition_tilting
 ---
 bool ack
