@@ -10,6 +10,7 @@ std::ostream& operator<<(std::ostream &output, const dual_manipulation::shared::
                ntype==NodeTransitionTypes::UNGRASP?dual_manipulation::shared::UNGRASP_NAME:
                ntype==NodeTransitionTypes::EXCHANGE_GRASP?dual_manipulation::shared::EXCHANGE_GRASP_NAME:
                ntype==NodeTransitionTypes::SLIDE?dual_manipulation::shared::SLIDE_NAME:
+               ntype==NodeTransitionTypes::TILT?dual_manipulation::shared::TILT_NAME:
                ntype==NodeTransitionTypes::LAST_EE_FIXED?dual_manipulation::shared::LAST_EE_FIXED_NAME:
                ntype==NodeTransitionTypes::LAST_EE_MOVABLE?dual_manipulation::shared::LAST_EE_MOVABLE_NAME:
                "you forgot to teach me how to write this type of NodeTransitionTypes!");
