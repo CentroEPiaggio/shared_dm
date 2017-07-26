@@ -8,54 +8,54 @@
   <xacro:include filename="$(find youbot_description)/urdf/youbot_base/base.transmission.xacro"/>
 
   <!-- simplified box collision geometry for base -->
-  <property name="base_size_x" value="0.570"/>
-  <property name="base_size_y" value="0.360"/>
-  <property name="base_size_z" value="0.100"/>
-  <property name="base_mass" value="22.0"/>
+  <xacro:property name="base_size_x" value="0.570"/>
+  <xacro:property name="base_size_y" value="0.360"/>
+  <xacro:property name="base_size_z" value="0.100"/>
+  <xacro:property name="base_mass" value="22.0"/>
 
-  <property name="caster_offset_x" value="0.228"/>
-  <property name="caster_offset_y" value="0.158"/>
-  <property name="caster_offset_z" value="-0.034"/>
-  <property name="caster_mass" value="0.1"/>
+  <xacro:property name="caster_offset_x" value="0.228"/>
+  <xacro:property name="caster_offset_y" value="0.158"/>
+  <xacro:property name="caster_offset_z" value="-0.034"/>
+  <xacro:property name="caster_mass" value="0.1"/>
 
-  <property name="wheel_offset_x" value="0.0"/>
-  <property name="wheel_offset_y" value="0.0"/>
-  <property name="wheel_offset_z" value="0.0"/>
+  <xacro:property name="wheel_offset_x" value="0.0"/>
+  <xacro:property name="wheel_offset_y" value="0.0"/>
+  <xacro:property name="wheel_offset_z" value="0.0"/>
 
-  <property name="wheel_mass" value="1.4"/>
-  <property name="wheel_radius" value="0.0475"/>
-  <property name="wheel_length" value="0.005"/>
+  <xacro:property name="wheel_mass" value="1.4"/>
+  <xacro:property name="wheel_radius" value="0.0475"/>
+  <xacro:property name="wheel_length" value="0.005"/>
 
-  <property name="caster_joint_damping" value="1.0"/>
-  <property name="caster_joint_friction" value="1.0"/>
-  <property name="caster_joint_effort" value="30"/>
-  <property name="caster_joint_velocity" value="10"/>
-  <property name="caster_joint_safety_k_velocity" value="10.0"/>
+  <xacro:property name="caster_joint_damping" value="1.0"/>
+  <xacro:property name="caster_joint_friction" value="1.0"/>
+  <xacro:property name="caster_joint_effort" value="30"/>
+  <xacro:property name="caster_joint_velocity" value="10"/>
+  <xacro:property name="caster_joint_safety_k_velocity" value="10.0"/>
 
-  <property name="wheel_joint_damping" value="1.0"/>
-  <property name="wheel_joint_friction" value="1.0"/>
-  <property name="wheel_joint_effort" value="30"/>
-  <property name="wheel_joint_velocity" value="10"/>
-  <property name="wheel_joint_safety_k_velocity" value="10.0"/>
+  <xacro:property name="wheel_joint_damping" value="1.0"/>
+  <xacro:property name="wheel_joint_friction" value="1.0"/>
+  <xacro:property name="wheel_joint_effort" value="30"/>
+  <xacro:property name="wheel_joint_velocity" value="10"/>
+  <xacro:property name="wheel_joint_safety_k_velocity" value="10.0"/>
 
-  <property name="p_joint_effort" value="30"/>
-  <property name="p_joint_velocity" value="10"/>
-  <property name="px_lower_limit_def" value="-2"/>
-  <property name="px_upper_limit_def" value="2"/>
-  <property name="py_lower_limit_def" value="-1"/>
-  <property name="py_upper_limit_def" value="1"/>
+  <xacro:property name="p_joint_effort" value="30"/>
+  <xacro:property name="p_joint_velocity" value="10"/>
+  <xacro:property name="px_lower_limit_def" value="-2"/>
+  <xacro:property name="px_upper_limit_def" value="2"/>
+  <xacro:property name="py_lower_limit_def" value="-1"/>
+  <xacro:property name="py_upper_limit_def" value="1"/>
 
   <xacro:macro name="tinoBot" params="parent name *origin px_lower_limit:=${px_lower_limit_def} px_upper_limit:=${px_upper_limit_def} py_lower_limit:=${py_lower_limit_def} py_upper_limit:=${py_upper_limit_def}">
 
     <!-- <joint name="${name}_base_joint" type="fixed">
-      <insert_block name="origin"/>
+      <xacro:insert_block name="origin"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="${parent}"/>
       <child link="${name}_footprint"/>
     </joint> -->
 
     <joint name="${name}_base_p1_joint" type="prismatic">
-      <insert_block name="origin"/>
+      <xacro:insert_block name="origin"/>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <axis xyz="1 0 0"/>
       <limit lower="${px_lower_limit}" upper="${px_upper_limit}" effort="${p_joint_effort}" velocity="${p_joint_velocity}"/>
